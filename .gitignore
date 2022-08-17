@@ -12,7 +12,7 @@ DivinityRogue/Saved/*
 DivinityRogue/Binaries/*
 DivinityRogue/Plugins/Developer/*
 DivinityRogue/.idea/*
-DivinityRogue/Content/ParagonMurdock/*
+DivinityRogue/Content/ParagonNarbash/*
 *.ipch
 # Precompiled Headers
 *.gch
