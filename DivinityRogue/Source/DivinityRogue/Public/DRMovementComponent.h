@@ -14,6 +14,9 @@ public:
 	virtual void RequestPathMove(const FVector& MoveVelocity) override;
 	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
 	virtual bool CanStartPathFollowing() const override;
+	protected:
+	UPROPERTY(EditDefaultsOnly)
+		int mMovementSpeed;
 };
 
 

@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DRAIController.h"
+#include "DRMovementComponent.h"
 #include "GameFramework/Pawn.h"
 #include "DRCharacter.generated.h"
 
@@ -12,18 +14,15 @@ class DIVINITYROGUE_API ADRCharacter : public APawn
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
 	ADRCharacter();
-
-protected:
-	// Called when the game starts or when spawned
+	void SetTargetLocation(FVector targetLoc);
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UDRMovementComponent* mMovementComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USkeletalMeshComponent* mSkeletalMeshComponent;
+private:
+	UPROPERTY()
+	ADRAIController* mController;
 };
