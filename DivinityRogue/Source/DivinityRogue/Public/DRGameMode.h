@@ -17,8 +17,8 @@ class DIVINITYROGUE_API ADRGameMode : public AGameModeBase
 public:
 	ADRGameMode();
 	virtual void BeginPlay() override;
-	void SetTargetLocation(FVector targetLoc);
 	void OnActionCompleted();
+	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; };
 protected:
 	UPROPERTY()
 	ADRCharacter* mCharacterInPlay;

@@ -17,10 +17,6 @@ void ADRGameMode::BeginPlay()
 }
 
 
-void ADRGameMode::SetTargetLocation(FVector targetLoc)
-{
-	mCharacterInPlay->SetTargetLocation(targetLoc);
-}
 
 void ADRGameMode::OnActionCompleted()
 {

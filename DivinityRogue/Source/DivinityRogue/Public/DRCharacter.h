@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DRAbility.h"
 #include "DRAIController.h"
 #include "DRMovementComponent.h"
 #include "GameFramework/Pawn.h"
@@ -30,8 +31,10 @@ public:
 	bool IsInAnimState(EAnimState state) { return state == mCurrentAnimState; }
 
 	void SetAnimState(EAnimState newState) { mCurrentAnimState = newState; };
+	ADRAbility* GetAbility(int index) { return mSpawnedAbilities[index]; };
+	void UseAbility(ADRAbility* ability, ADRCharacter* target);
+
 protected:
-	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* mRoot;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -40,8 +43,12 @@ protected:
 	USkeletalMeshComponent* mSkeletalMeshComponent;
 	UPROPERTY(EditAnywhere)
 	int mSpeed;
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<ADRAbility>> mAbilities;
 private:
 	UPROPERTY()
 	ADRAIController* mController;
 	EAnimState mCurrentAnimState;
+	UPROPERTY()
+	TArray<ADRAbility*> mSpawnedAbilities;
 };
