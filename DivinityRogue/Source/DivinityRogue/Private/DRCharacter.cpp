@@ -6,10 +6,12 @@
 ADRCharacter::ADRCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	mRoot = CreateDefaultSubobject<USceneComponent>("Root");
+	SetRootComponent(mRoot);
 	mMovementComponent = CreateDefaultSubobject<UDRMovementComponent>("MovementComponent");
 	mSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMeshComponent");
-	SetRootComponent(mSkeletalMeshComponent);
-
+	mSkeletalMeshComponent->SetupAttachment(mRoot);
 }
 
 void ADRCharacter::SetTargetLocation(FVector targetLoc)
@@ -20,5 +22,5 @@ void ADRCharacter::SetTargetLocation(FVector targetLoc)
 void ADRCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	mController = Cast<ADRAIController>(GetController() );
+	mController = Cast<ADRAIController>(GetController());
 }

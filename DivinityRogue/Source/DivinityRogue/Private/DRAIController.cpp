@@ -14,6 +14,7 @@ void ADRAIController::SetTargetLocation(FVector targetLoc)
 {
 	mBlackboard->SetValueAsVector("TargetLocation", targetLoc);
 	mBlackboard->SetValueAsEnum("State", (int)EAIState::MOVE);
+	mOwner->SetAnimState(EAnimState::MOVE);
 }
 
 void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
@@ -22,6 +23,7 @@ void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowi
 	if (Result.IsSuccess())
 	{
 		mBlackboard->SetValueAsEnum("State", (int)EAIState::IDLE);
+		mOwner->SetAnimState(EAnimState::IDLE);
 		GetWorld()->GetAuthGameMode<ADRGameMode>()->OnActionCompleted();
 	}
 }
@@ -30,5 +32,5 @@ void ADRAIController::BeginPlay()
 {
 	Super::BeginPlay();
 	mBlackboard = GetBlackboardComponent();
-	mOwner = Cast<ADRCharacter>(GetOwner());
+	mOwner = Cast<ADRCharacter>(GetPawn());
 }
