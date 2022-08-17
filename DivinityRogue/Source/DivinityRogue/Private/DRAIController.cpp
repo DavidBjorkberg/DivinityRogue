@@ -3,6 +3,7 @@
 
 #include "DRAIController.h"
 
+#include "DRGameMode.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 ADRAIController::ADRAIController()
@@ -11,12 +12,23 @@ ADRAIController::ADRAIController()
 
 void ADRAIController::SetTargetLocation(FVector targetLoc)
 {
-	GetBlackboardComponent()->SetValueAsVector("TargetLocation",targetLoc);
-	GetBlackboardComponent()->SetValueAsEnum("State",(int)EAIState::MOVE);
-}			
+	mBlackboard->SetValueAsVector("TargetLocation", targetLoc);
+	mBlackboard->SetValueAsEnum("State", (int)EAIState::MOVE);
+}
 
 void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
-	GetBlackboardComponent()->SetValueAsEnum("State",(int)EAIState::IDLE);
 	Super::OnMoveCompleted(RequestID, Result);
+	if (Result.IsSuccess())
+	{
+		mBlackboard->SetValueAsEnum("State", (int)EAIState::IDLE);
+		GetWorld()->GetAuthGameMode<ADRGameMode>()->OnActionCompleted();
+	}
+}
+
+void ADRAIController::BeginPlay()
+{
+	Super::BeginPlay();
+	mBlackboard = GetBlackboardComponent();
+	mOwner = Cast<ADRCharacter>(GetOwner());
 }

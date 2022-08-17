@@ -8,18 +8,54 @@
 
 ADRGameMode::ADRGameMode()
 {
-	
 }
 
 void ADRGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	AActor* playerChar = UDRGameplayStatics::GetActorOfClass(GetWorld(),ADRPlayerCharacter::StaticClass());
-	mCharacterInPlay = Cast<ADRPlayerCharacter>(playerChar);
+	StartMatch();
 }
 
 
 void ADRGameMode::SetTargetLocation(FVector targetLoc)
 {
 	mCharacterInPlay->SetTargetLocation(targetLoc);
+}
+
+void ADRGameMode::OnActionCompleted()
+{
+	EndTurn();
+}
+
+void ADRGameMode::StartMatch()
+{
+	StartTurn();
+}
+
+void ADRGameMode::EndTurn()
+{
+	StartTurn();
+}
+
+void ADRGameMode::StartTurn()
+{
+	if (mTurnQueue.Num() == 0)
+	{
+		FillTurnQueue();
+	}
+	mCharacterInPlay = mTurnQueue[0];
+	mTurnQueue.RemoveAt(0);
+}
+
+void ADRGameMode::FillTurnQueue()
+{
+	TArray<AActor*> allActors;
+	UDRGameplayStatics::GetAllActorsOfClass(GetWorld(), ADRCharacter::StaticClass(), allActors);
+	TArray<ADRCharacter*> allCharacters;
+	for (AActor* actor : allActors)
+	{
+		allCharacters.Add(Cast<ADRCharacter>(actor));
+	}
+	mTurnQueue = allCharacters;
+	Algo::SortBy(mTurnQueue, &ADRCharacter::GetSpeed);
 }

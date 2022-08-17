@@ -17,11 +17,14 @@ public:
 	ADRCharacter();
 	void SetTargetLocation(FVector targetLoc);
 	virtual void BeginPlay() override;
+	int GetSpeed() const { return mSpeed; };
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRMovementComponent* mMovementComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USkeletalMeshComponent* mSkeletalMeshComponent;
+	UPROPERTY(EditAnywhere)
+	int mSpeed;
 private:
 	UPROPERTY()
 	ADRAIController* mController;

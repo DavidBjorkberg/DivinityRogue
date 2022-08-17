@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "DRAIController.generated.h"
 
+class ADRCharacter;
 UENUM(BlueprintType)
 enum class EAIState : uint8
 {
@@ -21,4 +22,10 @@ public:
 	ADRAIController();
 	void SetTargetLocation(FVector targetLoc);
 	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
+	virtual void BeginPlay() override;
+private:
+	UPROPERTY()
+	UBlackboardComponent* mBlackboard;
+	UPROPERTY()
+	ADRCharacter* mOwner;
 };

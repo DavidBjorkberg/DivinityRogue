@@ -18,8 +18,16 @@ public:
 	ADRGameMode();
 	virtual void BeginPlay() override;
 	void SetTargetLocation(FVector targetLoc);
+	void OnActionCompleted();
 protected:
 	UPROPERTY()
 	ADRCharacter* mCharacterInPlay;
+	UPROPERTY()
+	TArray<ADRCharacter*> mTurnQueue;
 
+private:
+	void StartMatch();
+	void EndTurn();
+	void StartTurn();
+	void FillTurnQueue();
 };
