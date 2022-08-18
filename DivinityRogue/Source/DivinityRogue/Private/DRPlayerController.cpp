@@ -6,10 +6,22 @@
 #include "DRGameMode.h"
 #include "DRGameplayStatics.h"
 #include "DRHUD.h"
+#include "NavigationSystem.h"
 #include "GameFramework/InputSettings.h"
+#include "NavigationPath.h"
 
 ADRPlayerController::ADRPlayerController()
 {
+
+}
+
+void ADRPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (mTargetingAbility == nullptr && mGameMode->IsPlayersTurn())
+	{
+		mMovementSpline->DrawMovementSpline();
+	}
 }
 
 void ADRPlayerController::StartTargetAbility(int index)
@@ -23,6 +35,7 @@ void ADRPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
+	mMovementSpline = GetWorld()->SpawnActor<ADRMovementSpline>(mMovementSplineBP);
 }
 
 void ADRPlayerController::SetupInputComponent()
@@ -71,7 +84,6 @@ void ADRPlayerController::StopTargetAbility()
 {
 	mTargetingAbility = nullptr;
 	Cast<ADRHUD>(GetHUD())->StopTargeting();
-
 }
 
 void ADRPlayerController::UseTargetedAbility(ADRCharacter* target)

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRAbility.h"
-#include "DRCharacter.h"
+#include "DRGameMode.h"
 #include "GameFramework/HUD.h"
 #include "DRHUD.generated.h"
 
@@ -16,13 +16,15 @@ class DIVINITYROGUE_API ADRHUD : public AHUD
 {
 	GENERATED_BODY()
 public:
+	virtual void BeginPlay() override;
+	virtual void DrawHUD() override;
 	void StartTargeting(ADRCharacter* character, ADRAbility* ability);
 	void StopTargeting();
-	virtual void DrawHUD() override;
-
 private:
 	UPROPERTY()
 	ADRAbility* mTargetingAbility;
 	UPROPERTY()
 	ADRCharacter* mCharacterUsingAbility;
+	UPROPERTY()
+	ADRGameMode* mGameMode;
 };

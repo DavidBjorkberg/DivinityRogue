@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRCharacter.h"
+#include "DRPlayerCharacter.h"
 #include "GameFramework/GameModeBase.h"
 #include "DRGameMode.generated.h"
 
@@ -19,8 +20,9 @@ public:
 	virtual void BeginPlay() override;
 	void OnActionCompleted();
 	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; };
+	bool IsPlayersTurn() { return Cast<ADRPlayerCharacter>(mCharacterInPlay) != nullptr; };
 protected:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	ADRCharacter* mCharacterInPlay;
 	UPROPERTY()
 	TArray<ADRCharacter*> mTurnQueue;
