@@ -2,8 +2,11 @@
 
 
 #include "DRAbility.h"
+
 #include "DRCharacter.h"
-void ADRAbility::Use(ADRCharacter* target)
+
+bool ADRAbility::IsInRange(ADRCharacter* user,ADRCharacter* target)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *target->GetActorLabel());
+	float distanceToTarget = FVector::Dist2D(user->GetActorLocation(),target->GetActorLocation());
+	return distanceToTarget <= mRange;
 }

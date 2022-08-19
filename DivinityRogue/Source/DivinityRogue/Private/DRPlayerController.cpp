@@ -12,7 +12,6 @@
 
 ADRPlayerController::ADRPlayerController()
 {
-
 }
 
 void ADRPlayerController::Tick(float DeltaSeconds)
@@ -88,7 +87,9 @@ void ADRPlayerController::StopTargetAbility()
 
 void ADRPlayerController::UseTargetedAbility(ADRCharacter* target)
 {
-	mGameMode->GetCharacterInPlay()->UseAbility(mTargetingAbility, target);
+	if (mGameMode->GetCharacterInPlay()->TryUseAbility(mTargetingAbility, target))
+	{
+		mGameMode->OnActionCompleted();
+	}
 	StopTargetAbility();
-	mGameMode->OnActionCompleted();
 }

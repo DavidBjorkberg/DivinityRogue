@@ -22,17 +22,32 @@ void ADRCharacter::SetTargetLocation(FVector targetLoc)
 void ADRCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	mCurrentHealth = mMaxHealth;
 	mController = Cast<ADRAIController>(GetController());
-	for(TSubclassOf<ADRAbility> ability : mAbilities)
+	for (TSubclassOf<ADRAbility> ability : mAbilities)
 	{
 		ADRAbility* spawnedAbility = GetWorld()->SpawnActor<ADRAbility>(ability);
 		mSpawnedAbilities.Add(spawnedAbility);
 	}
 }
 
-void ADRCharacter::UseAbility(ADRAbility* ability, ADRCharacter* target)
+bool ADRCharacter::TryUseAbility(ADRAbility* ability, ADRCharacter* target)
 {
-	ability->Use(target);
+	return ability->TryUse(this,target);
 }
 
+float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+                               AActor* DamageCauser)
+{
+	mCurrentHealth = FMath::Max(mCurrentHealth - DamageAmount, 0);
+	if(mCurrentHealth <= 0)
+	{
+		Died();
+	}
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
 
+void ADRCharacter::Died()
+{
+	UE_LOG(LogTemp,Warning,TEXT("Died"));
+}
