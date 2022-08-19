@@ -7,6 +7,7 @@ void ADRHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
+	mGameMode->mOnGameplayStateChanged.AddDynamic(this, &ADRHUD::OnGameplayStateChanged);
 }
 
 void ADRHUD::DrawHUD()
@@ -14,24 +15,35 @@ void ADRHUD::DrawHUD()
 	Super::DrawHUD();
 	if (!mGameMode->IsPlayersTurn()) return;
 
-	if (mTargetingAbility != nullptr)
+	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
-		DrawCircle(GetWorld(), mCharacterUsingAbility->GetActorLocation() + FVector::UpVector * 0.1f,
+		ADRCharacter* characterUsingAbility = mGameMode->GetCharacterInPlay();
+		DrawCircle(GetWorld(), characterUsingAbility->GetActorLocation() + FVector::UpVector * 0.1f,
 		           FVector::RightVector,
 		           FVector::ForwardVector,
-		           FColor::Orange, mTargetingAbility->GetRange(), 3000, false, -1, 0, 10);
+		           FColor::Orange, mGameMode->mSelectedAbility->GetRange(), 3000, false, -1, 0, 10);
 	}
 }
 
 
-void ADRHUD::StartTargeting(ADRCharacter* character, ADRAbility* ability)
+void ADRHUD::StartTargeting()
 {
-	mTargetingAbility = ability;
-	mCharacterUsingAbility = character;
+	mIsTargeting = true;
 }
 
 void ADRHUD::StopTargeting()
 {
-	mTargetingAbility = nullptr;
-	mCharacterUsingAbility = nullptr;
+	mIsTargeting = false;
+}
+
+void ADRHUD::OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState)
+{
+	if (newState == EGameplayState::SelectingTarget)
+	{
+		StartTargeting();
+	}
+	else if (oldState == EGameplayState::SelectingTarget)
+	{
+		StopTargeting();
+	}
 }

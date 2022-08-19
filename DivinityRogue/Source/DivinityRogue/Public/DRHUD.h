@@ -18,13 +18,12 @@ class DIVINITYROGUE_API ADRHUD : public AHUD
 public:
 	virtual void BeginPlay() override;
 	virtual void DrawHUD() override;
-	void StartTargeting(ADRCharacter* character, ADRAbility* ability);
+	void StartTargeting();
 	void StopTargeting();
 private:
-	UPROPERTY()
-	ADRAbility* mTargetingAbility;
-	UPROPERTY()
-	ADRCharacter* mCharacterUsingAbility;
+	UFUNCTION()
+	void OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState);
 	UPROPERTY()
 	ADRGameMode* mGameMode;
+	bool mIsTargeting;
 };

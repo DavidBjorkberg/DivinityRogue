@@ -17,7 +17,7 @@ ADRPlayerController::ADRPlayerController()
 void ADRPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	if (mTargetingAbility == nullptr && mGameMode->IsPlayersTurn())
+	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mGameMode->IsPlayersTurn())
 	{
 		mMovementSpline->DrawMovementSpline();
 	}
@@ -25,9 +25,9 @@ void ADRPlayerController::Tick(float DeltaSeconds)
 
 void ADRPlayerController::StartTargetAbility(int index)
 {
-	ADRCharacter* characterInPlay = GetWorld()->GetAuthGameMode<ADRGameMode>()->GetCharacterInPlay();
-	mTargetingAbility = characterInPlay->GetAbility(index);
-	Cast<ADRHUD>(GetHUD())->StartTargeting(characterInPlay, mTargetingAbility);
+	ADRCharacter* characterInPlay = mGameMode->GetCharacterInPlay();
+	mGameMode->mSelectedAbility = characterInPlay->GetAbility(index);
+	mGameMode->SetGameplayState(EGameplayState::SelectingTarget);
 }
 
 void ADRPlayerController::BeginPlay()
@@ -35,6 +35,7 @@ void ADRPlayerController::BeginPlay()
 	Super::BeginPlay();
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mMovementSpline = GetWorld()->SpawnActor<ADRMovementSpline>(mMovementSplineBP);
+	mGameMode->mOnGameplayStateChanged.AddDynamic(this,&ADRPlayerController::OnGameplayStateChanged);
 }
 
 void ADRPlayerController::SetupInputComponent()
@@ -52,7 +53,7 @@ void ADRPlayerController::SetupInputComponent()
 
 void ADRPlayerController::OnLeftMouseClick()
 {
-	if (mTargetingAbility != nullptr)
+	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
 		FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(
 			GetWorld(), ECollisionChannel::ECC_Pawn);
@@ -65,7 +66,7 @@ void ADRPlayerController::OnLeftMouseClick()
 		}
 		else
 		{
-			StopTargetAbility();
+			mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 		}
 	}
 	else
@@ -79,17 +80,19 @@ void ADRPlayerController::OnLeftMouseClick()
 	}
 }
 
-void ADRPlayerController::StopTargetAbility()
+void ADRPlayerController::OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState)
 {
-	mTargetingAbility = nullptr;
-	Cast<ADRHUD>(GetHUD())->StopTargeting();
+	if (oldState == EGameplayState::PlanningPath)
+	{
+		mMovementSpline->ClearSpline();
+	}
 }
 
 void ADRPlayerController::UseTargetedAbility(ADRCharacter* target)
 {
-	if (mGameMode->GetCharacterInPlay()->TryUseAbility(mTargetingAbility, target))
+	if (mGameMode->GetCharacterInPlay()->TryUseAbility(mGameMode->mSelectedAbility, target))
 	{
 		mGameMode->OnActionCompleted();
 	}
-	StopTargetAbility();
+	mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 }

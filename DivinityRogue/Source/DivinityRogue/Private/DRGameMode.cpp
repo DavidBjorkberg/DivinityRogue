@@ -17,10 +17,15 @@ void ADRGameMode::BeginPlay()
 }
 
 
-
 void ADRGameMode::OnActionCompleted()
 {
 	EndTurn();
+}
+
+void ADRGameMode::SetGameplayState(EGameplayState newState)
+{
+	mOnGameplayStateChanged.Broadcast(mCurrentGameplayState, newState);
+	mCurrentGameplayState = newState;
 }
 
 void ADRGameMode::StartMatch()

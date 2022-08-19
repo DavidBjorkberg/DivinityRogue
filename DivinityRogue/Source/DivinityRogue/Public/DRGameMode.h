@@ -8,9 +8,17 @@
 #include "GameFramework/GameModeBase.h"
 #include "DRGameMode.generated.h"
 
-/**
- * 
- */
+UENUM()
+enum class EGameplayState : uint8
+{
+	PlanningPath,
+	WalkingPath,
+	SelectingTarget,
+	PerformingAbility,
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameplayStateChange, EGameplayState, oldState, EGameplayState, newState);
+
 UCLASS()
 class DIVINITYROGUE_API ADRGameMode : public AGameModeBase
 {
@@ -21,6 +29,11 @@ public:
 	void OnActionCompleted();
 	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; };
 	bool IsPlayersTurn() { return Cast<ADRPlayerCharacter>(mCharacterInPlay) != nullptr; };
+	bool IsInGameplayState(EGameplayState state) { return state == mCurrentGameplayState; }
+	void SetGameplayState(EGameplayState newState);
+	FGameplayStateChange mOnGameplayStateChanged;
+	UPROPERTY()
+	ADRAbility* mSelectedAbility;
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	ADRCharacter* mCharacterInPlay;
@@ -32,4 +45,6 @@ private:
 	void EndTurn();
 	void StartTurn();
 	void FillTurnQueue();
+
+	EGameplayState mCurrentGameplayState;
 };

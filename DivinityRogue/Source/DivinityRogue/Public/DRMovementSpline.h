@@ -18,6 +18,8 @@ public:
 	ADRMovementSpline();
 	UFUNCTION(BlueprintImplementableEvent)
 	void DrawMovementSpline();
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
+	void ClearSpline();
 protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

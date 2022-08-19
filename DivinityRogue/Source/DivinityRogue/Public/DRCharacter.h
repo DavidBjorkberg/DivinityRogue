@@ -17,6 +17,7 @@ enum class EAnimState :uint8
 	MOVE,
 };
 
+
 UCLASS()
 class DIVINITYROGUE_API ADRCharacter : public APawn
 {
@@ -29,11 +30,10 @@ public:
 	int GetSpeed() const { return mSpeed; };
 	UFUNCTION(BlueprintCallable)
 	bool IsInAnimState(EAnimState state) { return state == mCurrentAnimState; }
-	void SetAnimState(EAnimState newState) { mCurrentAnimState = newState; };
-	ADRAbility* GetAbility(int index) { return mSpawnedAbilities[index]; };
+	void SetAnimState(EAnimState newState) { mCurrentAnimState = newState; }
+	ADRAbility* GetAbility(int index) { return mSpawnedAbilities[index]; }
 	bool TryUseAbility(ADRAbility* ability, ADRCharacter* target);
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* mRoot;

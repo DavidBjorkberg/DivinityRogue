@@ -6,8 +6,6 @@
 #include "DRCharacter.h"
 #include "DRGameMode.h"
 #include "DRMovementSpline.h"
-#include "Components/SplineComponent.h"
-#include "Components/SplineMeshComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "DRPlayerController.generated.h"
 
@@ -30,15 +28,14 @@ protected:
 	void OnLeftMouseClick();
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<ADRMovementSpline> mMovementSplineBP;
-
 private:
-	void StopTargetAbility();
+	UFUNCTION()
+	void OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState);
 	void UseTargetedAbility(ADRCharacter* target);
-	UPROPERTY()
-	ADRAbility* mTargetingAbility;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 	UPROPERTY()
 	ADRMovementSpline* mMovementSpline;
+	bool mDrawSpline;
 	
 };
