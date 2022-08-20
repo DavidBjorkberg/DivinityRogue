@@ -3,6 +3,7 @@
 
 #include "DRGameMode.h"
 
+#include "DREnemyAIController.h"
 #include "DRGameplayStatics.h"
 #include "DRPlayerCharacter.h"
 
@@ -14,10 +15,12 @@ void ADRGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this,&ADRGameMode::StartMatch);
+	UDRGameplayStatics::FindAllActors<ADRCharacter>(GetWorld(),mALlCharacters);
+	for(ADRCharacter* character : mALlCharacters)
+	{
+		character->mOnUnitDied.AddDynamic(this,&ADRGameMode::OnUnitDied);
+	}
 }
-
-
-
 
 void ADRGameMode::OnActionCompleted()
 {
@@ -28,6 +31,32 @@ void ADRGameMode::SetGameplayState(EGameplayState newState)
 {
 	mOnGameplayStateChanged.Broadcast(mCurrentGameplayState, newState);
 	mCurrentGameplayState = newState;
+}
+
+TArray<ADREnemyCharacter*> ADRGameMode::GetAllEnemyUnits()
+{
+	TArray<ADREnemyCharacter*> returnList;
+	for(ADRCharacter* character : mALlCharacters)
+	{
+		if(ADREnemyCharacter* enemyUnit = Cast<ADREnemyCharacter>(character))
+		{
+			returnList.Add(enemyUnit);
+		}
+	}
+	return returnList;
+}
+
+TArray<ADRPlayerCharacter*> ADRGameMode::GetAllPlayerUnits()
+{
+	TArray<ADRPlayerCharacter*> returnList;
+	for(ADRCharacter* character : mALlCharacters)
+	{
+		if(ADRPlayerCharacter* playerUnit = Cast<ADRPlayerCharacter>(character))
+		{
+			returnList.Add(playerUnit);
+		}
+	}
+	return returnList;
 }
 
 void ADRGameMode::StartMatch()
@@ -49,6 +78,10 @@ void ADRGameMode::StartTurn()
 	mCharacterInPlay = mTurnQueue[0];
 	mTurnQueue.RemoveAt(0);
 	mOnNewTurn.Broadcast(mCharacterInPlay);
+	if(ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController()))
+	{
+		enemyController->RequestAction();
+	}
 }
 
 void ADRGameMode::FillTurnQueue()
@@ -62,4 +95,10 @@ void ADRGameMode::FillTurnQueue()
 	}
 	mTurnQueue = allCharacters;
 	Algo::SortBy(mTurnQueue, &ADRCharacter::GetSpeed);
+}
+
+void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
+{
+	mALlCharacters.Remove(deadUnit);
+	mTurnQueue.Remove(deadUnit);
 }

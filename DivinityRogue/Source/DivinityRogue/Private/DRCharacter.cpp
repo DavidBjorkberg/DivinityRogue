@@ -13,6 +13,8 @@ ADRCharacter::ADRCharacter()
 	SetRootComponent(mRoot);
 	mMovementComponent = CreateDefaultSubobject<UDRMovementComponent>("MovementComponent");
 	mSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMeshComponent");
+	mSkeletalMeshComponent->SetCollisionProfileName("Pawn");
+	mSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	mSkeletalMeshComponent->SetupAttachment(mRoot);
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> healthBarBP(TEXT("/Game/UI/DRHealthBar_BP"));
@@ -62,5 +64,6 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 void ADRCharacter::Died()
 {
+	mOnUnitDied.Broadcast(this);
 	Destroy();
 }

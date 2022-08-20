@@ -3,3 +3,6 @@
 
 #include "DREnemyCharacter.h"
 
+ADREnemyCharacter::ADREnemyCharacter()
+{
+}

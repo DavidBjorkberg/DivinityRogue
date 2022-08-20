@@ -20,12 +20,13 @@ class DIVINITYROGUE_API ADRAIController : public AAIController
 	GENERATED_BODY()
 public:
 	ADRAIController();
-	void SetTargetLocation(FVector targetLoc);
+	void MoveToLocation(FVector targetLoc);
+	void MoveToActor(AActor* targetActor);
 	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
 	virtual void BeginPlay() override;
-private:
-	UPROPERTY()
-	UBlackboardComponent* mBlackboard;
+protected:
 	UPROPERTY()
 	ADRCharacter* mOwner;
+private:
+
 };

@@ -20,6 +20,7 @@ enum class EAnimState :uint8
 };
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUnitDied, ADRCharacter*, deadUnit);
 UCLASS()
 class DIVINITYROGUE_API ADRCharacter : public APawn
 {
@@ -41,6 +42,7 @@ public:
 	bool TryUseAbility(UDRAbility* ability, ADRCharacter* target);
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
+	FUnitDied mOnUnitDied;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* mRoot;
@@ -49,9 +51,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USkeletalMeshComponent* mSkeletalMeshComponent;
 	UPROPERTY(EditAnywhere, Category = "DRCharacter")
-	int mSpeed;
+	int mSpeed = 5;
 	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	int mMaxHealth;
+	int mMaxHealth = 10;
 	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
 	TArray<TSubclassOf<UDRAbility>> mAbilities;
 private:

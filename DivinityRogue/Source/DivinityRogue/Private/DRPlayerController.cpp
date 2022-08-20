@@ -53,6 +53,8 @@ void ADRPlayerController::SetupInputComponent()
 
 void ADRPlayerController::OnLeftMouseClick()
 {
+	if(!mGameMode->IsPlayersTurn()) return;
+
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
 		FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(

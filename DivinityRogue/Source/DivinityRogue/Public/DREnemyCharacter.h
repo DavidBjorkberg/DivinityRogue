@@ -13,5 +13,7 @@ UCLASS()
 class DIVINITYROGUE_API ADREnemyCharacter : public ADRCharacter
 {
 	GENERATED_BODY()
+public:
+	ADREnemyCharacter();
 	
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRCharacter.h"
+#include "DREnemyCharacter.h"
 #include "DRPlayerCharacter.h"
 #include "GameFramework/GameModeBase.h"
 #include "DRGameMode.generated.h"
@@ -28,11 +29,12 @@ public:
 	ADRGameMode();
 	virtual void BeginPlay() override;
 	void OnActionCompleted();
-	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; };
-	bool IsPlayersTurn() { return Cast<ADRPlayerCharacter>(mCharacterInPlay) != nullptr; };
+	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; }
+	bool IsPlayersTurn() { return Cast<ADRPlayerCharacter>(mCharacterInPlay) != nullptr; }
 	bool IsInGameplayState(EGameplayState state) { return state == mCurrentGameplayState; }
 	void SetGameplayState(EGameplayState newState);
-	
+	TArray<ADREnemyCharacter*> GetAllEnemyUnits();
+	TArray<ADRPlayerCharacter*> GetAllPlayerUnits();
 	FGameplayStateChange mOnGameplayStateChanged;
 	UPROPERTY(BlueprintAssignable)
 	FNewturn mOnNewTurn;
@@ -50,6 +52,10 @@ private:
 	void EndTurn();
 	void StartTurn();
 	void FillTurnQueue();
-
+	UFUNCTION()
+	void OnUnitDied(ADRCharacter* deadUnit);
+	
+	UPROPERTY()
+	TArray<ADRCharacter*> mALlCharacters;
 	EGameplayState mCurrentGameplayState;
 };
