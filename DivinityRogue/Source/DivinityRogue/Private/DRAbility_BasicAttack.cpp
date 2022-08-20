@@ -4,7 +4,7 @@
 #include "DRAbility_BasicAttack.h"
 #include "DRCharacter.h"
 
-bool ADRAbility_BasicAttack::TryUse(ADRCharacter* user,ADRCharacter* target)
+bool UDRAbility_BasicAttack::TryUse(ADRCharacter* user,ADRCharacter* target)
 {
 	if(!IsInRange(user,target)) return false;
 	

@@ -18,6 +18,7 @@ enum class EGameplayState : uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameplayStateChange, EGameplayState, oldState, EGameplayState, newState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNewturn, ADRCharacter*, newCharacter);
 
 UCLASS()
 class DIVINITYROGUE_API ADRGameMode : public AGameModeBase
@@ -31,9 +32,12 @@ public:
 	bool IsPlayersTurn() { return Cast<ADRPlayerCharacter>(mCharacterInPlay) != nullptr; };
 	bool IsInGameplayState(EGameplayState state) { return state == mCurrentGameplayState; }
 	void SetGameplayState(EGameplayState newState);
+	
 	FGameplayStateChange mOnGameplayStateChanged;
+	UPROPERTY(BlueprintAssignable)
+	FNewturn mOnNewTurn;
 	UPROPERTY()
-	ADRAbility* mSelectedAbility;
+	UDRAbility* mSelectedAbility;
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	ADRCharacter* mCharacterInPlay;
@@ -41,6 +45,7 @@ protected:
 	TArray<ADRCharacter*> mTurnQueue;
 
 private:
+	UFUNCTION()
 	void StartMatch();
 	void EndTurn();
 	void StartTurn();

@@ -24,23 +24,23 @@ void ADRCharacter::BeginPlay()
 	Super::BeginPlay();
 	mCurrentHealth = mMaxHealth;
 	mController = Cast<ADRAIController>(GetController());
-	for (TSubclassOf<ADRAbility> ability : mAbilities)
+	for (TSubclassOf<UDRAbility> ability : mAbilities)
 	{
-		ADRAbility* spawnedAbility = GetWorld()->SpawnActor<ADRAbility>(ability);
+		UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetLevel(), ability);
 		mSpawnedAbilities.Add(spawnedAbility);
 	}
 }
 
-bool ADRCharacter::TryUseAbility(ADRAbility* ability, ADRCharacter* target)
+bool ADRCharacter::TryUseAbility(UDRAbility* ability, ADRCharacter* target)
 {
-	return ability->TryUse(this,target);
+	return ability->TryUse(this, target);
 }
 
 float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
                                AActor* DamageCauser)
 {
 	mCurrentHealth = FMath::Max(mCurrentHealth - DamageAmount, 0);
-	if(mCurrentHealth <= 0)
+	if (mCurrentHealth <= 0)
 	{
 		Died();
 	}
@@ -49,5 +49,5 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 void ADRCharacter::Died()
 {
-	UE_LOG(LogTemp,Warning,TEXT("Died"));
+	UE_LOG(LogTemp, Warning, TEXT("Died"));
 }

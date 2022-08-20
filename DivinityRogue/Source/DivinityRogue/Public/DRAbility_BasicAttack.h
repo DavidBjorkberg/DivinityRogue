@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class DIVINITYROGUE_API ADRAbility_BasicAttack : public ADRAbility
+class DIVINITYROGUE_API UDRAbility_BasicAttack : public UDRAbility
 {
 	GENERATED_BODY()
 public:

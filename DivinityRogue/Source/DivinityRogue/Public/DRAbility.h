@@ -6,15 +6,19 @@
 #include "DRAbility.generated.h"
 
 class ADRCharacter;
-UCLASS(Abstract)
-class DIVINITYROGUE_API ADRAbility : public AActor
+UCLASS()
+class DIVINITYROGUE_API UDRAbility : public UObject
 {
 	GENERATED_BODY()
 public:
-	virtual bool TryUse(ADRCharacter* user,ADRCharacter* target)PURE_VIRTUAL(ADRAbility::Use,return false;);
-	float GetRange() const { return mRange; };
+	virtual bool TryUse(ADRCharacter* user,ADRCharacter* target);
+	float GetRange() const { return mRange; }
+	UFUNCTION(BlueprintCallable)
+	UTexture2D* GetIcon() const {return mIcon;}
 protected:
 	bool IsInRange(ADRCharacter* user, ADRCharacter* target);
 	UPROPERTY(EditDefaultsOnly, Category= "DRAbility")
 	float mRange;
+	UPROPERTY(EditDefaultsOnly, Category= "DRAbility")
+	UTexture2D* mIcon;
 };

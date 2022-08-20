@@ -30,10 +30,15 @@ public:
 	int GetSpeed() const { return mSpeed; };
 	UFUNCTION(BlueprintCallable)
 	bool IsInAnimState(EAnimState state) { return state == mCurrentAnimState; }
+
 	void SetAnimState(EAnimState newState) { mCurrentAnimState = newState; }
-	ADRAbility* GetAbility(int index) { return mSpawnedAbilities[index]; }
-	bool TryUseAbility(ADRAbility* ability, ADRCharacter* target);
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	UFUNCTION(BlueprintCallable)
+	UDRAbility* GetAbility(int index) { return mSpawnedAbilities[index]; }
+	UFUNCTION(BlueprintCallable)
+	TArray<UDRAbility*> GetAbilities() { return mSpawnedAbilities; }
+	bool TryUseAbility(UDRAbility* ability, ADRCharacter* target);
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	                         AActor* DamageCauser) override;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* mRoot;
@@ -46,7 +51,7 @@ protected:
 	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
 	int mMaxHealth;
 	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
-	TArray<TSubclassOf<ADRAbility>> mAbilities;
+	TArray<TSubclassOf<UDRAbility>> mAbilities;
 private:
 	void Died();
 	int mCurrentHealth;
@@ -54,5 +59,5 @@ private:
 	ADRAIController* mController;
 	EAnimState mCurrentAnimState;
 	UPROPERTY()
-	TArray<ADRAbility*> mSpawnedAbilities;
+	TArray<UDRAbility*> mSpawnedAbilities;
 };

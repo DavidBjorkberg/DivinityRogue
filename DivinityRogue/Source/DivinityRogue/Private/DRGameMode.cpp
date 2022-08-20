@@ -13,8 +13,10 @@ ADRGameMode::ADRGameMode()
 void ADRGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	StartMatch();
+	GetWorld()->GetTimerManager().SetTimerForNextTick(this,&ADRGameMode::StartMatch);
 }
+
+
 
 
 void ADRGameMode::OnActionCompleted()
@@ -46,6 +48,7 @@ void ADRGameMode::StartTurn()
 	}
 	mCharacterInPlay = mTurnQueue[0];
 	mTurnQueue.RemoveAt(0);
+	mOnNewTurn.Broadcast(mCharacterInPlay);
 }
 
 void ADRGameMode::FillTurnQueue()

@@ -5,7 +5,12 @@
 
 #include "DRCharacter.h"
 
-bool ADRAbility::IsInRange(ADRCharacter* user,ADRCharacter* target)
+bool UDRAbility::TryUse(ADRCharacter* user, ADRCharacter* target)
+{
+	return false;
+}
+
+bool UDRAbility::IsInRange(ADRCharacter* user,ADRCharacter* target)
 {
 	float distanceToTarget = FVector::Dist2D(user->GetActorLocation(),target->GetActorLocation());
 	return distanceToTarget <= mRange;
