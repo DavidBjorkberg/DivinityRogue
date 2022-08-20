@@ -13,6 +13,9 @@ DivinityRogue/Binaries/*
 DivinityRogue/Plugins/Developer/*
 DivinityRogue/.idea/*
 DivinityRogue/Content/ParagonNarbash/*
+DivinityRogue/Content/ParagonKhaimera/*
+DivinityRogue/Content/ParagonSparrow/*
+
 *.ipch
 # Precompiled Headers
 *.gch

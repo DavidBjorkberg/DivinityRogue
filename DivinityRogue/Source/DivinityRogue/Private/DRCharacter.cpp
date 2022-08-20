@@ -26,9 +26,9 @@ ADRCharacter::ADRCharacter()
 	mHealthBarWidget->SetupAttachment(mSkeletalMeshComponent);
 }
 
-void ADRCharacter::SetTargetLocation(FVector targetLoc)
+void ADRCharacter::MoveToLocation(FVector targetLoc)
 {
-	mController->SetTargetLocation(targetLoc);
+	mController->MoveToLocation(targetLoc);
 }
 
 void ADRCharacter::BeginPlay()

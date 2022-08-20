@@ -28,7 +28,7 @@ class DIVINITYROGUE_API ADRCharacter : public APawn
 
 public:
 	ADRCharacter();
-	void SetTargetLocation(FVector targetLoc);
+	void MoveToLocation(FVector targetLoc);
 	virtual void BeginPlay() override;
 	int GetSpeed() const { return mSpeed; };
 	UFUNCTION(BlueprintCallable)

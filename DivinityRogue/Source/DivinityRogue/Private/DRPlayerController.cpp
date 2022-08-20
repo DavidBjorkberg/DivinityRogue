@@ -77,7 +77,7 @@ void ADRPlayerController::OnLeftMouseClick()
 			GetWorld(), ECollisionChannel::ECC_WorldStatic);
 		if (hitResult.bBlockingHit)
 		{
-			mGameMode->GetCharacterInPlay()->SetTargetLocation(hitResult.Location);
+			mGameMode->GetCharacterInPlay()->MoveToLocation(hitResult.Location);
 		}
 	}
 }
