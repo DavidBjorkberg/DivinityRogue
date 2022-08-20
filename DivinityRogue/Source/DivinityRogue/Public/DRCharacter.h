@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "DRAbility.h"
 #include "DRAIController.h"
+#include "DRHealthBar.h"
 #include "DRMovementComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/Pawn.h"
 #include "DRCharacter.generated.h"
 
@@ -60,4 +62,8 @@ private:
 	EAnimState mCurrentAnimState;
 	UPROPERTY()
 	TArray<UDRAbility*> mSpawnedAbilities;
+	UPROPERTY()
+	UWidgetComponent* mHealthBarWidget;
+	UPROPERTY()
+	UDRHealthBar* mHealthBar;
 };

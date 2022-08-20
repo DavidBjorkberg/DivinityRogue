@@ -3,6 +3,8 @@
 
 #include "DRCharacter.h"
 
+#include "Components/WidgetComponent.h"
+
 ADRCharacter::ADRCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,6 +14,14 @@ ADRCharacter::ADRCharacter()
 	mMovementComponent = CreateDefaultSubobject<UDRMovementComponent>("MovementComponent");
 	mSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMeshComponent");
 	mSkeletalMeshComponent->SetupAttachment(mRoot);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> healthBarBP(TEXT("/Game/UI/DRHealthBar_BP"));
+	mHealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	mHealthBarWidget->SetWidgetClass(healthBarBP.Class);
+	mHealthBarWidget->SetDrawSize(FVector2D(140, 40));
+	mHealthBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	mHealthBarWidget->SetRelativeLocation(FVector(0, 0, 120));
+	mHealthBarWidget->SetupAttachment(mSkeletalMeshComponent);
 }
 
 void ADRCharacter::SetTargetLocation(FVector targetLoc)
@@ -29,6 +39,8 @@ void ADRCharacter::BeginPlay()
 		UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetLevel(), ability);
 		mSpawnedAbilities.Add(spawnedAbility);
 	}
+	mHealthBar = Cast<UDRHealthBar>(mHealthBarWidget->GetUserWidgetObject());
+	mHealthBar->UpdateHealthbar(mMaxHealth,mCurrentHealth);
 }
 
 bool ADRCharacter::TryUseAbility(UDRAbility* ability, ADRCharacter* target)
@@ -40,6 +52,7 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
                                AActor* DamageCauser)
 {
 	mCurrentHealth = FMath::Max(mCurrentHealth - DamageAmount, 0);
+	mHealthBar->UpdateHealthbar(mMaxHealth, mCurrentHealth);
 	if (mCurrentHealth <= 0)
 	{
 		Died();
@@ -49,5 +62,5 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 void ADRCharacter::Died()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Died"));
+	Destroy();
 }
