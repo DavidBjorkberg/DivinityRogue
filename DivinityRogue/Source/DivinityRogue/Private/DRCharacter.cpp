@@ -3,6 +3,8 @@
 
 #include "DRCharacter.h"
 
+#include "DRCharacterAnimInstance.h"
+#include "DRUseAbilityNotify.h"
 #include "Components/WidgetComponent.h"
 
 ADRCharacter::ADRCharacter()
@@ -43,23 +45,32 @@ void ADRCharacter::BeginPlay()
 	mHealthBar = Cast<UDRHealthBar>(mHealthBarWidget->GetUserWidgetObject());
 	mHealthBar->UpdateHealthbar(mMaxHealth, mCurrentHealth);
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
-
+	mAttackAnimation = Cast<UDRCharacterAnimInstance>(mSkeletalMeshComponent->GetAnimInstance())->mAttackAnimation;
 	mCurrentHealth = mMaxHealth;
 	mCurrentActionPoints = mStartActionPoints;
+	PlayIdleAnimation();
 }
 
 bool ADRCharacter::TryUseAbility(UDRAbility* ability, ADRCharacter* target)
 {
-	if (ability->TryUse(this, target))
+	if(ability->CanCast(this,target))
 	{
+		PlayAttackAnimation(ability,target);
 		return true;
 	}
+
 	return false;
 }
 
 void ADRCharacter::OnTurnStart()
 {
 	mCurrentActionPoints = FMath::Min(mCurrentActionPoints + mActionPointsPerTurn, mMaxActionPoints);
+}
+
+void ADRCharacter::OnFinishedAttack()
+{
+	PlayIdleAnimation();
+	EndTurnIfOutOfActionPoints();
 }
 
 float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -80,13 +91,32 @@ void ADRCharacter::Died()
 	Destroy();
 }
 
-void ADRCharacter::ConsumeActionPoints(int amount)
+void ADRCharacter::EndTurnIfOutOfActionPoints()
 {
-	check(amount <= mCurrentActionPoints);
-	mCurrentActionPoints -= amount;
-	UE_LOG(LogTemp, Warning, TEXT("%i / %i"), mCurrentActionPoints, mMaxActionPoints);
-	if (mCurrentActionPoints == 0)
+	if(mCurrentActionPoints <= 0)
 	{
 		mGameMode->EndTurn();
 	}
+}
+
+void ADRCharacter::ConsumeActionPoints(int amount)
+{
+	check(amount <= mCurrentActionPoints);
+	mCurrentActionPoints -= FMath::Max(amount,0);
+}
+
+void ADRCharacter::PlayAttackAnimation(UDRAbility* ability, ADRCharacter* target)
+{
+	Cast<UDRUseAbilityNotify>(mAttackAnimation->Notifies[0].Notify)->SetParameters(ability,this,target);
+	SetAnimState(EAnimState::ATTACK);
+}
+
+void ADRCharacter::PlayIdleAnimation()
+{
+	SetAnimState(EAnimState::IDLE);
+}
+
+void ADRCharacter::PlayRunAnimation()
+{
+	SetAnimState(EAnimState::MOVE);
 }

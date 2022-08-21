@@ -23,12 +23,9 @@ void ADREnemyAIController::RequestAction()
 
 	for (UDRAbility* ability : mOwner->GetAbilities())
 	{
-		if (ability->TryUse(mOwner, closestPlayerUnit))
+		if (ability->CanCast(mOwner, closestPlayerUnit))
 		{
-			if (mOwner->GetCurrentActionPoints() > 0)
-			{
-				RequestAction();
-			}
+			mOwner->PlayAttackAnimation(ability,closestPlayerUnit);
 			return;
 		}
 	}

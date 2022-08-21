@@ -17,31 +17,20 @@ void ADRAIController::BeginPlay()
 void ADRAIController::OrderMoveToLocation(FVector targetLoc)
 {
 	MoveToLocation(targetLoc,5,false);
+	mOwner->PlayRunAnimation();
 }
 void ADRAIController::OrderMoveToActor(AActor* targetActor)
 {
 	MoveToActor(targetActor,5,false);
+	mOwner->PlayRunAnimation();
 }
-// void ADRAIController::MoveToLocation(FVector targetLoc)
-// {
-// 	mOwner->SetAnimState(EAnimState::MOVE);
-// 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(this,targetLoc);
-// }
-//
-// void ADRAIController::MoveToActor(AActor* targetActor)
-// {
-// 	mOwner->SetAnimState(EAnimState::MOVE);
-// 	Moveto(this,targetActor);
-// 	//UAIBlueprintHelperLibrary::SimpleMoveToActor(this,targetActor);
-// }
-
-
 void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
 	Super::OnMoveCompleted(RequestID, Result);
 	if (Result.IsSuccess())
 	{
-		mOwner->SetAnimState(EAnimState::IDLE);
+		mOwner->PlayIdleAnimation();
 		mOwner->ConsumeActionPoints(1);
+		mOwner->EndTurnIfOutOfActionPoints();
 	}
 }

@@ -14,7 +14,7 @@ class DIVINITYROGUE_API UDRAbility_BasicAttack : public UDRAbility
 {
 	GENERATED_BODY()	
 public:
-	virtual bool TryUse(ADRCharacter* user, ADRCharacter* target) override;
+	virtual void Use(ADRCharacter* user, ADRCharacter* target) override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category= "DRAbility")

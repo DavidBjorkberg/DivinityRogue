@@ -36,6 +36,7 @@ void ADRPlayerController::BeginPlay()
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mMovementSpline = GetWorld()->SpawnActor<ADRMovementSpline>(mMovementSplineBP);
 	mGameMode->mOnGameplayStateChanged.AddDynamic(this,&ADRPlayerController::OnGameplayStateChanged);
+	mGameMode->mOnNewTurn.AddDynamic(this,&ADRPlayerController::OnNewTurn);
 }
 
 void ADRPlayerController::SetupInputComponent()
@@ -88,6 +89,11 @@ void ADRPlayerController::OnGameplayStateChanged(EGameplayState oldState, EGamep
 	{
 		mMovementSpline->ClearSpline();
 	}
+}
+
+void ADRPlayerController::OnNewTurn(ADRCharacter* newCharacter)
+{
+	mMovementSpline->ClearSpline();
 }
 
 void ADRPlayerController::UseTargetedAbility(ADRCharacter* target)

@@ -11,7 +11,7 @@ class DIVINITYROGUE_API UDRAbility : public UObject
 {
 	GENERATED_BODY()
 public:
-	virtual bool TryUse(ADRCharacter* user, ADRCharacter* target);
+	virtual void Use(ADRCharacter* user, ADRCharacter* target);
 	bool CanCast(ADRCharacter* user,ADRCharacter* target);
 	UFUNCTION(BlueprintCallable)
 	UTexture2D* GetIcon() const { return mIcon; }

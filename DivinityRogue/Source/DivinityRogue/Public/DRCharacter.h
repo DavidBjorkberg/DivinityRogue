@@ -33,14 +33,19 @@ public:
 	virtual void BeginPlay() override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
+	virtual void OnFinishedAttack();
 	void OrderMoveToLocation(FVector targetLoc);
 	bool TryUseAbility(UDRAbility* ability, ADRCharacter* target);
 	void OnTurnStart();
 	void ConsumeActionPoints(int amount);
+	void EndTurnIfOutOfActionPoints();
+	
 	UFUNCTION(BlueprintCallable)
 	bool IsInAnimState(EAnimState state) { return state == mCurrentAnimState; }
 
-	void SetAnimState(EAnimState newState) { mCurrentAnimState = newState; }
+	void PlayAttackAnimation(UDRAbility* ability, ADRCharacter* target);
+	void PlayIdleAnimation();
+	void PlayRunAnimation();
 	UFUNCTION(BlueprintCallable)
 	UDRAbility* GetAbility(int index) { return mSpawnedAbilities[index]; }
 
@@ -70,10 +75,13 @@ protected:
 	int mActionPointsPerTurn = 2;
 	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
 	TArray<TSubclassOf<UDRAbility>> mAbilities;
+	int mCurrentActionPoints;
 private:
 	void Died();
-	int mCurrentActionPoints;
+	void SetAnimState(EAnimState newState) { mCurrentAnimState = newState; }
 	int mCurrentHealth;
+	UPROPERTY()
+	UAnimSequenceBase* mAttackAnimation;
 	UPROPERTY()
 	ADRAIController* mController;
 	EAnimState mCurrentAnimState;

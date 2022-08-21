@@ -4,13 +4,9 @@
 #include "DRAbility_BasicAttack.h"
 #include "DRCharacter.h"
 
-bool UDRAbility_BasicAttack::TryUse(ADRCharacter* user,ADRCharacter* target)
+void UDRAbility_BasicAttack::Use(ADRCharacter* user, ADRCharacter* target)
 {
-	if(Super::TryUse(user, target))
-	{
-		FDamageEvent damageEvent;
-		target->TakeDamage(mDamage, damageEvent, user->GetController(), user);
-		return true;
-	}
-	return false;
+	Super::Use(user, target);
+	FDamageEvent damageEvent;
+	target->TakeDamage(mDamage, damageEvent, user->GetController(), user);
 }

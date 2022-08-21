@@ -5,14 +5,9 @@
 
 #include "DRCharacter.h"
 
-bool UDRAbility::TryUse(ADRCharacter* user, ADRCharacter* target)
+void UDRAbility::Use(ADRCharacter* user, ADRCharacter* target)
 {
-	if(CanCast(user,target))
-	{
-		user->ConsumeActionPoints(mActionPointCost);
-		return true;
-	}
-	return false;
+	user->ConsumeActionPoints(mActionPointCost);
 }
 
 bool UDRAbility::CanCast(ADRCharacter* user, ADRCharacter* target)
