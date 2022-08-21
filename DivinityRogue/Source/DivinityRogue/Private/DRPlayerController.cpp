@@ -77,7 +77,7 @@ void ADRPlayerController::OnLeftMouseClick()
 			GetWorld(), ECollisionChannel::ECC_WorldStatic);
 		if (hitResult.bBlockingHit)
 		{
-			mGameMode->GetCharacterInPlay()->MoveToLocation(hitResult.Location);
+			mGameMode->GetCharacterInPlay()->OrderMoveToLocation(hitResult.Location);
 		}
 	}
 }
@@ -92,9 +92,6 @@ void ADRPlayerController::OnGameplayStateChanged(EGameplayState oldState, EGamep
 
 void ADRPlayerController::UseTargetedAbility(ADRCharacter* target)
 {
-	if (mGameMode->GetCharacterInPlay()->TryUseAbility(mGameMode->mSelectedAbility, target))
-	{
-		mGameMode->OnActionCompleted();
-	}
+	mGameMode->GetCharacterInPlay()->TryUseAbility(mGameMode->mSelectedAbility, target);
 	mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 }

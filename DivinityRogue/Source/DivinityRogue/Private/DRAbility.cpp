@@ -7,11 +7,21 @@
 
 bool UDRAbility::TryUse(ADRCharacter* user, ADRCharacter* target)
 {
+	if(CanCast(user,target))
+	{
+		user->ConsumeActionPoints(mActionPointCost);
+		return true;
+	}
 	return false;
 }
 
-bool UDRAbility::IsInRange(ADRCharacter* user,ADRCharacter* target)
+bool UDRAbility::CanCast(ADRCharacter* user, ADRCharacter* target)
 {
-	float distanceToTarget = FVector::Dist2D(user->GetActorLocation(),target->GetActorLocation());
+	return IsInRange(user, target) && user->GetCurrentActionPoints() >= mActionPointCost;
+}
+
+bool UDRAbility::IsInRange(ADRCharacter* user, ADRCharacter* target)
+{
+	float distanceToTarget = FVector::Dist2D(user->GetActorLocation(), target->GetActorLocation());
 	return distanceToTarget <= mRange;
 }

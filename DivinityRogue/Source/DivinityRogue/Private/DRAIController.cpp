@@ -3,9 +3,7 @@
 
 #include "DRAIController.h"
 
-#include "DRGameMode.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "DRCharacter.h"
 
 ADRAIController::ADRAIController()
 {
@@ -16,17 +14,27 @@ void ADRAIController::BeginPlay()
 	Super::BeginPlay();
 	mOwner = Cast<ADRCharacter>(GetPawn());
 }
-void ADRAIController::MoveToLocation(FVector targetLoc)
+void ADRAIController::OrderMoveToLocation(FVector targetLoc)
 {
-	mOwner->SetAnimState(EAnimState::MOVE);
-	UAIBlueprintHelperLibrary::SimpleMoveToLocation(this,targetLoc);
+	MoveToLocation(targetLoc,5,false);
 }
+void ADRAIController::OrderMoveToActor(AActor* targetActor)
+{
+	MoveToActor(targetActor,5,false);
+}
+// void ADRAIController::MoveToLocation(FVector targetLoc)
+// {
+// 	mOwner->SetAnimState(EAnimState::MOVE);
+// 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(this,targetLoc);
+// }
+//
+// void ADRAIController::MoveToActor(AActor* targetActor)
+// {
+// 	mOwner->SetAnimState(EAnimState::MOVE);
+// 	Moveto(this,targetActor);
+// 	//UAIBlueprintHelperLibrary::SimpleMoveToActor(this,targetActor);
+// }
 
-void ADRAIController::MoveToActor(AActor* targetActor)
-{
-	mOwner->SetAnimState(EAnimState::MOVE);
-	UAIBlueprintHelperLibrary::SimpleMoveToActor(this,targetActor);
-}
 
 void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
@@ -34,6 +42,6 @@ void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowi
 	if (Result.IsSuccess())
 	{
 		mOwner->SetAnimState(EAnimState::IDLE);
-		GetWorld()->GetAuthGameMode<ADRGameMode>()->OnActionCompleted();
+		mOwner->ConsumeActionPoints(1);
 	}
 }

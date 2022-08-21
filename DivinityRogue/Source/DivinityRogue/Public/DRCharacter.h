@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "DRAbility.h"
 #include "DRAIController.h"
+#include "DRGameMode.h"
 #include "DRHealthBar.h"
 #include "DRMovementComponent.h"
 #include "Components/WidgetComponent.h"
@@ -29,9 +30,13 @@ class DIVINITYROGUE_API ADRCharacter : public APawn
 
 public:
 	ADRCharacter();
-	void MoveToLocation(FVector targetLoc);
 	virtual void BeginPlay() override;
-	int GetSpeed() const { return mSpeed; };
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	                         AActor* DamageCauser) override;
+	void OrderMoveToLocation(FVector targetLoc);
+	bool TryUseAbility(UDRAbility* ability, ADRCharacter* target);
+	void OnTurnStart();
+	void ConsumeActionPoints(int amount);
 	UFUNCTION(BlueprintCallable)
 	bool IsInAnimState(EAnimState state) { return state == mCurrentAnimState; }
 
@@ -42,10 +47,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<UDRAbility*> GetAbilities() { return mSpawnedAbilities; }
 
-	bool TryUseAbility(UDRAbility* ability, ADRCharacter* target);
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	                         AActor* DamageCauser) override;
+	int GetSpeed() const { return mSpeed; };
 	USkeletalMeshComponent* GetSkeletalMeshComp() const { return mSkeletalMeshComponent; }
+	int GetCurrentActionPoints() const { return mCurrentActionPoints; }
 	FUnitDied mOnUnitDied;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -58,10 +62,17 @@ protected:
 	int mSpeed = 5;
 	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
 	int mMaxHealth = 10;
+	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
+	int mMaxActionPoints = 2;
+	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
+	int mStartActionPoints = 2;
+	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
+	int mActionPointsPerTurn = 2;
 	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
 	TArray<TSubclassOf<UDRAbility>> mAbilities;
 private:
 	void Died();
+	int mCurrentActionPoints;
 	int mCurrentHealth;
 	UPROPERTY()
 	ADRAIController* mController;
@@ -72,4 +83,6 @@ private:
 	UWidgetComponent* mHealthBarWidget;
 	UPROPERTY()
 	UDRHealthBar* mHealthBar;
+	UPROPERTY()
+	ADRGameMode* mGameMode;
 };

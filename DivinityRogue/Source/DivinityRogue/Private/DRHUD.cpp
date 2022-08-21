@@ -3,6 +3,8 @@
 
 #include "DRHUD.h"
 
+#include "DRCharacter.h"
+
 void ADRHUD::BeginPlay()
 {
 	Super::BeginPlay();

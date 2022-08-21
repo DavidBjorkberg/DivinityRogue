@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DRCharacter.h"
-#include "DREnemyCharacter.h"
-#include "DRPlayerCharacter.h"
 #include "GameFramework/GameModeBase.h"
 #include "DRGameMode.generated.h"
 
+class UDRAbility;
+class ADRPlayerCharacter;
+class ADREnemyCharacter;
+class ADRCharacter;
 UENUM()
 enum class EGameplayState : uint8
 {
@@ -28,9 +29,9 @@ class DIVINITYROGUE_API ADRGameMode : public AGameModeBase
 public:
 	ADRGameMode();
 	virtual void BeginPlay() override;
-	void OnActionCompleted();
+	void EndTurn();
 	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; }
-	bool IsPlayersTurn() { return Cast<ADRPlayerCharacter>(mCharacterInPlay) != nullptr; }
+	bool IsPlayersTurn();
 	bool IsInGameplayState(EGameplayState state) { return state == mCurrentGameplayState; }
 	void SetGameplayState(EGameplayState newState);
 	TArray<ADREnemyCharacter*> GetAllEnemyUnits();
@@ -49,7 +50,6 @@ protected:
 private:
 	UFUNCTION()
 	void StartMatch();
-	void EndTurn();
 	void StartTurn();
 	void FillTurnQueue();
 	UFUNCTION()

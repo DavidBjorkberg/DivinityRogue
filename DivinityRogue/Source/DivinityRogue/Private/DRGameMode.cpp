@@ -4,6 +4,7 @@
 #include "DRGameMode.h"
 
 #include "DREnemyAIController.h"
+#include "DREnemyCharacter.h"
 #include "DRGameplayStatics.h"
 #include "DRPlayerCharacter.h"
 
@@ -20,11 +21,6 @@ void ADRGameMode::BeginPlay()
 	{
 		character->mOnUnitDied.AddDynamic(this,&ADRGameMode::OnUnitDied);
 	}
-}
-
-void ADRGameMode::OnActionCompleted()
-{
-	EndTurn();
 }
 
 void ADRGameMode::SetGameplayState(EGameplayState newState)
@@ -69,6 +65,11 @@ void ADRGameMode::EndTurn()
 	StartTurn();
 }
 
+bool ADRGameMode::IsPlayersTurn()
+{
+	return Cast<ADRPlayerCharacter>(mCharacterInPlay) != nullptr;
+}
+
 void ADRGameMode::StartTurn()
 {
 	if (mTurnQueue.Num() == 0)
@@ -78,6 +79,7 @@ void ADRGameMode::StartTurn()
 	mCharacterInPlay = mTurnQueue[0];
 	mTurnQueue.RemoveAt(0);
 	mOnNewTurn.Broadcast(mCharacterInPlay);
+	mCharacterInPlay->OnTurnStart();
 	if(ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController()))
 	{
 		enemyController->RequestAction();

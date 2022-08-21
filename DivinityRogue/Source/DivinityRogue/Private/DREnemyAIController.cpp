@@ -25,10 +25,21 @@ void ADREnemyAIController::RequestAction()
 	{
 		if (ability->TryUse(mOwner, closestPlayerUnit))
 		{
-			mGameMode->OnActionCompleted();
+			if (mOwner->GetCurrentActionPoints() > 0)
+			{
+				RequestAction();
+			}
 			return;
 		}
 	}
-	MoveToActor(closestPlayerUnit);
-	UAIBlueprintHelperLibrary::SimpleMoveToActor(this, closestPlayerUnit);
+	OrderMoveToActor(closestPlayerUnit);
+}
+
+void ADREnemyAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
+{
+	Super::OnMoveCompleted(RequestID, Result);
+	if (Result.IsSuccess() && mOwner->GetCurrentActionPoints() > 0)
+	{
+		RequestAction();
+	}
 }

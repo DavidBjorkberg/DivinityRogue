@@ -26,15 +26,14 @@ ADRCharacter::ADRCharacter()
 	mHealthBarWidget->SetupAttachment(mSkeletalMeshComponent);
 }
 
-void ADRCharacter::MoveToLocation(FVector targetLoc)
+void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
 {
-	mController->MoveToLocation(targetLoc);
+	mController->OrderMoveToLocation(targetLoc);
 }
 
 void ADRCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	mCurrentHealth = mMaxHealth;
 	mController = Cast<ADRAIController>(GetController());
 	for (TSubclassOf<UDRAbility> ability : mAbilities)
 	{
@@ -42,12 +41,25 @@ void ADRCharacter::BeginPlay()
 		mSpawnedAbilities.Add(spawnedAbility);
 	}
 	mHealthBar = Cast<UDRHealthBar>(mHealthBarWidget->GetUserWidgetObject());
-	mHealthBar->UpdateHealthbar(mMaxHealth,mCurrentHealth);
+	mHealthBar->UpdateHealthbar(mMaxHealth, mCurrentHealth);
+	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
+
+	mCurrentHealth = mMaxHealth;
+	mCurrentActionPoints = mStartActionPoints;
 }
 
 bool ADRCharacter::TryUseAbility(UDRAbility* ability, ADRCharacter* target)
 {
-	return ability->TryUse(this, target);
+	if (ability->TryUse(this, target))
+	{
+		return true;
+	}
+	return false;
+}
+
+void ADRCharacter::OnTurnStart()
+{
+	mCurrentActionPoints = FMath::Min(mCurrentActionPoints + mActionPointsPerTurn, mMaxActionPoints);
 }
 
 float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -66,4 +78,15 @@ void ADRCharacter::Died()
 {
 	mOnUnitDied.Broadcast(this);
 	Destroy();
+}
+
+void ADRCharacter::ConsumeActionPoints(int amount)
+{
+	check(amount <= mCurrentActionPoints);
+	mCurrentActionPoints -= amount;
+	UE_LOG(LogTemp, Warning, TEXT("%i / %i"), mCurrentActionPoints, mMaxActionPoints);
+	if (mCurrentActionPoints == 0)
+	{
+		mGameMode->EndTurn();
+	}
 }

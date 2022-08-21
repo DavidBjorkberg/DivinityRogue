@@ -20,8 +20,10 @@ class DIVINITYROGUE_API ADRAIController : public AAIController
 	GENERATED_BODY()
 public:
 	ADRAIController();
-	void MoveToLocation(FVector targetLoc);
-	void MoveToActor(AActor* targetActor);
+	// void MoveToLocation(FVector targetLoc);
+	// void MoveToActor(AActor* targetActor)
+	void OrderMoveToLocation(FVector targetLoc);
+	void OrderMoveToActor(AActor* targetActor);
 	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
 	virtual void BeginPlay() override;
 protected:
