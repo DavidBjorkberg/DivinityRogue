@@ -6,7 +6,7 @@
 #include "DRAbility.generated.h"
 
 class ADRCharacter;
-UCLASS()
+UCLASS(Blueprintable)
 class DIVINITYROGUE_API UDRAbility : public UObject
 {
 	GENERATED_BODY()

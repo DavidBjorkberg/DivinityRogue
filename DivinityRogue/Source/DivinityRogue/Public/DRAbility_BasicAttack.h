@@ -12,7 +12,7 @@
 UCLASS()
 class DIVINITYROGUE_API UDRAbility_BasicAttack : public UDRAbility
 {
-	GENERATED_BODY()
+	GENERATED_BODY()	
 public:
 	virtual bool TryUse(ADRCharacter* user, ADRCharacter* target) override;
 

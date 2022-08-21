@@ -21,6 +21,7 @@ enum class EAnimState :uint8
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUnitDied, ADRCharacter*, deadUnit);
+
 UCLASS()
 class DIVINITYROGUE_API ADRCharacter : public APawn
 {
@@ -37,11 +38,14 @@ public:
 	void SetAnimState(EAnimState newState) { mCurrentAnimState = newState; }
 	UFUNCTION(BlueprintCallable)
 	UDRAbility* GetAbility(int index) { return mSpawnedAbilities[index]; }
+
 	UFUNCTION(BlueprintCallable)
 	TArray<UDRAbility*> GetAbilities() { return mSpawnedAbilities; }
+
 	bool TryUseAbility(UDRAbility* ability, ADRCharacter* target);
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
+	USkeletalMeshComponent* GetSkeletalMeshComp() const { return mSkeletalMeshComponent; }
 	FUnitDied mOnUnitDied;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

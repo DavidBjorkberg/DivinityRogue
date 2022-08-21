@@ -19,19 +19,16 @@ void ADREnemyAIController::RequestAction()
 
 	ADRPlayerCharacter* closestPlayerUnit;
 	float closestDistance;
-	UDRGameplayStatics::GetClosestActorInList(GetPawn(), allPlayerUnits, closestPlayerUnit, closestDistance);
+	UDRGameplayStatics::GetClosestDRCharacterInList(GetPawn(), allPlayerUnits, closestPlayerUnit, closestDistance);
 
 	for (UDRAbility* ability : mOwner->GetAbilities())
 	{
-		if (ability->GetRange() >= closestDistance)
+		if (ability->TryUse(mOwner, closestPlayerUnit))
 		{
-			if (ability->TryUse(mOwner, closestPlayerUnit))
-			{
-				mGameMode->OnActionCompleted();
-				return;
-			}
+			mGameMode->OnActionCompleted();
+			return;
 		}
 	}
 	MoveToActor(closestPlayerUnit);
-	UAIBlueprintHelperLibrary::SimpleMoveToActor(this,closestPlayerUnit);
+	UAIBlueprintHelperLibrary::SimpleMoveToActor(this, closestPlayerUnit);
 }
