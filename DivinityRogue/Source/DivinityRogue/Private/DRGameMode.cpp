@@ -76,6 +76,7 @@ void ADRGameMode::StartTurn()
 	{
 		FillTurnQueue();
 	}
+	if(mTurnQueue.Num() == 0) return;
 	mCharacterInPlay = mTurnQueue[0];
 	mTurnQueue.RemoveAt(0);
 	mOnNewTurn.Broadcast(mCharacterInPlay);
