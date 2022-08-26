@@ -20,6 +20,13 @@ enum class EAnimState :uint8
 	MOVE,
 };
 
+UENUM()
+enum class ETeam :uint8
+{
+	PLAYER,
+	ENEMY,
+	NEUTRAL
+};
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUnitDied, ADRCharacter*, deadUnit);
 
@@ -39,22 +46,24 @@ public:
 	void OnTurnStart();
 	void ConsumeActionPoints(int amount);
 	void EndTurnIfOutOfActionPoints();
-	
+
 	UFUNCTION(BlueprintCallable)
 	bool IsInAnimState(EAnimState state) { return state == mCurrentAnimState; }
 
 	void PlayAttackAnimation(UDRAbility* ability, ADRCharacter* target);
 	void PlayIdleAnimation();
 	void PlayRunAnimation();
+
 	UFUNCTION(BlueprintCallable)
 	UDRAbility* GetAbility(int index) { return mSpawnedAbilities[index]; }
 
 	UFUNCTION(BlueprintCallable)
 	TArray<UDRAbility*> GetAbilities() { return mSpawnedAbilities; }
 
-	int GetSpeed() const { return mSpeed; };
 	USkeletalMeshComponent* GetSkeletalMeshComp() const { return mSkeletalMeshComponent; }
+	int GetSpeed() const { return mSpeed; };
 	int GetCurrentActionPoints() const { return mCurrentActionPoints; }
+	ETeam GetTeam() const { return mTeam; }
 	FUnitDied mOnUnitDied;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -76,6 +85,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
 	TArray<TSubclassOf<UDRAbility>> mAbilities;
 	int mCurrentActionPoints;
+	ETeam mTeam;
 private:
 	void Died();
 	void SetAnimState(EAnimState newState) { mCurrentAnimState = newState; }

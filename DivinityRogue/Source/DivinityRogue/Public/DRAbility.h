@@ -5,6 +5,13 @@
 #include "CoreMinimal.h"
 #include "DRAbility.generated.h"
 
+UENUM()
+enum class TargetType : uint8
+{
+	ALLY,
+	ENEMY,
+	ANY,
+};
 class ADRCharacter;
 UCLASS(Blueprintable)
 class DIVINITYROGUE_API UDRAbility : public UObject
@@ -19,6 +26,9 @@ public:
 
 protected:
 	bool IsInRange(ADRCharacter* user, ADRCharacter* target);
+	bool IsValidTarget(ADRCharacter* user, ADRCharacter* target);
+	UPROPERTY(EditDefaultsOnly, Category= "DRAbility")
+	TargetType mTargetType;
 	UPROPERTY(EditDefaultsOnly, Category= "DRAbility")
 	float mRange;
 	UPROPERTY(EditDefaultsOnly, Category= "DRAbility")

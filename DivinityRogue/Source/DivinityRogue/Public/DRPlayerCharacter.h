@@ -13,5 +13,7 @@ UCLASS()
 class DIVINITYROGUE_API ADRPlayerCharacter : public ADRCharacter
 {
 	GENERATED_BODY()
-	
+public:
+	ADRPlayerCharacter();
+	virtual void BeginPlay() override;
 };

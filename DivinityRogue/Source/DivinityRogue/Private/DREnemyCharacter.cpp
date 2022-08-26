@@ -9,6 +9,12 @@ ADREnemyCharacter::ADREnemyCharacter()
 {
 }
 
+void ADREnemyCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	mTeam = ETeam::ENEMY;
+}
+
 void ADREnemyCharacter::OnFinishedAttack()
 {
 	Super::OnFinishedAttack();
