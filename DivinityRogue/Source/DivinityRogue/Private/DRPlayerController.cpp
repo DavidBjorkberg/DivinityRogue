@@ -8,7 +8,6 @@
 #include "DRHUD.h"
 #include "NavigationSystem.h"
 #include "GameFramework/InputSettings.h"
-#include "NavigationPath.h"
 
 ADRPlayerController::ADRPlayerController()
 {
@@ -17,10 +16,25 @@ ADRPlayerController::ADRPlayerController()
 void ADRPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	
 	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mGameMode->IsPlayersTurn())
 	{
 		mMovementSpline->DrawMovementSpline();
 	}
+	
+	HoverPanelCheck();
+}
+
+
+void ADRPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
+	mHUD = Cast<ADRHUD>(GetHUD());
+	mMovementSpline = GetWorld()->SpawnActor<ADRMovementSpline>(mMovementSplineBP);
+	mGameMode->mOnGameplayStateChanged.AddDynamic(this, &ADRPlayerController::OnGameplayStateChanged);
+	mGameMode->mOnNewTurn.AddDynamic(this, &ADRPlayerController::OnNewTurn);
+	SetInputMode(FInputModeGameOnly());
 }
 
 void ADRPlayerController::StartTargetAbility(int index)
@@ -29,16 +43,6 @@ void ADRPlayerController::StartTargetAbility(int index)
 	mGameMode->mSelectedAbility = characterInPlay->GetAbility(index);
 	mGameMode->SetGameplayState(EGameplayState::SelectingTarget);
 }
-
-void ADRPlayerController::BeginPlay()
-{
-	Super::BeginPlay();
-	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
-	mMovementSpline = GetWorld()->SpawnActor<ADRMovementSpline>(mMovementSplineBP);
-	mGameMode->mOnGameplayStateChanged.AddDynamic(this,&ADRPlayerController::OnGameplayStateChanged);
-	mGameMode->mOnNewTurn.AddDynamic(this,&ADRPlayerController::OnNewTurn);
-}
-
 void ADRPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -54,7 +58,7 @@ void ADRPlayerController::SetupInputComponent()
 
 void ADRPlayerController::OnLeftMouseClick()
 {
-	if(!mGameMode->IsPlayersTurn()) return;
+	if (!mGameMode->IsPlayersTurn()) return;
 
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
@@ -100,4 +104,25 @@ void ADRPlayerController::UseTargetedAbility(ADRCharacter* target)
 {
 	mGameMode->GetCharacterInPlay()->TryUseAbility(mGameMode->mSelectedAbility, target);
 	mGameMode->SetGameplayState(EGameplayState::PlanningPath);
+}
+
+void ADRPlayerController::HoverPanelCheck()
+{
+	FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(
+	GetWorld(), ECollisionChannel::ECC_Pawn);
+	if (hitResult.bBlockingHit)
+	{
+		if (ADRCharacter* hitCharacter = Cast<ADRCharacter>(hitResult.GetActor()))
+		{
+			mHUD->ShowHoverPanel(hitCharacter);
+		}
+		else
+		{
+			mHUD->HideHoverPanel();
+		}
+	}
+	else if (mHUD->IsShowingHoverPanel())
+	{
+		mHUD->HideHoverPanel();
+	}
 }

@@ -21,6 +21,7 @@ void ADRGameMode::BeginPlay()
 	{
 		character->mOnUnitDied.AddDynamic(this, &ADRGameMode::OnUnitDied);
 	}
+
 }
 
 void ADRGameMode::SetGameplayState(EGameplayState newState)

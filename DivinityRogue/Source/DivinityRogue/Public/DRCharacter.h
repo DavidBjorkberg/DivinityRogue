@@ -8,6 +8,7 @@
 #include "DRGameMode.h"
 #include "DRHealthBar.h"
 #include "DRMovementComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Pawn.h"
 #include "DRCharacter.generated.h"
@@ -29,6 +30,7 @@ enum class ETeam :uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUnitDied, ADRCharacter*, deadUnit);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHealthChange, int, newHealth);
 
 UCLASS()
@@ -66,9 +68,13 @@ public:
 	int GetCurrentActionPoints() const { return mCurrentActionPoints; }
 	UFUNCTION(BlueprintCallable)
 	int GetMaxHealth() const { return mMaxHealth; }
+
 	UFUNCTION(BlueprintCallable)
 	int GetCurrentHealth() const { return mCurrentHealth; }
+
 	ETeam GetTeam() const { return mTeam; }
+	UFUNCTION(BlueprintCallable)
+	FString GetCharacterName() const { return mName; }
 	UPROPERTY(BlueprintAssignable)
 	FUnitDied mOnUnitDied;
 	UPROPERTY(BlueprintAssignable)
@@ -80,6 +86,8 @@ protected:
 	UDRMovementComponent* mMovementComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USkeletalMeshComponent* mSkeletalMeshComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UBoxComponent* mHitBox;
 	UPROPERTY(EditAnywhere, Category = "DRCharacter")
 	int mSpeed = 5;
 	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
@@ -90,6 +98,8 @@ protected:
 	int mStartActionPoints = 2;
 	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
 	int mActionPointsPerTurn = 2;
+	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
+	FString mName;
 	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
 	TArray<TSubclassOf<UDRAbility>> mAbilities;
 	int mCurrentActionPoints;
@@ -105,10 +115,6 @@ private:
 	EAnimState mCurrentAnimState;
 	UPROPERTY()
 	TArray<UDRAbility*> mSpawnedAbilities;
-	//UPROPERTY()
-	//UWidgetComponent* mHealthBarWidget;
-	//UPROPERTY()
-///	UDRHealthBar* mHealthBar;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 };

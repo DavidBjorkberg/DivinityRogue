@@ -20,10 +20,19 @@ public:
 	virtual void DrawHUD() override;
 	void StartTargeting();
 	void StopTargeting();
+	void ShowHoverPanel(ADRCharacter* hoveredCharacter);
+	void HideHoverPanel();
+	bool IsShowingHoverPanel() const { return mShowHoverPanel; }
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UDRScreenUI> mScreenUIBP;
 private:
 	UFUNCTION()
 	void OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState);
 	UPROPERTY()
+	UDRScreenUI* mScreenUI;
+	UPROPERTY()
 	ADRGameMode* mGameMode;
 	bool mIsTargeting;
+	bool mShowHoverPanel;
 };

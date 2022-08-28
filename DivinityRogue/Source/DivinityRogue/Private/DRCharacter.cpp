@@ -15,24 +15,13 @@ ADRCharacter::ADRCharacter()
 	SetRootComponent(mRoot);
 	mMovementComponent = CreateDefaultSubobject<UDRMovementComponent>("MovementComponent");
 	mSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMeshComponent");
-	mSkeletalMeshComponent->SetCollisionProfileName("Pawn");
-	mSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	mSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	mSkeletalMeshComponent->SetupAttachment(mRoot);
-
-	// static ConstructorHelpers::FClassFinder<UUserWidget> healthBarBP(TEXT("/Game/UI/DRHealthBar_BP"));
-	// mHealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
-	// mHealthBarWidget->SetWidgetClass(healthBarBP.Class);
-	// mHealthBarWidget->SetDrawSize(FVector2D(140, 40));
-	// mHealthBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
-	// mHealthBarWidget->SetRelativeLocation(FVector(0, 0, 120));
-	// mHealthBarWidget->SetupAttachment(mSkeletalMeshComponent);
-}
-
-void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
-{
-	mController->OrderMoveToLocation(targetLoc);
-
-	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
+	mHitBox = CreateDefaultSubobject<UBoxComponent>("HitBox");
+	mHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	mHitBox->SetCollisionProfileName("Pawn");
+	mHitBox->SetCanEverAffectNavigation(false);
+	mHitBox->SetupAttachment(mRoot);
 }
 
 void ADRCharacter::BeginPlay()
@@ -44,13 +33,19 @@ void ADRCharacter::BeginPlay()
 		UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetLevel(), ability);
 		mSpawnedAbilities.Add(spawnedAbility);
 	}
-	//mHealthBar = Cast<UDRHealthBar>(mHealthBarWidget->GetUserWidgetObject());
-	//mHealthBar->UpdateHealthbar(mMaxHealth, mCurrentHealth);
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mAttackAnimation = Cast<UDRCharacterAnimInstance>(mSkeletalMeshComponent->GetAnimInstance())->mAttackAnimation;
 	mCurrentHealth = mMaxHealth;
 	mCurrentActionPoints = mStartActionPoints;
+	
 	PlayIdleAnimation();
+}
+
+void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
+{
+	mController->OrderMoveToLocation(targetLoc);
+
+	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 }
 
 bool ADRCharacter::TryUseAbility(UDRAbility* ability, ADRCharacter* target)
@@ -86,6 +81,7 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	}
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
+
 
 void ADRCharacter::Died()
 {

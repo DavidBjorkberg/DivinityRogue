@@ -10,6 +10,8 @@ void ADRHUD::BeginPlay()
 	Super::BeginPlay();
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mGameMode->mOnGameplayStateChanged.AddDynamic(this, &ADRHUD::OnGameplayStateChanged);
+	mScreenUI = CreateWidget<UDRScreenUI>(GetGameInstance(),mScreenUIBP);
+	mScreenUI->AddToViewport(9999);
 }
 
 void ADRHUD::DrawHUD()
@@ -36,6 +38,18 @@ void ADRHUD::StartTargeting()
 void ADRHUD::StopTargeting()
 {
 	mIsTargeting = false;
+}
+
+void ADRHUD::ShowHoverPanel(ADRCharacter* hoveredCharacter)
+{
+	mScreenUI->ShowHoverCharacterPanel(hoveredCharacter);
+	mShowHoverPanel = true;
+}
+
+void ADRHUD::HideHoverPanel()
+{
+	mScreenUI->HideHoverCharacterPanel();
+	mShowHoverPanel = false;
 }
 
 void ADRHUD::OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState)

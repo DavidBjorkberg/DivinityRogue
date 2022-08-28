@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DRScreenUI.h"
 #include "GameFramework/GameModeBase.h"
 #include "DRGameMode.generated.h"
 
@@ -47,6 +48,7 @@ protected:
 	ADRCharacter* mCharacterInPlay;
 	UPROPERTY()
 	TArray<ADRCharacter*> mTurnQueue;
+
 private:
 	UFUNCTION()
 	void StartMatch();
@@ -54,7 +56,8 @@ private:
 	void FillTurnQueue();
 	UFUNCTION()
 	void OnUnitDied(ADRCharacter* deadUnit);
-	
+
+
 	UPROPERTY()
 	TArray<ADRCharacter*> mALlCharacters;
 	EGameplayState mCurrentGameplayState;
