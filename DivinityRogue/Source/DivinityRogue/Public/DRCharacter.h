@@ -29,6 +29,7 @@ enum class ETeam :uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUnitDied, ADRCharacter*, deadUnit);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHealthChange, int, newHealth);
 
 UCLASS()
 class DIVINITYROGUE_API ADRCharacter : public APawn
@@ -63,8 +64,15 @@ public:
 	USkeletalMeshComponent* GetSkeletalMeshComp() const { return mSkeletalMeshComponent; }
 	int GetSpeed() const { return mSpeed; };
 	int GetCurrentActionPoints() const { return mCurrentActionPoints; }
+	UFUNCTION(BlueprintCallable)
+	int GetMaxHealth() const { return mMaxHealth; }
+	UFUNCTION(BlueprintCallable)
+	int GetCurrentHealth() const { return mCurrentHealth; }
 	ETeam GetTeam() const { return mTeam; }
+	UPROPERTY(BlueprintAssignable)
 	FUnitDied mOnUnitDied;
+	UPROPERTY(BlueprintAssignable)
+	FHealthChange mOnHealthChange;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* mRoot;
@@ -97,10 +105,10 @@ private:
 	EAnimState mCurrentAnimState;
 	UPROPERTY()
 	TArray<UDRAbility*> mSpawnedAbilities;
-	UPROPERTY()
-	UWidgetComponent* mHealthBarWidget;
-	UPROPERTY()
-	UDRHealthBar* mHealthBar;
+	//UPROPERTY()
+	//UWidgetComponent* mHealthBarWidget;
+	//UPROPERTY()
+///	UDRHealthBar* mHealthBar;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 };

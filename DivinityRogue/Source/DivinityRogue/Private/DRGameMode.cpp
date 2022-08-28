@@ -15,11 +15,11 @@ ADRGameMode::ADRGameMode()
 void ADRGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorld()->GetTimerManager().SetTimerForNextTick(this,&ADRGameMode::StartMatch);
-	UDRGameplayStatics::FindAllActors<ADRCharacter>(GetWorld(),mALlCharacters);
-	for(ADRCharacter* character : mALlCharacters)
+	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ADRGameMode::StartMatch);
+	UDRGameplayStatics::FindAllActors<ADRCharacter>(GetWorld(), mALlCharacters);
+	for (ADRCharacter* character : mALlCharacters)
 	{
-		character->mOnUnitDied.AddDynamic(this,&ADRGameMode::OnUnitDied);
+		character->mOnUnitDied.AddDynamic(this, &ADRGameMode::OnUnitDied);
 	}
 }
 
@@ -32,9 +32,9 @@ void ADRGameMode::SetGameplayState(EGameplayState newState)
 TArray<ADREnemyCharacter*> ADRGameMode::GetAllEnemyUnits()
 {
 	TArray<ADREnemyCharacter*> returnList;
-	for(ADRCharacter* character : mALlCharacters)
+	for (ADRCharacter* character : mALlCharacters)
 	{
-		if(ADREnemyCharacter* enemyUnit = Cast<ADREnemyCharacter>(character))
+		if (ADREnemyCharacter* enemyUnit = Cast<ADREnemyCharacter>(character))
 		{
 			returnList.Add(enemyUnit);
 		}
@@ -45,9 +45,9 @@ TArray<ADREnemyCharacter*> ADRGameMode::GetAllEnemyUnits()
 TArray<ADRPlayerCharacter*> ADRGameMode::GetAllPlayerUnits()
 {
 	TArray<ADRPlayerCharacter*> returnList;
-	for(ADRCharacter* character : mALlCharacters)
+	for (ADRCharacter* character : mALlCharacters)
 	{
-		if(ADRPlayerCharacter* playerUnit = Cast<ADRPlayerCharacter>(character))
+		if (ADRPlayerCharacter* playerUnit = Cast<ADRPlayerCharacter>(character))
 		{
 			returnList.Add(playerUnit);
 		}
@@ -76,12 +76,14 @@ void ADRGameMode::StartTurn()
 	{
 		FillTurnQueue();
 	}
-	if(mTurnQueue.Num() == 0) return;
+	if (mTurnQueue.Num() == 0) return;
+	
+	ADRCharacter* previousCharacter = mCharacterInPlay;
 	mCharacterInPlay = mTurnQueue[0];
 	mTurnQueue.RemoveAt(0);
-	mOnNewTurn.Broadcast(mCharacterInPlay);
+	mOnNewTurn.Broadcast(previousCharacter, mCharacterInPlay);
 	mCharacterInPlay->OnTurnStart();
-	if(ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController()))
+	if (ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController()))
 	{
 		enemyController->RequestAction();
 	}

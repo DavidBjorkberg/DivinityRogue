@@ -91,7 +91,7 @@ void ADRPlayerController::OnGameplayStateChanged(EGameplayState oldState, EGamep
 	}
 }
 
-void ADRPlayerController::OnNewTurn(ADRCharacter* newCharacter)
+void ADRPlayerController::OnNewTurn(ADRCharacter* previousCharacter, ADRCharacter* newCharacter)
 {
 	mMovementSpline->ClearSpline();
 }

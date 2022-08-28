@@ -19,13 +19,13 @@ ADRCharacter::ADRCharacter()
 	mSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	mSkeletalMeshComponent->SetupAttachment(mRoot);
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> healthBarBP(TEXT("/Game/UI/DRHealthBar_BP"));
-	mHealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
-	mHealthBarWidget->SetWidgetClass(healthBarBP.Class);
-	mHealthBarWidget->SetDrawSize(FVector2D(140, 40));
-	mHealthBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
-	mHealthBarWidget->SetRelativeLocation(FVector(0, 0, 120));
-	mHealthBarWidget->SetupAttachment(mSkeletalMeshComponent);
+	// static ConstructorHelpers::FClassFinder<UUserWidget> healthBarBP(TEXT("/Game/UI/DRHealthBar_BP"));
+	// mHealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	// mHealthBarWidget->SetWidgetClass(healthBarBP.Class);
+	// mHealthBarWidget->SetDrawSize(FVector2D(140, 40));
+	// mHealthBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	// mHealthBarWidget->SetRelativeLocation(FVector(0, 0, 120));
+	// mHealthBarWidget->SetupAttachment(mSkeletalMeshComponent);
 }
 
 void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
@@ -44,8 +44,8 @@ void ADRCharacter::BeginPlay()
 		UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetLevel(), ability);
 		mSpawnedAbilities.Add(spawnedAbility);
 	}
-	mHealthBar = Cast<UDRHealthBar>(mHealthBarWidget->GetUserWidgetObject());
-	mHealthBar->UpdateHealthbar(mMaxHealth, mCurrentHealth);
+	//mHealthBar = Cast<UDRHealthBar>(mHealthBarWidget->GetUserWidgetObject());
+	//mHealthBar->UpdateHealthbar(mMaxHealth, mCurrentHealth);
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mAttackAnimation = Cast<UDRCharacterAnimInstance>(mSkeletalMeshComponent->GetAnimInstance())->mAttackAnimation;
 	mCurrentHealth = mMaxHealth;
@@ -79,7 +79,7 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
                                AActor* DamageCauser)
 {
 	mCurrentHealth = FMath::Max(mCurrentHealth - DamageAmount, 0);
-	mHealthBar->UpdateHealthbar(mMaxHealth, mCurrentHealth);
+	mOnHealthChange.Broadcast(mCurrentHealth);
 	if (mCurrentHealth <= 0)
 	{
 		Died();

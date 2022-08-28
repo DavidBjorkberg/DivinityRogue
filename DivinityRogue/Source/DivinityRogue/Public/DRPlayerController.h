@@ -32,7 +32,7 @@ private:
 	UFUNCTION()
 	void OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState);
 	UFUNCTION()
-	void OnNewTurn(ADRCharacter* newCharacter);
+	void OnNewTurn(ADRCharacter* previousCharacter, ADRCharacter* newCharacter);
 	void UseTargetedAbility(ADRCharacter* target);
 	UPROPERTY()
 	ADRGameMode* mGameMode;

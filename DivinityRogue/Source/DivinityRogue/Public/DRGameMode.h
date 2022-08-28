@@ -20,7 +20,7 @@ enum class EGameplayState : uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameplayStateChange, EGameplayState, oldState, EGameplayState, newState);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNewturn, ADRCharacter*, newCharacter);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNewturn,ADRCharacter*, previousCharacter, ADRCharacter*, newCharacter);
 
 UCLASS()
 class DIVINITYROGUE_API ADRGameMode : public AGameModeBase
@@ -47,7 +47,6 @@ protected:
 	ADRCharacter* mCharacterInPlay;
 	UPROPERTY()
 	TArray<ADRCharacter*> mTurnQueue;
-
 private:
 	UFUNCTION()
 	void StartMatch();
