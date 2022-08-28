@@ -10,7 +10,6 @@
 void ADREnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 }
 
 void ADREnemyAIController::RequestAction()

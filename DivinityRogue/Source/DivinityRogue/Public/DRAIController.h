@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "DRGameMode.h"
 #include "DRAIController.generated.h"
 
 class ADRCharacter;
@@ -20,8 +21,6 @@ class DIVINITYROGUE_API ADRAIController : public AAIController
 	GENERATED_BODY()
 public:
 	ADRAIController();
-	// void MoveToLocation(FVector targetLoc);
-	// void MoveToActor(AActor* targetActor)
 	void OrderMoveToLocation(FVector targetLoc);
 	void OrderMoveToActor(AActor* targetActor);
 	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
@@ -29,6 +28,8 @@ public:
 protected:
 	UPROPERTY()
 	ADRCharacter* mOwner;
+	UPROPERTY()
+	ADRGameMode* mGameMode;
 private:
 
 };

@@ -13,22 +13,29 @@ void ADRAIController::BeginPlay()
 {
 	Super::BeginPlay();
 	mOwner = Cast<ADRCharacter>(GetPawn());
+	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 }
+
 void ADRAIController::OrderMoveToLocation(FVector targetLoc)
 {
-	MoveToLocation(targetLoc,5,false);
+	MoveToLocation(targetLoc, 5, false);
 	mOwner->PlayRunAnimation();
+	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 }
+
 void ADRAIController::OrderMoveToActor(AActor* targetActor)
 {
-	MoveToActor(targetActor,5,false);
+	MoveToActor(targetActor, 5, false);
 	mOwner->PlayRunAnimation();
+	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 }
+
 void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
 	Super::OnMoveCompleted(RequestID, Result);
 	if (Result.IsSuccess())
 	{
+		mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 		mOwner->PlayIdleAnimation();
 		mOwner->ConsumeActionPoints(1);
 		mOwner->EndTurnIfOutOfActionPoints();

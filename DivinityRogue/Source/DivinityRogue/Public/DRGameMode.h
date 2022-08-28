@@ -32,6 +32,7 @@ public:
 	void EndTurn();
 	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; }
 	bool IsPlayersTurn();
+	UFUNCTION(BlueprintPure)
 	bool IsInGameplayState(EGameplayState state) { return state == mCurrentGameplayState; }
 	void SetGameplayState(EGameplayState newState);
 	TArray<ADREnemyCharacter*> GetAllEnemyUnits();

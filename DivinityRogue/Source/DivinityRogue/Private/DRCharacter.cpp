@@ -31,6 +31,8 @@ ADRCharacter::ADRCharacter()
 void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
 {
 	mController->OrderMoveToLocation(targetLoc);
+
+	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 }
 
 void ADRCharacter::BeginPlay()
