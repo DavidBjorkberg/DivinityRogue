@@ -51,13 +51,11 @@ void ADRCharacter::BeginPlay()
 void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
 {
 	mController->OrderMoveToLocation(targetLoc);
-	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 }
 
 void ADRCharacter::OrderMoveToActor(AActor* targetActor)
 {
 	mController->OrderMoveToActor(targetActor);
-	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 }
 
 bool ADRCharacter::TryUseAbility(UDRAbility* ability, ADRCharacter* target)
@@ -78,7 +76,6 @@ void ADRCharacter::OnTurnStart()
 
 void ADRCharacter::OnFinishedAttack()
 {
-
 }
 
 float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -111,22 +108,25 @@ void ADRCharacter::EndTurnIfOutOfActionPoints()
 void ADRCharacter::ModifyEnergy(int amount)
 {
 	check(mStats.mCurrentActionPoints + amount >= 0);
-	mStats.mCurrentActionPoints = FMath::Clamp(mStats.mCurrentActionPoints + amount, 0,mStats.mMaxActionPoints);
+	mStats.mCurrentActionPoints = FMath::Clamp(mStats.mCurrentActionPoints + amount, 0, mStats.mMaxActionPoints);
 	mOnEnergyChange.Broadcast(mStats.mCurrentActionPoints);
 }
 
 void ADRCharacter::PlayAttackAnimation(UDRAbility* ability, ADRCharacter* target)
 {
 	Cast<UDRUseAbilityNotify>(mAttackAnimation->Notifies[0].Notify)->SetParameters(ability, this, target);
+	UE_LOG(LogTemp, Warning, TEXT("%s: Changed state:ATTACK"), *GetActorLabel()); 
 	SetAnimState(EAnimState::ATTACK);
 }
 
 void ADRCharacter::PlayIdleAnimation()
 {
+	UE_LOG(LogTemp, Warning, TEXT("%s: Changed state:IDLE"), *GetActorLabel()); 
 	SetAnimState(EAnimState::IDLE);
 }
 
 void ADRCharacter::PlayRunAnimation()
 {
+	UE_LOG(LogTemp, Warning, TEXT("%s: Changed state:MOVE"), *GetActorLabel()); 
 	SetAnimState(EAnimState::MOVE);
 }

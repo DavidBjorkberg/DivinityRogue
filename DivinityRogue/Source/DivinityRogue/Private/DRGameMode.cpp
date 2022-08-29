@@ -28,6 +28,7 @@ void ADRGameMode::SetGameplayState(EGameplayState newState)
 {
 	mOnGameplayStateChanged.Broadcast(mCurrentGameplayState, newState);
 	mCurrentGameplayState = newState;
+	UE_LOG(LogTemp,Warning,TEXT("%s : Changed gameplay state:%i"),*(mCharacterInPlay->GetActorLabel()),(int)newState);
 }
 
 TArray<ADREnemyCharacter*> ADRGameMode::GetAllEnemyUnits()

@@ -130,7 +130,7 @@ protected:
 	ETeam mTeam;
 private:
 	void Died();
-	void SetAnimState(EAnimState newState) { mCurrentAnimState = newState; }
+	void SetAnimState(EAnimState newState) {mCurrentAnimState = newState; }
 	UPROPERTY()
 	UAnimSequenceBase* mAttackAnimation;
 	UPROPERTY()

@@ -31,9 +31,9 @@ void ADRAIController::OrderMoveToLocation(FVector targetLoc)
 
 void ADRAIController::OrderMoveToActor(AActor* targetActor)
 {
-	MoveToActor(targetActor, 5, false);
 	mOwner->PlayRunAnimation();
 	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
+	MoveToActor(targetActor, 5, false);
 }
 
 void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
