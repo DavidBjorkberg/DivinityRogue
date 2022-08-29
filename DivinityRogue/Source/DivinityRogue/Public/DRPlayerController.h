@@ -10,7 +10,7 @@
 #include "GameFramework/PlayerController.h"
 #include "DRPlayerController.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterUnderCursorChanged, ADRCharacter*, characterUnderCursor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterUnderCursorChanged,ADRCharacter*, previousCharacter, ADRCharacter*, characterUnderCursor);
 UCLASS()
 class DIVINITYROGUE_API ADRPlayerController : public APlayerController
 {
@@ -39,7 +39,7 @@ private:
 	UFUNCTION()
 	void OnNewTurn(ADRCharacter* previousCharacter, ADRCharacter* newCharacter);
 	UFUNCTION()
-	void OnCharacterUnderCursorChanged(ADRCharacter* characterUnderCursor);
+	void OnCharacterUnderCursorChanged(ADRCharacter* previousCharacter, ADRCharacter* characterUnderCursor);
 	void UseTargetedAbility(ADRCharacter* target);
 	void HoverPanelCheck();
 	void UpdateCharacterUnderCursor();

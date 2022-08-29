@@ -107,4 +107,8 @@ void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 {
 	mALlCharacters.Remove(deadUnit);
 	mTurnQueue.Remove(deadUnit);
+	if(GetAllPlayerUnits().Num() == 0 || GetAllEnemyUnits().Num() == 0)
+	{
+		UDRGameplayStatics::OpenLevel(GetWorld(),FName(*GetWorld()->GetName()),false);
+	}
 }

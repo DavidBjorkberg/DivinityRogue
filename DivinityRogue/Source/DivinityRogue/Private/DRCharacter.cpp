@@ -17,6 +17,7 @@ ADRCharacter::ADRCharacter()
 	mSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMeshComponent");
 	mSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	mSkeletalMeshComponent->SetupAttachment(mRoot);
+	mSkeletalMeshComponent->CustomDepthStencilValue = 1; //Enables outline
 	mHitBox = CreateDefaultSubobject<UBoxComponent>("HitBox");
 	mHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	mHitBox->SetCollisionProfileName("Pawn");

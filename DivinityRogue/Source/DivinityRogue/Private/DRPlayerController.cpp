@@ -36,7 +36,7 @@ void ADRPlayerController::BeginPlay()
 	mMovementSpline = GetWorld()->SpawnActor<ADRMovementSpline>(mMovementSplineBP);
 	mGameMode->mOnGameplayStateChanged.AddDynamic(this, &ADRPlayerController::OnGameplayStateChanged);
 	mGameMode->mOnNewTurn.AddDynamic(this, &ADRPlayerController::OnNewTurn);
-	mOnCharacterUnderCursorChanged.AddDynamic(this,&ADRPlayerController::OnCharacterUnderCursorChanged);
+	mOnCharacterUnderCursorChanged.AddDynamic(this, &ADRPlayerController::OnCharacterUnderCursorChanged);
 	SetInputMode(FInputModeGameAndUI());
 }
 
@@ -106,13 +106,18 @@ void ADRPlayerController::OnNewTurn(ADRCharacter* previousCharacter, ADRCharacte
 	mMovementSpline->ClearSpline();
 }
 
-void ADRPlayerController::OnCharacterUnderCursorChanged(ADRCharacter* characterUnderCursor)
+void ADRPlayerController::OnCharacterUnderCursorChanged(ADRCharacter* previousCharacter,
+                                                        ADRCharacter* characterUnderCursor)
 {
-	UE_LOG(LogTemp,Warning,TEXT("Changed"));
-	if(characterUnderCursor != nullptr)
+	if (previousCharacter != nullptr)
+	{
+		previousCharacter->FindComponentByClass<UPrimitiveComponent>()->SetRenderCustomDepth(false);
+	}
+	if (characterUnderCursor != nullptr)
 	{
 		mMovementSpline->ClearSpline();
 		CurrentMouseCursor = EMouseCursor::Type::Crosshairs;
+		characterUnderCursor->FindComponentByClass<UPrimitiveComponent>()->SetRenderCustomDepth(true);
 	}
 	else
 	{
@@ -148,14 +153,16 @@ void ADRPlayerController::UpdateCharacterUnderCursor()
 		{
 			if (hitCharacter != mCharacterUnderCursor)
 			{
+				ADRCharacter* previousCharacter = mCharacterUnderCursor;
 				mCharacterUnderCursor = hitCharacter;
-				mOnCharacterUnderCursorChanged.Broadcast(mCharacterUnderCursor);
+				mOnCharacterUnderCursorChanged.Broadcast(previousCharacter, mCharacterUnderCursor);
 			}
 		}
 	}
 	else if (mCharacterUnderCursor != nullptr)
 	{
+		ADRCharacter* previousCharacter = mCharacterUnderCursor;
 		mCharacterUnderCursor = nullptr;
-		mOnCharacterUnderCursorChanged.Broadcast(mCharacterUnderCursor);
+		mOnCharacterUnderCursorChanged.Broadcast(previousCharacter, mCharacterUnderCursor);
 	}
 }
