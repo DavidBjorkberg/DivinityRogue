@@ -12,6 +12,12 @@ void ADREnemyAIController::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ADREnemyAIController::StartRequestAction()
+{
+	check(!GetWorldTimerManager().IsTimerActive(RequestActionTimer));
+	GetWorldTimerManager().SetTimer(RequestActionTimer,this,&ADREnemyAIController::RequestAction,mRequestActionDelay);
+}
+
 void ADREnemyAIController::RequestAction()
 {
 	TArray<ADRPlayerCharacter*> allPlayerUnits = mGameMode->GetAllPlayerUnits();
@@ -20,7 +26,7 @@ void ADREnemyAIController::RequestAction()
 	float closestDistance;
 	UDRGameplayStatics::GetClosestDRCharacterInList(GetPawn(), allPlayerUnits, closestPlayerUnit, closestDistance);
 
-	for (UDRAbility* ability : mOwner->GetAbilities())
+	for (UDRAbility* ability : mOwner->GetCharacterStats().mAbilities)
 	{
 		if (ability->CanCast(mOwner, closestPlayerUnit))
 		{
@@ -34,8 +40,18 @@ void ADREnemyAIController::RequestAction()
 void ADREnemyAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
 	Super::OnMoveCompleted(RequestID, Result);
-	if (Result.IsSuccess() && mOwner->GetCurrentActionPoints() > 0)
+	if (Result.IsSuccess() && mOwner->GetCharacterStats().mCurrentActionPoints > 0)
 	{
-		RequestAction();
+		StartRequestAction();
 	}
 }
+
+void ADREnemyAIController::OnFinishedAttack()
+{
+	Super::OnFinishedAttack();
+	if (mOwner->GetCharacterStats().mCurrentActionPoints > 0)
+	{
+		StartRequestAction();
+	}
+}
+

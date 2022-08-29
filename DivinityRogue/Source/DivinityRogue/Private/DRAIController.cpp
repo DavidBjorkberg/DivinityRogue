@@ -16,6 +16,12 @@ void ADRAIController::BeginPlay()
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 }
 
+void ADRAIController::OnFinishedAttack()
+{
+	mOwner->PlayIdleAnimation();
+	mOwner->EndTurnIfOutOfActionPoints();
+}
+
 void ADRAIController::OrderMoveToLocation(FVector targetLoc)
 {
 	MoveToLocation(targetLoc, 5, false);
@@ -37,7 +43,7 @@ void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowi
 	{
 		mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 		mOwner->PlayIdleAnimation();
-		mOwner->ConsumeActionPoints(1);
+		mOwner->ModifyEnergy(-1);
 		mOwner->EndTurnIfOutOfActionPoints();
 	}
 }

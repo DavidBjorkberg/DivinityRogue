@@ -8,5 +8,5 @@
 void UDRFinishAttackNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	if(MeshComp->GetName().Contains("Debug")) return;
-	Cast<ADRCharacter>(MeshComp->GetOwner())->OnFinishedAttack();
+	Cast<ADRAIController>(Cast<APawn>(MeshComp->GetOwner())->GetController())->OnFinishedAttack();
 }

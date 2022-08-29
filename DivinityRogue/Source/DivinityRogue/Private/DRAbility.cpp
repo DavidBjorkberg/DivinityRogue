@@ -7,14 +7,14 @@
 
 void UDRAbility::Use(ADRCharacter* user, ADRCharacter* target)
 {
-	user->ConsumeActionPoints(mActionPointCost);
+	user->ModifyEnergy(-mActionPointCost);
 }
 
 bool UDRAbility::CanCast(ADRCharacter* user, ADRCharacter* target)
 {
 	return IsInRange(user, target) &&
 		IsValidTarget(user, target) &&
-		user->GetCurrentActionPoints() >= mActionPointCost;
+		user->GetCharacterStats().mCurrentActionPoints >= mActionPointCost;
 }
 
 bool UDRAbility::IsInRange(ADRCharacter* user, ADRCharacter* target)

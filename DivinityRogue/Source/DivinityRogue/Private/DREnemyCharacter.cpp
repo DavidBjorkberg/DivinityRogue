@@ -3,7 +3,6 @@
 
 #include "DREnemyCharacter.h"
 
-#include "DREnemyAIController.h"
 
 ADREnemyCharacter::ADREnemyCharacter()
 {
@@ -15,11 +14,4 @@ void ADREnemyCharacter::BeginPlay()
 	mTeam = ETeam::ENEMY;
 }
 
-void ADREnemyCharacter::OnFinishedAttack()
-{
-	Super::OnFinishedAttack();
-	if (mCurrentActionPoints > 0)
-	{
-		Cast<ADREnemyAIController>(GetController())->RequestAction();
-	}
-}
+

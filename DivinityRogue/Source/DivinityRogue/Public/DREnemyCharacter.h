@@ -16,5 +16,4 @@ class DIVINITYROGUE_API ADREnemyCharacter : public ADRCharacter
 public:
 	ADREnemyCharacter();
 	virtual void BeginPlay() override;
-	virtual void OnFinishedAttack() override;
 };

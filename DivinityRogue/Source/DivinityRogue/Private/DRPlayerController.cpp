@@ -43,7 +43,7 @@ void ADRPlayerController::BeginPlay()
 void ADRPlayerController::StartTargetAbility(int index)
 {
 	ADRCharacter* characterInPlay = mGameMode->GetCharacterInPlay();
-	mGameMode->mSelectedAbility = characterInPlay->GetAbility(index);
+	mGameMode->mSelectedAbility = characterInPlay->GetCharacterStats().mAbilities[index];
 	mGameMode->SetGameplayState(EGameplayState::SelectingTarget);
 }
 

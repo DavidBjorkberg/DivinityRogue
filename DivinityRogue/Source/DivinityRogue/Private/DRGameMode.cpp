@@ -100,7 +100,7 @@ void ADRGameMode::FillTurnQueue()
 		allCharacters.Add(Cast<ADRCharacter>(actor));
 	}
 	mTurnQueue = allCharacters;
-	mTurnQueue.Sort([](const ADRCharacter& a, const ADRCharacter& b) { return a.GetSpeed() > b.GetSpeed(); });
+	mTurnQueue.Sort([](const ADRCharacter& a, const ADRCharacter& b) { return a.GetCharacterStats().mSpeed > b.GetCharacterStats().mSpeed; });
 }
 
 void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)

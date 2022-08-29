@@ -29,9 +29,54 @@ enum class ETeam :uint8
 	NEUTRAL
 };
 
+USTRUCT(BlueprintType)
+struct FCharacterBaseStats
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, Category = "DRCharacter")
+	int mSpeed = 5;
+	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
+	int mMaxHealth = 10;
+	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
+	int mMaxActionPoints = 2;
+	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
+	int mStartActionPoints = 2;
+	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
+	int mActionPointsPerTurn = 2;
+	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
+	FString mName;
+	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
+	TArray<TSubclassOf<UDRAbility>> mAbilities;
+};
+
+USTRUCT(BlueprintType)
+struct FCharacterStats
+{
+	GENERATED_BODY()
+	UPROPERTY(BlueprintReadOnly, DisplayName="Name")
+	FString mName;
+	UPROPERTY(BlueprintReadOnly, DisplayName="Max Health")
+	int mMaxHealth = 10;
+	UPROPERTY(BlueprintReadOnly, DisplayName="Current Health")
+	int mCurrentHealth = 0;
+	UPROPERTY(BlueprintReadOnly, DisplayName="Speed")
+	int mSpeed = 5;
+	UPROPERTY(BlueprintReadOnly, DisplayName="Max Energy")
+	int mMaxActionPoints = 2;
+	UPROPERTY(BlueprintReadOnly, DisplayName="Current Energy")
+	int mCurrentActionPoints = 0;
+	UPROPERTY(BlueprintReadOnly, DisplayName="Start Energy")
+	int mStartActionPoints = 2;
+	UPROPERTY(BlueprintReadOnly, DisplayName="Energy per turn")
+	int mActionPointsPerTurn = 2;
+	UPROPERTY(BlueprintReadOnly, DisplayName="Abilities")
+	TArray<UDRAbility*> mAbilities;
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUnitDied, ADRCharacter*, deadUnit);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHealthChange, int, newHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnergyChange, int, newEnergy);
 
 UCLASS()
 class DIVINITYROGUE_API ADRCharacter : public APawn
@@ -48,7 +93,7 @@ public:
 	void OrderMoveToActor(AActor* targetActor);
 	bool TryUseAbility(UDRAbility* ability, ADRCharacter* target);
 	void OnTurnStart();
-	void ConsumeActionPoints(int amount);
+	void ModifyEnergy(int amount);
 	void EndTurnIfOutOfActionPoints();
 
 	UFUNCTION(BlueprintCallable)
@@ -58,28 +103,17 @@ public:
 	void PlayIdleAnimation();
 	void PlayRunAnimation();
 
-	UFUNCTION(BlueprintCallable)
-	UDRAbility* GetAbility(int index) { return mSpawnedAbilities[index]; }
-
-	UFUNCTION(BlueprintCallable)
-	TArray<UDRAbility*> GetAbilities() { return mSpawnedAbilities; }
-
 	USkeletalMeshComponent* GetSkeletalMeshComp() const { return mSkeletalMeshComponent; }
-	int GetSpeed() const { return mSpeed; };
-	int GetCurrentActionPoints() const { return mCurrentActionPoints; }
-	UFUNCTION(BlueprintCallable)
-	int GetMaxHealth() const { return mMaxHealth; }
-
-	UFUNCTION(BlueprintCallable)
-	int GetCurrentHealth() const { return mCurrentHealth; }
-
 	ETeam GetTeam() const { return mTeam; }
 	UFUNCTION(BlueprintCallable)
-	FString GetCharacterName() const { return mName; }
+	FCharacterStats GetCharacterStats() const { return mStats; }
+
 	UPROPERTY(BlueprintAssignable)
 	FUnitDied mOnUnitDied;
 	UPROPERTY(BlueprintAssignable)
 	FHealthChange mOnHealthChange;
+	UPROPERTY(BlueprintAssignable)
+	FEnergyChange mOnEnergyChange;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* mRoot;
@@ -89,33 +123,20 @@ protected:
 	USkeletalMeshComponent* mSkeletalMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* mHitBox;
-	UPROPERTY(EditAnywhere, Category = "DRCharacter")
-	int mSpeed = 5;
-	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	int mMaxHealth = 10;
-	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	int mMaxActionPoints = 2;
-	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	int mStartActionPoints = 2;
-	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	int mActionPointsPerTurn = 2;
-	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	FString mName;
-	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
-	TArray<TSubclassOf<UDRAbility>> mAbilities;
-	int mCurrentActionPoints;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FCharacterBaseStats mBaseStats;
+	UPROPERTY(BlueprintReadOnly)
+	FCharacterStats mStats;
 	ETeam mTeam;
 private:
 	void Died();
 	void SetAnimState(EAnimState newState) { mCurrentAnimState = newState; }
-	int mCurrentHealth;
 	UPROPERTY()
 	UAnimSequenceBase* mAttackAnimation;
 	UPROPERTY()
 	ADRAIController* mController;
 	EAnimState mCurrentAnimState;
-	UPROPERTY()
-	TArray<UDRAbility*> mSpawnedAbilities;
+
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 };

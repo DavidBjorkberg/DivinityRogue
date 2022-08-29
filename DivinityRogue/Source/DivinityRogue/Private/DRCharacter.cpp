@@ -28,16 +28,22 @@ void ADRCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	mController = Cast<ADRAIController>(GetController());
-	for (TSubclassOf<UDRAbility> ability : mAbilities)
+	mStats.mAbilities.Empty();
+	for (TSubclassOf<UDRAbility> ability : mBaseStats.mAbilities)
 	{
 		UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetLevel(), ability);
-		mSpawnedAbilities.Add(spawnedAbility);
+		mStats.mAbilities.Add(spawnedAbility);
 	}
+	mStats.mName = mBaseStats.mName;
+	mStats.mMaxHealth = mBaseStats.mMaxHealth;
+	mStats.mCurrentHealth = mBaseStats.mMaxHealth;
+	mStats.mSpeed = mBaseStats.mSpeed;
+	mStats.mMaxActionPoints = mBaseStats.mMaxActionPoints;
+	mStats.mStartActionPoints = mBaseStats.mStartActionPoints;
+	mStats.mCurrentActionPoints = mBaseStats.mStartActionPoints;
+	mStats.mActionPointsPerTurn = mBaseStats.mActionPointsPerTurn;
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mAttackAnimation = Cast<UDRCharacterAnimInstance>(mSkeletalMeshComponent->GetAnimInstance())->mAttackAnimation;
-	mCurrentHealth = mMaxHealth;
-	mCurrentActionPoints = mStartActionPoints;
-
 	PlayIdleAnimation();
 }
 
@@ -66,21 +72,20 @@ bool ADRCharacter::TryUseAbility(UDRAbility* ability, ADRCharacter* target)
 
 void ADRCharacter::OnTurnStart()
 {
-	mCurrentActionPoints = FMath::Min(mCurrentActionPoints + mActionPointsPerTurn, mMaxActionPoints);
+	ModifyEnergy(mStats.mActionPointsPerTurn);
 }
 
 void ADRCharacter::OnFinishedAttack()
 {
-	PlayIdleAnimation();
-	EndTurnIfOutOfActionPoints();
+
 }
 
 float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
                                AActor* DamageCauser)
 {
-	mCurrentHealth = FMath::Max(mCurrentHealth - DamageAmount, 0);
-	mOnHealthChange.Broadcast(mCurrentHealth);
-	if (mCurrentHealth <= 0)
+	mStats.mCurrentHealth = FMath::Max(mStats.mCurrentHealth - DamageAmount, 0);
+	mOnHealthChange.Broadcast(mStats.mCurrentHealth);
+	if (mStats.mCurrentHealth <= 0)
 	{
 		Died();
 	}
@@ -96,16 +101,17 @@ void ADRCharacter::Died()
 
 void ADRCharacter::EndTurnIfOutOfActionPoints()
 {
-	if (mCurrentActionPoints <= 0)
+	if (mStats.mCurrentActionPoints <= 0)
 	{
 		mGameMode->EndTurn();
 	}
 }
 
-void ADRCharacter::ConsumeActionPoints(int amount)
+void ADRCharacter::ModifyEnergy(int amount)
 {
-	check(amount <= mCurrentActionPoints);
-	mCurrentActionPoints -= FMath::Max(amount, 0);
+	check(mStats.mCurrentActionPoints + amount >= 0);
+	mStats.mCurrentActionPoints = FMath::Clamp(mStats.mCurrentActionPoints + amount, 0,mStats.mMaxActionPoints);
+	mOnEnergyChange.Broadcast(mStats.mCurrentActionPoints);
 }
 
 void ADRCharacter::PlayAttackAnimation(UDRAbility* ability, ADRCharacter* target)
