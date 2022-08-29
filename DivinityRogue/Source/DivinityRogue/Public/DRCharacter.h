@@ -45,6 +45,7 @@ public:
 	                         AActor* DamageCauser) override;
 	virtual void OnFinishedAttack();
 	void OrderMoveToLocation(FVector targetLoc);
+	void OrderMoveToActor(AActor* targetActor);
 	bool TryUseAbility(UDRAbility* ability, ADRCharacter* target);
 	void OnTurnStart();
 	void ConsumeActionPoints(int amount);

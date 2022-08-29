@@ -16,12 +16,14 @@ ADRPlayerController::ADRPlayerController()
 void ADRPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
-	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mGameMode->IsPlayersTurn())
+
+	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mGameMode->IsPlayersTurn() &&
+		mCharacterUnderCursor == nullptr)
 	{
 		mMovementSpline->DrawMovementSpline();
 	}
-	
+
+	UpdateCharacterUnderCursor();
 	HoverPanelCheck();
 }
 
@@ -34,7 +36,8 @@ void ADRPlayerController::BeginPlay()
 	mMovementSpline = GetWorld()->SpawnActor<ADRMovementSpline>(mMovementSplineBP);
 	mGameMode->mOnGameplayStateChanged.AddDynamic(this, &ADRPlayerController::OnGameplayStateChanged);
 	mGameMode->mOnNewTurn.AddDynamic(this, &ADRPlayerController::OnNewTurn);
-	SetInputMode(FInputModeGameOnly());
+	mOnCharacterUnderCursorChanged.AddDynamic(this,&ADRPlayerController::OnCharacterUnderCursorChanged);
+	SetInputMode(FInputModeGameAndUI());
 }
 
 void ADRPlayerController::StartTargetAbility(int index)
@@ -43,6 +46,7 @@ void ADRPlayerController::StartTargetAbility(int index)
 	mGameMode->mSelectedAbility = characterInPlay->GetAbility(index);
 	mGameMode->SetGameplayState(EGameplayState::SelectingTarget);
 }
+
 void ADRPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -62,27 +66,29 @@ void ADRPlayerController::OnLeftMouseClick()
 
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
-		FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(
-			GetWorld(), ECollisionChannel::ECC_Pawn);
-		if (hitResult.bBlockingHit)
+		if (mCharacterUnderCursor != nullptr)
 		{
-			if (ADRCharacter* hitCharacter = Cast<ADRCharacter>(hitResult.GetActor()))
-			{
-				UseTargetedAbility(hitCharacter);
-			}
+			UseTargetedAbility(mCharacterUnderCursor);
 		}
 		else
 		{
 			mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 		}
 	}
-	else
+	else if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath))
 	{
-		FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(
-			GetWorld(), ECollisionChannel::ECC_WorldStatic);
-		if (hitResult.bBlockingHit)
+		if (mCharacterUnderCursor != nullptr)
 		{
-			mGameMode->GetCharacterInPlay()->OrderMoveToLocation(hitResult.Location);
+			mGameMode->GetCharacterInPlay()->OrderMoveToActor(mCharacterUnderCursor);
+		}
+		else
+		{
+			FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(
+				GetWorld(), ECollisionChannel::ECC_WorldStatic);
+			if (hitResult.bBlockingHit)
+			{
+				mGameMode->GetCharacterInPlay()->OrderMoveToLocation(hitResult.Location);
+			}
 		}
 	}
 }
@@ -100,6 +106,20 @@ void ADRPlayerController::OnNewTurn(ADRCharacter* previousCharacter, ADRCharacte
 	mMovementSpline->ClearSpline();
 }
 
+void ADRPlayerController::OnCharacterUnderCursorChanged(ADRCharacter* characterUnderCursor)
+{
+	UE_LOG(LogTemp,Warning,TEXT("Changed"));
+	if(characterUnderCursor != nullptr)
+	{
+		mMovementSpline->ClearSpline();
+		CurrentMouseCursor = EMouseCursor::Type::Crosshairs;
+	}
+	else
+	{
+		CurrentMouseCursor = EMouseCursor::Type::Default;
+	}
+}
+
 void ADRPlayerController::UseTargetedAbility(ADRCharacter* target)
 {
 	mGameMode->GetCharacterInPlay()->TryUseAbility(mGameMode->mSelectedAbility, target);
@@ -108,21 +128,34 @@ void ADRPlayerController::UseTargetedAbility(ADRCharacter* target)
 
 void ADRPlayerController::HoverPanelCheck()
 {
+	if (mCharacterUnderCursor != nullptr && !mHUD->IsShowingHoverPanel())
+	{
+		mHUD->ShowHoverPanel(mCharacterUnderCursor);
+	}
+	else if (mCharacterUnderCursor == nullptr && mHUD->IsShowingHoverPanel())
+	{
+		mHUD->HideHoverPanel();
+	}
+}
+
+void ADRPlayerController::UpdateCharacterUnderCursor()
+{
 	FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(
-	GetWorld(), ECollisionChannel::ECC_Pawn);
+		GetWorld(), ECollisionChannel::ECC_Pawn);
 	if (hitResult.bBlockingHit)
 	{
 		if (ADRCharacter* hitCharacter = Cast<ADRCharacter>(hitResult.GetActor()))
 		{
-			mHUD->ShowHoverPanel(hitCharacter);
-		}
-		else
-		{
-			mHUD->HideHoverPanel();
+			if (hitCharacter != mCharacterUnderCursor)
+			{
+				mCharacterUnderCursor = hitCharacter;
+				mOnCharacterUnderCursorChanged.Broadcast(mCharacterUnderCursor);
+			}
 		}
 	}
-	else if (mHUD->IsShowingHoverPanel())
+	else if (mCharacterUnderCursor != nullptr)
 	{
-		mHUD->HideHoverPanel();
+		mCharacterUnderCursor = nullptr;
+		mOnCharacterUnderCursorChanged.Broadcast(mCharacterUnderCursor);
 	}
 }

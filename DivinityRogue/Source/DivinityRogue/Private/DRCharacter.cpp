@@ -37,22 +37,27 @@ void ADRCharacter::BeginPlay()
 	mAttackAnimation = Cast<UDRCharacterAnimInstance>(mSkeletalMeshComponent->GetAnimInstance())->mAttackAnimation;
 	mCurrentHealth = mMaxHealth;
 	mCurrentActionPoints = mStartActionPoints;
-	
+
 	PlayIdleAnimation();
 }
 
 void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
 {
 	mController->OrderMoveToLocation(targetLoc);
+	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
+}
 
+void ADRCharacter::OrderMoveToActor(AActor* targetActor)
+{
+	mController->OrderMoveToActor(targetActor);
 	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 }
 
 bool ADRCharacter::TryUseAbility(UDRAbility* ability, ADRCharacter* target)
 {
-	if(ability->CanCast(this,target))
+	if (ability->CanCast(this, target))
 	{
-		PlayAttackAnimation(ability,target);
+		PlayAttackAnimation(ability, target);
 		return true;
 	}
 
@@ -91,7 +96,7 @@ void ADRCharacter::Died()
 
 void ADRCharacter::EndTurnIfOutOfActionPoints()
 {
-	if(mCurrentActionPoints <= 0)
+	if (mCurrentActionPoints <= 0)
 	{
 		mGameMode->EndTurn();
 	}
@@ -100,12 +105,12 @@ void ADRCharacter::EndTurnIfOutOfActionPoints()
 void ADRCharacter::ConsumeActionPoints(int amount)
 {
 	check(amount <= mCurrentActionPoints);
-	mCurrentActionPoints -= FMath::Max(amount,0);
+	mCurrentActionPoints -= FMath::Max(amount, 0);
 }
 
 void ADRCharacter::PlayAttackAnimation(UDRAbility* ability, ADRCharacter* target)
 {
-	Cast<UDRUseAbilityNotify>(mAttackAnimation->Notifies[0].Notify)->SetParameters(ability,this,target);
+	Cast<UDRUseAbilityNotify>(mAttackAnimation->Notifies[0].Notify)->SetParameters(ability, this, target);
 	SetAnimState(EAnimState::ATTACK);
 }
 
