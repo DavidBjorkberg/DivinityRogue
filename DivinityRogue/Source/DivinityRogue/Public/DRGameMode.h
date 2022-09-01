@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRScreenUI.h"
+#include "NavigationPath.h"
 #include "GameFramework/GameModeBase.h"
 #include "DRGameMode.generated.h"
 
@@ -21,7 +22,8 @@ enum class EGameplayState : uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameplayStateChange, EGameplayState, oldState, EGameplayState, newState);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNewturn,ADRCharacter*, previousCharacter, ADRCharacter*, newCharacter);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNewturn, ADRCharacter*, previousCharacter, ADRCharacter*, newCharacter);
 
 UCLASS()
 class DIVINITYROGUE_API ADRGameMode : public AGameModeBase
@@ -30,14 +32,18 @@ class DIVINITYROGUE_API ADRGameMode : public AGameModeBase
 public:
 	ADRGameMode();
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	void EndTurn();
 	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; }
 	bool IsPlayersTurn();
 	UFUNCTION(BlueprintPure)
 	bool IsInGameplayState(EGameplayState state) { return state == mCurrentGameplayState; }
+
 	void SetGameplayState(EGameplayState newState);
 	TArray<ADREnemyCharacter*> GetAllEnemyUnits();
 	TArray<ADRPlayerCharacter*> GetAllPlayerUnits();
+	UFUNCTION(BlueprintCallable)
+	UNavigationPath* GetPathToMouse();
 	FGameplayStateChange mOnGameplayStateChanged;
 	UPROPERTY(BlueprintAssignable)
 	FNewturn mOnNewTurn;
@@ -56,9 +62,11 @@ private:
 	void FillTurnQueue();
 	UFUNCTION()
 	void OnUnitDied(ADRCharacter* deadUnit);
-
-
+	void FindPathToMouse();
+	UPROPERTY()
+	UNavigationPath* mPathToMouse;
 	UPROPERTY()
 	TArray<ADRCharacter*> mALlCharacters;
 	EGameplayState mCurrentGameplayState;
 };
+

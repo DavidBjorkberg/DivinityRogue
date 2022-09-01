@@ -4,13 +4,16 @@
 #include "DRHUD.h"
 
 #include "DRCharacter.h"
+#include "DRGameplayStatics.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
 
 void ADRHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mGameMode->mOnGameplayStateChanged.AddDynamic(this, &ADRHUD::OnGameplayStateChanged);
-	mScreenUI = CreateWidget<UDRScreenUI>(GetGameInstance(),mScreenUIBP);
+	mScreenUI = CreateWidget<UDRScreenUI>(GetGameInstance(), mScreenUIBP);
 	mScreenUI->AddToViewport(9999);
 }
 
@@ -21,11 +24,22 @@ void ADRHUD::DrawHUD()
 
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
-		ADRCharacter* characterUsingAbility = mGameMode->GetCharacterInPlay();
+		const ADRCharacter* characterUsingAbility = mGameMode->GetCharacterInPlay();
 		DrawCircle(GetWorld(), characterUsingAbility->GetActorLocation() + FVector::UpVector * 0.1f,
 		           FVector::RightVector,
 		           FVector::ForwardVector,
 		           FColor::Orange, mGameMode->mSelectedAbility->GetRange(), 3000, false, -1, 0, 10);
+	}
+	else if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath))
+	{
+		const float characterMovement = mGameMode->GetCharacterInPlay()->GetCharacterStats().mMovement;
+		float pathLength = mGameMode->GetPathToMouse()->GetPathLength();
+		pathLength -= mGameMode->GetCharacterInPlay()->mDistanceLeftUntilEnergyCost;
+		int energyCost = FMath::CeilToInt(pathLength / characterMovement);
+		float x;
+		float y;
+		GetWorld()->GetFirstPlayerController()->GetMousePosition(x, y);
+		DrawText(TEXT("Cost: " + FString::FromInt(energyCost)), FLinearColor::Black, x + 30, y, nullptr, 1.5);
 	}
 }
 

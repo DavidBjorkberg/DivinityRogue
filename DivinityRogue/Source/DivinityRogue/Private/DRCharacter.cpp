@@ -43,11 +43,16 @@ void ADRCharacter::BeginPlay()
 	mStats.mStartActionPoints = mBaseStats.mStartActionPoints;
 	mStats.mCurrentActionPoints = mBaseStats.mStartActionPoints;
 	mStats.mActionPointsPerTurn = mBaseStats.mActionPointsPerTurn;
+	mStats.mMovement = mBaseStats.mMovement;
+	mStats.mMovementSpeed = mBaseStats.mMovementSpeed;
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mAttackAnimation = Cast<UDRCharacterAnimInstance>(mSkeletalMeshComponent->GetAnimInstance())->mAttackAnimation;
 	PlayIdleAnimation();
 }
-
+void ADRCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+}
 void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
 {
 	mController->OrderMoveToLocation(targetLoc);
@@ -69,15 +74,6 @@ bool ADRCharacter::TryUseAbility(UDRAbility* ability, ADRCharacter* target)
 	return false;
 }
 
-void ADRCharacter::OnTurnStart()
-{
-	ModifyEnergy(mStats.mActionPointsPerTurn);
-}
-
-void ADRCharacter::OnFinishedAttack()
-{
-}
-
 float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
                                AActor* DamageCauser)
 {
@@ -91,6 +87,8 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 }
 
 
+
+
 void ADRCharacter::Died()
 {
 	mOnUnitDied.Broadcast(this);
@@ -101,8 +99,15 @@ void ADRCharacter::EndTurnIfOutOfActionPoints()
 {
 	if (mStats.mCurrentActionPoints <= 0)
 	{
+		PlayIdleAnimation();
+		mController->StopMovement();
 		mGameMode->EndTurn();
 	}
+}
+
+void ADRCharacter::OnTurnStart()
+{
+	ModifyEnergy(mStats.mActionPointsPerTurn);
 }
 
 void ADRCharacter::ModifyEnergy(int amount)
@@ -115,18 +120,15 @@ void ADRCharacter::ModifyEnergy(int amount)
 void ADRCharacter::PlayAttackAnimation(UDRAbility* ability, ADRCharacter* target)
 {
 	Cast<UDRUseAbilityNotify>(mAttackAnimation->Notifies[0].Notify)->SetParameters(ability, this, target);
-	UE_LOG(LogTemp, Warning, TEXT("%s: Changed state:ATTACK"), *GetActorLabel()); 
 	SetAnimState(EAnimState::ATTACK);
 }
 
 void ADRCharacter::PlayIdleAnimation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s: Changed state:IDLE"), *GetActorLabel()); 
 	SetAnimState(EAnimState::IDLE);
 }
 
 void ADRCharacter::PlayRunAnimation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s: Changed state:MOVE"), *GetActorLabel()); 
 	SetAnimState(EAnimState::MOVE);
 }

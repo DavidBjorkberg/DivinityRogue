@@ -44,6 +44,10 @@ struct FCharacterBaseStats
 	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
 	int mActionPointsPerTurn = 2;
 	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
+	int mMovementSpeed = 6;
+	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
+	int mMovement = 2;
+	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
 	FString mName;
 	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
 	TArray<TSubclassOf<UDRAbility>> mAbilities;
@@ -56,27 +60,31 @@ struct FCharacterStats
 	UPROPERTY(BlueprintReadOnly, DisplayName="Name")
 	FString mName;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Max Health")
-	int mMaxHealth = 10;
+	int mMaxHealth;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Current Health")
-	int mCurrentHealth = 0;
+	int mCurrentHealth ;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Speed")
-	int mSpeed = 5;
+	int mSpeed;
+	UPROPERTY(BlueprintReadOnly, DisplayName="Movement Speed")
+	int mMovementSpeed;
+	UPROPERTY(BlueprintReadOnly, DisplayName="Movement")
+	int mMovement;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Max Energy")
-	int mMaxActionPoints = 2;
+	int mMaxActionPoints;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Current Energy")
-	int mCurrentActionPoints = 0;
+	int mCurrentActionPoints;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Start Energy")
-	int mStartActionPoints = 2;
+	int mStartActionPoints;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Energy per turn")
-	int mActionPointsPerTurn = 2;
+	int mActionPointsPerTurn;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Abilities")
 	TArray<UDRAbility*> mAbilities;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUnitDied, ADRCharacter*, deadUnit);
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHealthChange, int, newHealth);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnergyChange, int, newEnergy);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnStart);
 
 UCLASS()
 class DIVINITYROGUE_API ADRCharacter : public APawn
@@ -88,13 +96,14 @@ public:
 	virtual void BeginPlay() override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
-	virtual void OnFinishedAttack();
+	virtual void Tick(float DeltaSeconds) override;
 	void OrderMoveToLocation(FVector targetLoc);
 	void OrderMoveToActor(AActor* targetActor);
 	bool TryUseAbility(UDRAbility* ability, ADRCharacter* target);
-	void OnTurnStart();
 	void ModifyEnergy(int amount);
 	void EndTurnIfOutOfActionPoints();
+	UFUNCTION()
+	void OnTurnStart();
 
 	UFUNCTION(BlueprintCallable)
 	bool IsInAnimState(EAnimState state) { return state == mCurrentAnimState; }
@@ -108,12 +117,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FCharacterStats GetCharacterStats() const { return mStats; }
 
+
+	float mDistanceLeftUntilEnergyCost;
+
 	UPROPERTY(BlueprintAssignable)
 	FUnitDied mOnUnitDied;
 	UPROPERTY(BlueprintAssignable)
 	FHealthChange mOnHealthChange;
 	UPROPERTY(BlueprintAssignable)
 	FEnergyChange mOnEnergyChange;
+	UPROPERTY(BlueprintAssignable)
+	FTurnStart mOnTurnStart;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* mRoot;

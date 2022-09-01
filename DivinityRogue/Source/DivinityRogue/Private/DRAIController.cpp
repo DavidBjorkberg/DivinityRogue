@@ -43,7 +43,5 @@ void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowi
 	{
 		mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 		mOwner->PlayIdleAnimation();
-		mOwner->ModifyEnergy(-1);
-		mOwner->EndTurnIfOutOfActionPoints();
 	}
 }

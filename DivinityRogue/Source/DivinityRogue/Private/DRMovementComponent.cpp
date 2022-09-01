@@ -3,6 +3,16 @@
 
 #include "DivinityRogue/Public/DRMovementComponent.h"
 
+#include "DRAIController.h"
+#include "DRCharacter.h"
+
+void UDRMovementComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	mOwner = Cast<ADRCharacter>(GetOwner());
+	mOwner->mOnTurnStart.AddDynamic(this,&UDRMovementComponent::OnTurnStart);
+}
+
 void UDRMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                          FActorComponentTickFunction* ThisTickFunction)
 {
@@ -16,11 +26,6 @@ void UDRMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	}
 }
 
-void UDRMovementComponent::RequestPathMove(const FVector& MoveVelocity)
-{
-	Super::RequestPathMove(MoveVelocity);
-}
-
 void UDRMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
 {
 	if (MoveVelocity.SizeSquared() < KINDA_SMALL_NUMBER)
@@ -28,12 +33,24 @@ void UDRMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool b
 		return;
 	}
 	SetDesiredRotation(MoveVelocity.GetSafeNormal2D().Rotation());
+	FVector moveVec = MoveVelocity.GetSafeNormal2D() * mOwner->GetCharacterStats().mMovementSpeed;
+	mOwner->mDistanceLeftUntilEnergyCost -= moveVec.Length();
+	if(mOwner->mDistanceLeftUntilEnergyCost <= 0)
+	{
+		mOwner->ModifyEnergy(-1);
+		mOwner->EndTurnIfOutOfActionPoints();
+		mOwner->mDistanceLeftUntilEnergyCost = mOwner->GetCharacterStats().mMovement;
+	}	
 	FHitResult result;
-	SafeMoveUpdatedComponent(MoveVelocity.GetSafeNormal2D() * mMovementSpeed, GetOwner()->GetActorRotation(), false,
+	SafeMoveUpdatedComponent(moveVec, GetOwner()->GetActorRotation(), false,
 	                         result);
 }
 
-bool UDRMovementComponent::CanStartPathFollowing() const
+void UDRMovementComponent::OrderMoveToActor(AActor* targetActor)
 {
-	return Super::CanStartPathFollowing();
+	Cast<ADRAIController>(Cast<APawn>(GetOwner())->GetController())->OrderMoveToActor(targetActor);
+}
+void UDRMovementComponent::OnTurnStart()
+{
+	mOwner->mDistanceLeftUntilEnergyCost = mOwner->GetCharacterStats().mMovement;
 }
