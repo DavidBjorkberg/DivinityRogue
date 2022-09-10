@@ -49,6 +49,7 @@ void ADRCharacter::BeginPlay()
 	auto test = mSkeletalMeshComponent->GetAnimInstance();
 	auto test2 = Cast<UDRCharacterAnimInstance>(test);
 	mAttackAnimation = test2->mAttackAnimation;
+	mOnTurnStart.AddDynamic(this,&ADRCharacter::OnTurnStart);
 	PlayIdleAnimation();
 }
 void ADRCharacter::Tick(float DeltaSeconds)
@@ -88,9 +89,6 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
-
-
-
 void ADRCharacter::Died()
 {
 	mOnUnitDied.Broadcast(this);
@@ -110,6 +108,7 @@ void ADRCharacter::EndTurnIfOutOfActionPoints()
 void ADRCharacter::OnTurnStart()
 {
 	ModifyEnergy(mStats.mActionPointsPerTurn);
+	
 }
 
 void ADRCharacter::ModifyEnergy(int amount)

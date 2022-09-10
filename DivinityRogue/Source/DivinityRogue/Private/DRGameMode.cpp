@@ -103,6 +103,7 @@ void ADRGameMode::StartTurn()
 	mTurnQueue.RemoveAt(0);
 	mOnNewTurn.Broadcast(previousCharacter, mCharacterInPlay);
 	mCharacterInPlay->mOnTurnStart.Broadcast();
+	SetGameplayState(EGameplayState::PlanningPath);
 	if (ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController()))
 	{
 		enemyController->RequestAction();
