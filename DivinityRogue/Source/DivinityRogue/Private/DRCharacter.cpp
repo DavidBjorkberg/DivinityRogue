@@ -46,7 +46,9 @@ void ADRCharacter::BeginPlay()
 	mStats.mMovement = mBaseStats.mMovement;
 	mStats.mMovementSpeed = mBaseStats.mMovementSpeed;
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
-	mAttackAnimation = Cast<UDRCharacterAnimInstance>(mSkeletalMeshComponent->GetAnimInstance())->mAttackAnimation;
+	auto test = mSkeletalMeshComponent->GetAnimInstance();
+	auto test2 = Cast<UDRCharacterAnimInstance>(test);
+	mAttackAnimation = test2->mAttackAnimation;
 	PlayIdleAnimation();
 }
 void ADRCharacter::Tick(float DeltaSeconds)

@@ -33,7 +33,7 @@ void UDRMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool b
 		return;
 	}
 	SetDesiredRotation(MoveVelocity.GetSafeNormal2D().Rotation());
-	FVector moveVec = MoveVelocity.GetSafeNormal2D() * mOwner->GetCharacterStats().mMovementSpeed;
+	FVector moveVec = MoveVelocity.GetSafeNormal() * mOwner->GetCharacterStats().mMovementSpeed;
 	mOwner->mDistanceLeftUntilEnergyCost -= moveVec.Length();
 	if(mOwner->mDistanceLeftUntilEnergyCost <= 0)
 	{
