@@ -82,6 +82,7 @@ void UDRAbility::OnLeftMouseDown()
 		{
 			mGameMode->GetCharacterInPlay()->TryUseAbility(mGameMode->GetSelectedAbility(), characterUnderCursor);
 		}
+		mGameMode->SetSelectedAbility(-1);
 		mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 	}
 }

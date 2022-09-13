@@ -3,6 +3,7 @@
 
 #include "DRGameMode.h"
 
+#include "DRAbility.h"
 #include "DREnemyAIController.h"
 #include "DREnemyCharacter.h"
 #include "DRGameplayStatics.h"
@@ -42,8 +43,12 @@ void ADRGameMode::SetGameplayState(EGameplayState newState)
 
 void ADRGameMode::SetSelectedAbility(int index)
 {
-	UDRAbility* ability = mCharacterInPlay->GetCharacterStats().mAbilities[index];
-	SetGameplayState(EGameplayState::SelectingTarget);
+	UDRAbility* ability = nullptr;
+	if (index >= 0)
+	{
+		ability = mCharacterInPlay->GetCharacterStats().mAbilities[index];
+		SetGameplayState(EGameplayState::SelectingTarget);
+	}
 	mSelectedAbility = ability;
 	mOnSelectedAbilityChanged.Broadcast(ability);
 }
@@ -146,7 +151,7 @@ void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 
 void ADRGameMode::FindPathToMouse()
 {
-	if(mCharacterInPlay == nullptr)
+	if (mCharacterInPlay == nullptr)
 	{
 		UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
 		mPathToMouse = NewObject<UNavigationPath>(NavSys);
