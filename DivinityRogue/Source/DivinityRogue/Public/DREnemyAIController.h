@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "DRAIController.h"
-#include "DRGameMode.h"
 #include "DREnemyAIController.generated.h"
 
 /**

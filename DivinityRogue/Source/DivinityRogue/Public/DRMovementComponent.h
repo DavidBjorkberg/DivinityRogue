@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NavigationPath.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "DRMovementComponent.generated.h"
 

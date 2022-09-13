@@ -3,14 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DRAbility.h"
-#include "DRGameMode.h"
+#include "DRScreenUI.h"
 #include "GameFramework/HUD.h"
+
 #include "DRHUD.generated.h"
 
-/**
- * 
- */
+
+enum class EGameplayState : uint8;
+class ADRGameMode;
+class ADRCharacter;
 UCLASS()
 class DIVINITYROGUE_API ADRHUD : public AHUD
 {

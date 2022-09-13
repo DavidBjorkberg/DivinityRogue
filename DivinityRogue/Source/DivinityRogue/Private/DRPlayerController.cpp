@@ -40,13 +40,6 @@ void ADRPlayerController::BeginPlay()
 	SetInputMode(FInputModeGameAndUI());
 }
 
-void ADRPlayerController::StartTargetAbility(int index)
-{
-	ADRCharacter* characterInPlay = mGameMode->GetCharacterInPlay();
-	mGameMode->mSelectedAbility = characterInPlay->GetCharacterStats().mAbilities[index];
-	mGameMode->SetGameplayState(EGameplayState::SelectingTarget);
-}
-
 void ADRPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -63,19 +56,7 @@ void ADRPlayerController::SetupInputComponent()
 void ADRPlayerController::OnLeftMouseClick()
 {
 	if (!mGameMode->IsPlayersTurn()) return;
-
-	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
-	{
-		if (mCharacterUnderCursor != nullptr)
-		{
-			UseTargetedAbility(mCharacterUnderCursor);
-		}
-		else
-		{
-			mGameMode->SetGameplayState(EGameplayState::PlanningPath);
-		}
-	}
-	else if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath))
+	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath))
 	{
 		if (mCharacterUnderCursor != nullptr)
 		{
@@ -91,6 +72,7 @@ void ADRPlayerController::OnLeftMouseClick()
 			}
 		}
 	}
+	mOnLeftMouseDown.Broadcast();
 }
 
 void ADRPlayerController::OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState)
@@ -123,12 +105,6 @@ void ADRPlayerController::OnCharacterUnderCursorChanged(ADRCharacter* previousCh
 	{
 		CurrentMouseCursor = EMouseCursor::Type::Default;
 	}
-}
-
-void ADRPlayerController::UseTargetedAbility(ADRCharacter* target)
-{
-	mGameMode->GetCharacterInPlay()->TryUseAbility(mGameMode->mSelectedAbility, target);
-	mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 }
 
 void ADRPlayerController::HoverPanelCheck()

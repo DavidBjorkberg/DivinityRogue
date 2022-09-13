@@ -3,16 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DRAbility.h"
 #include "DRAIController.h"
-#include "DRGameMode.h"
-#include "DRHealthBar.h"
 #include "DRMovementComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Pawn.h"
 #include "DRCharacter.generated.h"
 
+class UDRAbility;
 UENUM()
 enum class EAnimState :uint8
 {
@@ -145,6 +143,7 @@ protected:
 private:
 	void Died();
 	void SetAnimState(EAnimState newState) {mCurrentAnimState = newState; }
+	void ApplyBaseStats();
 	UPROPERTY()
 	UAnimSequenceBase* mAttackAnimation;
 	UPROPERTY()

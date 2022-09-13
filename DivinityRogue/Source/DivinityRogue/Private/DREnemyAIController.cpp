@@ -6,6 +6,8 @@
 #include "DRGameplayStatics.h"
 #include "DRPlayerCharacter.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "DRAbility.h"
+#include "DRGameMode.h"
 
 void ADREnemyAIController::BeginPlay()
 {

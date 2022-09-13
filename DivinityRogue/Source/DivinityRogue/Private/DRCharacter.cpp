@@ -4,6 +4,7 @@
 #include "DRCharacter.h"
 
 #include "DRCharacterAnimInstance.h"
+#include "DRGameMode.h"
 #include "DRUseAbilityNotify.h"
 #include "Components/WidgetComponent.h"
 
@@ -18,6 +19,7 @@ ADRCharacter::ADRCharacter()
 	mSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	mSkeletalMeshComponent->SetupAttachment(mRoot);
 	mSkeletalMeshComponent->CustomDepthStencilValue = 1; //Enables outline
+	
 	mHitBox = CreateDefaultSubobject<UBoxComponent>("HitBox");
 	mHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	mHitBox->SetCollisionProfileName("Pawn");
@@ -29,33 +31,18 @@ void ADRCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	mController = Cast<ADRAIController>(GetController());
-	mStats.mAbilities.Empty();
-	for (TSubclassOf<UDRAbility> ability : mBaseStats.mAbilities)
-	{
-		UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetLevel(), ability);
-		mStats.mAbilities.Add(spawnedAbility);
-	}
-	mStats.mName = mBaseStats.mName;
-	mStats.mMaxHealth = mBaseStats.mMaxHealth;
-	mStats.mCurrentHealth = mBaseStats.mMaxHealth;
-	mStats.mSpeed = mBaseStats.mSpeed;
-	mStats.mMaxActionPoints = mBaseStats.mMaxActionPoints;
-	mStats.mStartActionPoints = mBaseStats.mStartActionPoints;
-	mStats.mCurrentActionPoints = mBaseStats.mStartActionPoints;
-	mStats.mActionPointsPerTurn = mBaseStats.mActionPointsPerTurn;
-	mStats.mMovement = mBaseStats.mMovement;
-	mStats.mMovementSpeed = mBaseStats.mMovementSpeed;
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
-	auto test = mSkeletalMeshComponent->GetAnimInstance();
-	auto test2 = Cast<UDRCharacterAnimInstance>(test);
-	mAttackAnimation = test2->mAttackAnimation;
-	mOnTurnStart.AddDynamic(this,&ADRCharacter::OnTurnStart);
+	mAttackAnimation = Cast<UDRCharacterAnimInstance>(mSkeletalMeshComponent->GetAnimInstance())->mAttackAnimation;
+	mOnTurnStart.AddDynamic(this, &ADRCharacter::OnTurnStart);
+	ApplyBaseStats();
 	PlayIdleAnimation();
 }
+
 void ADRCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 }
+
 void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
 {
 	mController->OrderMoveToLocation(targetLoc);
@@ -95,6 +82,26 @@ void ADRCharacter::Died()
 	Destroy();
 }
 
+void ADRCharacter::ApplyBaseStats()
+{
+	mStats.mAbilities.Empty();
+	for (TSubclassOf<UDRAbility> ability : mBaseStats.mAbilities)
+	{
+		UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetLevel(), ability);
+		mStats.mAbilities.Add(spawnedAbility);
+	}
+	mStats.mName = mBaseStats.mName;
+	mStats.mMaxHealth = mBaseStats.mMaxHealth;
+	mStats.mCurrentHealth = mBaseStats.mMaxHealth;
+	mStats.mSpeed = mBaseStats.mSpeed;
+	mStats.mMaxActionPoints = mBaseStats.mMaxActionPoints;
+	mStats.mStartActionPoints = mBaseStats.mStartActionPoints;
+	mStats.mCurrentActionPoints = mBaseStats.mStartActionPoints;
+	mStats.mActionPointsPerTurn = mBaseStats.mActionPointsPerTurn;
+	mStats.mMovement = mBaseStats.mMovement;
+	mStats.mMovementSpeed = mBaseStats.mMovementSpeed;
+}
+
 void ADRCharacter::EndTurnIfOutOfActionPoints()
 {
 	if (mStats.mCurrentActionPoints <= 0)
@@ -108,7 +115,6 @@ void ADRCharacter::EndTurnIfOutOfActionPoints()
 void ADRCharacter::OnTurnStart()
 {
 	ModifyEnergy(mStats.mActionPointsPerTurn);
-	
 }
 
 void ADRCharacter::ModifyEnergy(int amount)

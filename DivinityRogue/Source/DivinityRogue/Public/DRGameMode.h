@@ -25,6 +25,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameplayStateChange, EGameplayStat
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNewturn, ADRCharacter*, previousCharacter, ADRCharacter*, newCharacter);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSelectedAbilityChanged, UDRAbility*, ability);
+
 UCLASS()
 class DIVINITYROGUE_API ADRGameMode : public AGameModeBase
 {
@@ -40,15 +42,19 @@ public:
 	bool IsInGameplayState(EGameplayState state) { return state == mCurrentGameplayState; }
 
 	void SetGameplayState(EGameplayState newState);
+	UFUNCTION(BlueprintCallable)
+	void SetSelectedAbility(int index);
+	UDRAbility* GetSelectedAbility() const { return mSelectedAbility; }
 	TArray<ADREnemyCharacter*> GetAllEnemyUnits();
 	TArray<ADRPlayerCharacter*> GetAllPlayerUnits();
 	UFUNCTION(BlueprintCallable)
 	UNavigationPath* GetPathToMouse();
+	UPROPERTY(BlueprintAssignable)
 	FGameplayStateChange mOnGameplayStateChanged;
 	UPROPERTY(BlueprintAssignable)
 	FNewturn mOnNewTurn;
-	UPROPERTY()
-	UDRAbility* mSelectedAbility;
+	UPROPERTY(BlueprintAssignable)
+	FSelectedAbilityChanged mOnSelectedAbilityChanged;
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	ADRCharacter* mCharacterInPlay;
@@ -67,6 +73,7 @@ private:
 	UNavigationPath* mPathToMouse;
 	UPROPERTY()
 	TArray<ADRCharacter*> mALlCharacters;
+	UPROPERTY()
+	UDRAbility* mSelectedAbility;
 	EGameplayState mCurrentGameplayState;
 };
-

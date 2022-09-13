@@ -40,6 +40,14 @@ void ADRGameMode::SetGameplayState(EGameplayState newState)
 	mCurrentGameplayState = newState;
 }
 
+void ADRGameMode::SetSelectedAbility(int index)
+{
+	UDRAbility* ability = mCharacterInPlay->GetCharacterStats().mAbilities[index];
+	SetGameplayState(EGameplayState::SelectingTarget);
+	mSelectedAbility = ability;
+	mOnSelectedAbilityChanged.Broadcast(ability);
+}
+
 TArray<ADREnemyCharacter*> ADRGameMode::GetAllEnemyUnits()
 {
 	TArray<ADREnemyCharacter*> returnList;

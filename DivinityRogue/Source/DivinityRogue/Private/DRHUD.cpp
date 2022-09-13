@@ -7,6 +7,8 @@
 #include "DRGameplayStatics.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
+#include "DRAbility.h"
+#include "DRGameMode.h"
 
 void ADRHUD::BeginPlay()
 {
@@ -28,7 +30,7 @@ void ADRHUD::DrawHUD()
 		DrawCircle(GetWorld(), characterUsingAbility->GetActorLocation() + FVector::UpVector * 0.1f,
 		           FVector::RightVector,
 		           FVector::ForwardVector,
-		           FColor::Orange, mGameMode->mSelectedAbility->GetRange(), 3000, false, -1, 0, 10);
+		           FColor::Orange, mGameMode->GetSelectedAbility()->GetRange(), 3000, false, -1, 0, 10);
 	}
 	else if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath))
 	{

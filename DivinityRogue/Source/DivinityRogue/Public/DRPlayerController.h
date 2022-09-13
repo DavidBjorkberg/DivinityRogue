@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "DRCharacter.h"
-#include "DRGameMode.h"
 #include "DRHUD.h"
 #include "DRMovementSpline.h"
 #include "GameFramework/PlayerController.h"
 #include "DRPlayerController.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterUnderCursorChanged,ADRCharacter*, previousCharacter, ADRCharacter*, characterUnderCursor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLeftMouseDown);
 UCLASS()
 class DIVINITYROGUE_API ADRPlayerController : public APlayerController
 {
@@ -19,10 +19,9 @@ public:
 	ADRPlayerController();
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
-	UFUNCTION(BlueprintCallable)
-	void StartTargetAbility(int index);
 	ADRCharacter* GetCharacterUnderCursor() const {return mCharacterUnderCursor;}
 	FCharacterUnderCursorChanged mOnCharacterUnderCursorChanged;
+	FLeftMouseDown mOnLeftMouseDown;
 protected:
 	virtual void SetupInputComponent() override;
 	UFUNCTION()
@@ -40,7 +39,6 @@ private:
 	void OnNewTurn(ADRCharacter* previousCharacter, ADRCharacter* newCharacter);
 	UFUNCTION()
 	void OnCharacterUnderCursorChanged(ADRCharacter* previousCharacter, ADRCharacter* characterUnderCursor);
-	void UseTargetedAbility(ADRCharacter* target);
 	void HoverPanelCheck();
 	void UpdateCharacterUnderCursor();
 	UPROPERTY()

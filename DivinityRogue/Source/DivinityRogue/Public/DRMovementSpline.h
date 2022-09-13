@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DRGameMode.h"
 #include "Components/SplineComponent.h"
 #include "Components/SplineMeshComponent.h"
 #include "GameFramework/Actor.h"
 #include "DRMovementSpline.generated.h"
 
+class ADRGameMode;
 UCLASS()
 class DIVINITYROGUE_API ADRMovementSpline : public AActor
 {

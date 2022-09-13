@@ -6,7 +6,7 @@
 #include "AIController.h"
 #include "DRGameMode.h"
 #include "DRAIController.generated.h"
-
+class ADRGameMode;
 class ADRCharacter;
 UENUM(BlueprintType)
 enum class EAIState : uint8

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DRPlayerController.h"
 #include "DRAbility.generated.h"
 
 UENUM()
@@ -18,13 +19,15 @@ class DIVINITYROGUE_API UDRAbility : public UObject
 {
 	GENERATED_BODY()
 public:
+	UDRAbility();
+	virtual void PostInitProperties() override;
 	virtual void Use(ADRCharacter* user, ADRCharacter* target);
 	bool CanCast(ADRCharacter* user,ADRCharacter* target);
 	UFUNCTION(BlueprintCallable)
 	UTexture2D* GetIcon() const { return mIcon; }
 	float GetRange() const { return mRange; }
-
 protected:
+	virtual UWorld* GetWorld() const override;
 	bool IsInRange(ADRCharacter* user, ADRCharacter* target);
 	bool IsValidTarget(ADRCharacter* user, ADRCharacter* target);
 	UPROPERTY(EditDefaultsOnly, Category= "DRAbility")
@@ -36,4 +39,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category= "DRAbility")
 	UTexture2D* mIcon;
 private:
+	UPROPERTY()
+	ADRGameMode* mGameMode;
+	UPROPERTY()
+	ADRPlayerController* mPlayerController;
+	UFUNCTION()
+	void OnLeftMouseDown();
+	UFUNCTION()
+	void OnSelectedAbilityChanged(UDRAbility* ability);
 };

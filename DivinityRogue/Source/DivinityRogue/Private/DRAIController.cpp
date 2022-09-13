@@ -4,6 +4,7 @@
 #include "DRAIController.h"
 
 #include "DRCharacter.h"
+#include "DRGameMode.h"
 
 ADRAIController::ADRAIController()
 {
