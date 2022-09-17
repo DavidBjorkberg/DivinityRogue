@@ -5,6 +5,7 @@
 
 #include "DRCharacter.h"
 #include "DRGameMode.h"
+#include "DRGameplayStatics.h"
 #include "DRPlayerController.h"
 
 UDRAbility::UDRAbility()
@@ -14,23 +15,16 @@ UDRAbility::UDRAbility()
 void UDRAbility::PostInitProperties()
 {
 	UObject::PostInitProperties();
-	if(!GetWorld()) return;
+	if (!GetWorld()) return;
 
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
-	mGameMode->mOnSelectedAbilityChanged.AddDynamic(this,&UDRAbility::OnSelectedAbilityChanged);
+	mGameMode->mOnSelectedAbilityChanged.AddDynamic(this, &UDRAbility::OnSelectedAbilityChanged);
 }
 
-void UDRAbility::Use(ADRCharacter* user, ADRCharacter* target)
+void UDRAbility::Use()
 {
-	user->ModifyEnergy(-mActionPointCost);
-}
-
-bool UDRAbility::CanCast(ADRCharacter* user, ADRCharacter* target)
-{
-	return IsInRange(user, target) &&
-		IsValidTarget(user, target) &&
-		user->GetCharacterStats().mCurrentActionPoints >= mActionPointCost;
+	mGameMode->GetCharacterInPlay()->ModifyEnergy(-mActionPointCost);
 }
 
 UWorld* UDRAbility::GetWorld() const
@@ -47,54 +41,41 @@ UWorld* UDRAbility::GetWorld() const
 	return nullptr;
 }
 
-bool UDRAbility::IsInRange(ADRCharacter* user, ADRCharacter* target)
+bool UDRAbility::IsInRange(ADRCharacter* target)
 {
-	float distanceToTarget = FVector::Dist2D(user->GetActorLocation(), target->GetActorLocation());
+	float distanceToTarget = UDRGameplayStatics::GetDistanceToEdge2D(mOwner,target);
 	return distanceToTarget <= mRange;
 }
 
-bool UDRAbility::IsValidTarget(ADRCharacter* user, ADRCharacter* target)
+bool UDRAbility::IsValidTarget(ADRCharacter* target)
 {
 	switch (mTargetType)
 	{
 	case TargetType::ENEMY:
-		return user->GetTeam() != target->GetTeam();
-		break;
+		return mOwner->GetTeam() != target->GetTeam();
 	case TargetType::ALLY:
-		return user->GetTeam() == target->GetTeam() || target->GetTeam() == ETeam::NEUTRAL;
-		break;
+		return mOwner->GetTeam() == target->GetTeam() || target->GetTeam() == ETeam::NEUTRAL;
 	case TargetType::ANY:
 		return true;
-		break;
 	default:
 		return false;
 	}
 }
 
-void UDRAbility::OnLeftMouseDown()
+bool UDRAbility::CanAffordCast()
 {
-	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
-	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
-	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
-	{
-		ADRCharacter* characterUnderCursor = mPlayerController->GetCharacterUnderCursor();
-		if (characterUnderCursor != nullptr)
-		{
-			mGameMode->GetCharacterInPlay()->TryUseAbility(mGameMode->GetSelectedAbility(), characterUnderCursor);
-		}
-		mGameMode->SetSelectedAbility(-1);
-		mGameMode->SetGameplayState(EGameplayState::PlanningPath);
-	}
+	return mOwner->GetCharacterStats().mCurrentActionPoints >= mActionPointCost;;
 }
 
 void UDRAbility::OnSelectedAbilityChanged(UDRAbility* ability)
 {
-	if(ability == this)
+	if (ability == this)
 	{
-		mPlayerController->mOnLeftMouseDown.AddDynamic(this,&UDRAbility::OnLeftMouseDown);
+		ClearSelection();
+		mPlayerController->mOnLeftMouseDown.AddDynamic(this, &UDRAbility::OnLeftMouseDown);
 	}
 	else
 	{
-		mPlayerController->mOnLeftMouseDown.RemoveDynamic(this,&UDRAbility::OnLeftMouseDown);
+		mPlayerController->mOnLeftMouseDown.RemoveDynamic(this, &UDRAbility::OnLeftMouseDown);
 	}
 }

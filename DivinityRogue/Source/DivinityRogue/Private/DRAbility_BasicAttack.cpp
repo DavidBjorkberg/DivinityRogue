@@ -4,9 +4,9 @@
 #include "DRAbility_BasicAttack.h"
 #include "DRCharacter.h"
 
-void UDRAbility_BasicAttack::Use(ADRCharacter* user, ADRCharacter* target)
+void UDRAbility_BasicAttack::Use()
 {
-	Super::Use(user, target);
-	FDamageEvent damageEvent;
-	target->TakeDamage(mDamage, damageEvent, user->GetController(), user);
+	Super::Use();
+	const FDamageEvent damageEvent;
+	mTarget->TakeDamage(mDamage, damageEvent, mOwner->GetController(), mOwner);
 }

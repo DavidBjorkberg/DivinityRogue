@@ -17,7 +17,7 @@ class DIVINITYROGUE_API UDRUseAbilityNotify : public UAnimNotify
 	GENERATED_BODY()
 public:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
-	void SetParameters(UDRAbility* ability, ADRCharacter* user, ADRCharacter* target);
+	void SetParameters(UDRAbility* ability);
 private:
 	UPROPERTY()
 	UDRAbility* mAbility;

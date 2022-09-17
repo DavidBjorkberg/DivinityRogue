@@ -97,7 +97,6 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	void OrderMoveToLocation(FVector targetLoc);
 	void OrderMoveToActor(AActor* targetActor);
-	bool TryUseAbility(UDRAbility* ability, ADRCharacter* target);
 	void ModifyEnergy(int amount);
 	void EndTurnIfOutOfActionPoints();
 	UFUNCTION()
@@ -106,11 +105,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsInAnimState(EAnimState state) { return state == mCurrentAnimState; }
 
-	void PlayAttackAnimation(UDRAbility* ability, ADRCharacter* target);
+	void PlayAttackAnimation(UDRAbility* ability);
 	void PlayIdleAnimation();
 	void PlayRunAnimation();
 
 	USkeletalMeshComponent* GetSkeletalMeshComp() const { return mSkeletalMeshComponent; }
+	UBoxComponent* GetHitBox() const { return mHitBox; }
 	ETeam GetTeam() const { return mTeam; }
 	UFUNCTION(BlueprintCallable)
 	FCharacterStats GetCharacterStats() const { return mStats; }

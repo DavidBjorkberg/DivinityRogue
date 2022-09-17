@@ -3,19 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DRAbility.h"
+#include "DRAbility_SingleTarget.h"
 #include "DRAbility_BasicAttack.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DIVINITYROGUE_API UDRAbility_BasicAttack : public UDRAbility
+class DIVINITYROGUE_API UDRAbility_BasicAttack : public UDRAbility_SingleTarget
 {
 	GENERATED_BODY()	
 public:
-	virtual void Use(ADRCharacter* user, ADRCharacter* target) override;
-
+	virtual void Use() override;
 protected:
 	UPROPERTY(EditDefaultsOnly, Category= "DRAbility")
 	int mDamage;

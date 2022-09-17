@@ -22,20 +22,19 @@ void ADREnemyAIController::StartRequestAction()
 
 void ADREnemyAIController::RequestAction()
 {
-	TArray<ADRPlayerCharacter*> allPlayerUnits = mGameMode->GetAllPlayerUnits();
-
-	ADRPlayerCharacter* closestPlayerUnit;
-	float closestDistance;
-	UDRGameplayStatics::GetClosestDRCharacterInList(GetPawn(), allPlayerUnits, closestPlayerUnit, closestDistance);
-
 	for (UDRAbility* ability : mOwner->GetCharacterStats().mAbilities)
 	{
-		if (ability->CanCast(mOwner, closestPlayerUnit))
+		if (ability->TrySetRandomTargets())
 		{
-			mOwner->PlayAttackAnimation(ability,closestPlayerUnit);
+			mOwner->PlayAttackAnimation(ability);
 			return;
 		}
 	}
+	TArray<ADRPlayerCharacter*> allPlayerUnits = mGameMode->GetAllPlayerUnits();
+	ADRPlayerCharacter* closestPlayerUnit;
+	float closestDistance;
+	UDRGameplayStatics::GetClosestDRCharacterInList(mOwner, allPlayerUnits, closestPlayerUnit, closestDistance);
+
 	OrderMoveToActor(closestPlayerUnit);
 }
 

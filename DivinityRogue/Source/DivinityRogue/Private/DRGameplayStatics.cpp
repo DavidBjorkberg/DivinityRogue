@@ -8,9 +8,10 @@ FHitResult UDRGameplayStatics::GetHitResultUnderCursor(const UObject* WorldConte
 	FHitResult hitResult;
 	TArray<TEnumAsByte<EObjectTypeQuery>> collisionArray = {
 		UEngineTypes::ConvertToObjectType(objectType),
-};
+	};
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	World->GetFirstPlayerController()->GetHitResultUnderCursorForObjects(collisionArray, true, hitResult);
 
 	return hitResult;
 }
+

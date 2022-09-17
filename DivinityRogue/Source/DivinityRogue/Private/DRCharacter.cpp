@@ -53,17 +53,6 @@ void ADRCharacter::OrderMoveToActor(AActor* targetActor)
 	mController->OrderMoveToActor(targetActor);
 }
 
-bool ADRCharacter::TryUseAbility(UDRAbility* ability, ADRCharacter* target)
-{
-	if (ability->CanCast(this, target))
-	{
-		PlayAttackAnimation(ability, target);
-		return true;
-	}
-
-	return false;
-}
-
 float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
                                AActor* DamageCauser)
 {
@@ -88,6 +77,7 @@ void ADRCharacter::ApplyBaseStats()
 	for (TSubclassOf<UDRAbility> ability : mBaseStats.mAbilities)
 	{
 		UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetLevel(), ability);
+		spawnedAbility->SetOwner(this);
 		mStats.mAbilities.Add(spawnedAbility);
 	}
 	mStats.mName = mBaseStats.mName;
@@ -124,9 +114,9 @@ void ADRCharacter::ModifyEnergy(int amount)
 	mOnEnergyChange.Broadcast(mStats.mCurrentActionPoints);
 }
 
-void ADRCharacter::PlayAttackAnimation(UDRAbility* ability, ADRCharacter* target)
+void ADRCharacter::PlayAttackAnimation(UDRAbility* ability)
 {
-	Cast<UDRUseAbilityNotify>(mAttackAnimation->Notifies[0].Notify)->SetParameters(ability, this, target);
+	Cast<UDRUseAbilityNotify>(mAttackAnimation->Notifies[0].Notify)->SetParameters(ability);
 	SetAnimState(EAnimState::ATTACK);
 }
 

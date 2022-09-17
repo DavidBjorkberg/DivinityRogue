@@ -21,6 +21,16 @@ public:
 
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
+	static void SortActorListByDistance(AActor* thisActor, TArray<T*>& actorList)
+	{
+		actorList.Sort([thisActor](const AActor& A, const AActor& B)
+		{
+			return  A.GetDistanceTo(thisActor) > B.GetDistanceTo(thisActor);
+		});
+	}
+
+	template <class T>
+	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
 	static bool GetClosestDRCharacterInList(AActor* thisActor, TArray<T*> actorList, T*& outClosestPawn,
 	                                        float& outClosestDistance)
 	{
@@ -32,9 +42,7 @@ public:
 
 			if (character == thisActor) continue;
 
-			FVector closestPoint;
-			character->GetSkeletalMeshComp()->GetClosestPointOnCollision(thisActor->GetActorLocation(), closestPoint);
-			float distanceToActor = FVector::Dist(thisActor->GetActorLocation(), closestPoint);
+			float distanceToActor = GetDistanceToEdge2D(Cast<ADRCharacter>(thisActor),character);
 			if (closestDistance == -1 ||
 				distanceToActor < closestDistance)
 			{
@@ -47,6 +55,16 @@ public:
 		outClosestPawn = closestActor;
 		outClosestDistance = closestDistance;
 		return true;
+	}
+
+	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
+	static float GetDistanceToEdge2D(ADRCharacter* thisActor, ADRCharacter* otherActor)
+	{
+		FVector closestPoint;
+		float test = otherActor->GetHitBox()->GetClosestPointOnCollision(thisActor->GetActorLocation(), closestPoint);
+		float distanceToActor = FVector::Dist2D(thisActor->GetActorLocation(), closestPoint);
+		return distanceToActor;
+
 	}
 
 	template <class T>

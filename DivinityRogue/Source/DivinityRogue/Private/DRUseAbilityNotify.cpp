@@ -7,14 +7,10 @@ void UDRUseAbilityNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequence
 {
 	if(MeshComp->GetName().Contains("Debug")) return;
 	check(mAbility != nullptr)
-	check(mUser != nullptr)
-	check(mTarget != nullptr)
-	mAbility->Use(mUser, mTarget);
+	mAbility->Use();
 }
 
-void UDRUseAbilityNotify::SetParameters(UDRAbility* ability, ADRCharacter* user, ADRCharacter* target)
+void UDRUseAbilityNotify::SetParameters(UDRAbility* ability)
 {
 	mAbility = ability;
-	mUser = user;
-	mTarget = target;
 }
