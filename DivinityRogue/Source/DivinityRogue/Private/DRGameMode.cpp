@@ -107,7 +107,7 @@ void ADRGameMode::StartTurn()
 {
 	if (mTurnQueue.Num() == 0)
 	{
-		FillTurnQueue();
+		StartRound();
 	}
 	if (mTurnQueue.Num() == 0) return;
 
@@ -119,7 +119,7 @@ void ADRGameMode::StartTurn()
 	SetGameplayState(EGameplayState::PlanningPath);
 	if (ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController()))
 	{
-		enemyController->RequestAction();
+		enemyController->StartRequestAction();
 	}
 }
 
@@ -137,6 +137,12 @@ void ADRGameMode::FillTurnQueue()
 	{
 		return a.GetCharacterStats().mSpeed > b.GetCharacterStats().mSpeed;
 	});
+}
+
+void ADRGameMode::StartRound()
+{
+	mOnNewRound.Broadcast();
+	FillTurnQueue();
 }
 
 void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)

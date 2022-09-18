@@ -24,7 +24,6 @@ void ADRPlayerController::Tick(float DeltaSeconds)
 	}
 
 	UpdateCharacterUnderCursor();
-	HoverPanelCheck();
 }
 
 
@@ -75,6 +74,7 @@ void ADRPlayerController::OnLeftMouseClick()
 	mOnLeftMouseDown.Broadcast();
 }
 
+
 void ADRPlayerController::OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState)
 {
 	if (oldState == EGameplayState::PlanningPath)
@@ -97,25 +97,15 @@ void ADRPlayerController::OnCharacterUnderCursorChanged(ADRCharacter* previousCh
 	}
 	if (characterUnderCursor != nullptr)
 	{
+		mHUD->ShowHoverPanel(mCharacterUnderCursor);
 		mMovementSpline->ClearSpline();
 		CurrentMouseCursor = EMouseCursor::Type::Crosshairs;
 		characterUnderCursor->FindComponentByClass<UPrimitiveComponent>()->SetRenderCustomDepth(true);
 	}
 	else
 	{
-		CurrentMouseCursor = EMouseCursor::Type::Default;
-	}
-}
-
-void ADRPlayerController::HoverPanelCheck()
-{
-	if (mCharacterUnderCursor != nullptr && !mHUD->IsShowingHoverPanel())
-	{
-		mHUD->ShowHoverPanel(mCharacterUnderCursor);
-	}
-	else if (mCharacterUnderCursor == nullptr && mHUD->IsShowingHoverPanel())
-	{
 		mHUD->HideHoverPanel();
+		CurrentMouseCursor = EMouseCursor::Type::Default;
 	}
 }
 
@@ -123,22 +113,21 @@ void ADRPlayerController::UpdateCharacterUnderCursor()
 {
 	FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(
 		GetWorld(), ECollisionChannel::ECC_Pawn);
+	ADRCharacter* previousCharacter = mCharacterUnderCursor;
 	if (hitResult.bBlockingHit)
 	{
 		if (ADRCharacter* hitCharacter = Cast<ADRCharacter>(hitResult.GetActor()))
 		{
-			if (hitCharacter != mCharacterUnderCursor)
-			{
-				ADRCharacter* previousCharacter = mCharacterUnderCursor;
-				mCharacterUnderCursor = hitCharacter;
-				mOnCharacterUnderCursorChanged.Broadcast(previousCharacter, mCharacterUnderCursor);
-			}
+			mCharacterUnderCursor = hitCharacter;
 		}
 	}
-	else if (mCharacterUnderCursor != nullptr)
+	else
 	{
-		ADRCharacter* previousCharacter = mCharacterUnderCursor;
 		mCharacterUnderCursor = nullptr;
+	}
+	
+	if (previousCharacter != mCharacterUnderCursor)
+	{
 		mOnCharacterUnderCursorChanged.Broadcast(previousCharacter, mCharacterUnderCursor);
 	}
 }

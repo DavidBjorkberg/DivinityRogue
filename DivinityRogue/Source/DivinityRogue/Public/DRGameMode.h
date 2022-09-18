@@ -26,6 +26,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameplayStateChange, EGameplayStat
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNewturn, ADRCharacter*, previousCharacter, ADRCharacter*, newCharacter);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSelectedAbilityChanged, UDRAbility*, ability);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNewRound);
 
 UCLASS()
 class DIVINITYROGUE_API ADRGameMode : public AGameModeBase
@@ -54,6 +55,8 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FNewturn mOnNewTurn;
 	UPROPERTY(BlueprintAssignable)
+	FNewRound mOnNewRound;
+	UPROPERTY(BlueprintAssignable)
 	FSelectedAbilityChanged mOnSelectedAbilityChanged;
 protected:
 	UPROPERTY(BlueprintReadOnly)
@@ -66,6 +69,7 @@ private:
 	void StartMatch();
 	void StartTurn();
 	void FillTurnQueue();
+	void StartRound();
 	UFUNCTION()
 	void OnUnitDied(ADRCharacter* deadUnit);
 	void FindPathToMouse();

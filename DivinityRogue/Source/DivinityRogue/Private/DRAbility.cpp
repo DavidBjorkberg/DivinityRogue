@@ -69,13 +69,15 @@ bool UDRAbility::CanAffordCast()
 
 void UDRAbility::OnSelectedAbilityChanged(UDRAbility* ability)
 {
-	if (ability == this)
+	if (ability == this && !mIsSelected)
 	{
+		mIsSelected = true;
 		ClearSelection();
 		mPlayerController->mOnLeftMouseDown.AddDynamic(this, &UDRAbility::OnLeftMouseDown);
 	}
 	else
 	{
+		mIsSelected = false;
 		mPlayerController->mOnLeftMouseDown.RemoveDynamic(this, &UDRAbility::OnLeftMouseDown);
 	}
 }

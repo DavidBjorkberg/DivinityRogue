@@ -56,4 +56,5 @@ protected:
 private:
 	UFUNCTION()
 	void OnSelectedAbilityChanged(UDRAbility* ability);
+	bool mIsSelected;
 };

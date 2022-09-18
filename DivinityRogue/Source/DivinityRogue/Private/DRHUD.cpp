@@ -36,12 +36,15 @@ void ADRHUD::DrawHUD()
 	{
 		const float characterMovement = mGameMode->GetCharacterInPlay()->GetCharacterStats().mMovement;
 		float pathLength = mGameMode->GetPathToMouse()->GetPathLength();
-		pathLength -= mGameMode->GetCharacterInPlay()->mDistanceLeftUntilEnergyCost;
-		int energyCost = FMath::CeilToInt(pathLength / characterMovement);
-		float x;
-		float y;
-		GetWorld()->GetFirstPlayerController()->GetMousePosition(x, y);
-		DrawText(TEXT("Cost: " + FString::FromInt(energyCost)), FLinearColor::Black, x + 30, y, nullptr, 1.5);
+		if (pathLength > 0)
+		{
+			pathLength -= mGameMode->GetCharacterInPlay()->mDistanceLeftUntilEnergyCost;
+			int energyCost = FMath::CeilToInt(pathLength / characterMovement);
+			float x;
+			float y;
+			GetWorld()->GetFirstPlayerController()->GetMousePosition(x, y);
+			DrawText(TEXT("Cost: " + FString::FromInt(energyCost)), FLinearColor::Black, x + 30, y, nullptr, 1.5);
+		}
 	}
 }
 

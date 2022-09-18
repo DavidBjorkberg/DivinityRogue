@@ -16,12 +16,15 @@ class DIVINITYROGUE_API ADREnemyAIController : public ADRAIController
 public:
 	virtual void BeginPlay() override;
 	void StartRequestAction();
-	void RequestAction();
 	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
 	virtual void OnFinishedAttack() override;
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	float mRequestActionDelay = 1;
+	UPROPERTY(EditDefaultsOnly)
+	float mAdjacentToActorThreshold;
 private:
+	UFUNCTION()
+	void RequestAction();
 	FTimerHandle RequestActionTimer;
 };

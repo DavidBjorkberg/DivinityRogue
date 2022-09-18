@@ -17,11 +17,15 @@ void ADREnemyAIController::BeginPlay()
 void ADREnemyAIController::StartRequestAction()
 {
 	check(!GetWorldTimerManager().IsTimerActive(RequestActionTimer));
-	GetWorldTimerManager().SetTimer(RequestActionTimer,this,&ADREnemyAIController::RequestAction,mRequestActionDelay);
+	UE_LOG(LogTemp, Warning, TEXT("Start: %f"), FPlatformTime::Seconds());
+	GetWorldTimerManager().SetTimer(RequestActionTimer, this, &ADREnemyAIController::RequestAction,
+	                                mRequestActionDelay);
 }
 
 void ADREnemyAIController::RequestAction()
 {
+	GetWorldTimerManager().ClearTimer(RequestActionTimer); // This shouldn't be necessary, timer has run out.
+	UE_LOG(LogTemp, Warning, TEXT("End: %f"), FPlatformTime::Seconds());
 	for (UDRAbility* ability : mOwner->GetCharacterStats().mAbilities)
 	{
 		if (ability->TrySetRandomTargets())
@@ -35,7 +39,14 @@ void ADREnemyAIController::RequestAction()
 	float closestDistance;
 	UDRGameplayStatics::GetClosestDRCharacterInList(mOwner, allPlayerUnits, closestPlayerUnit, closestDistance);
 
-	OrderMoveToActor(closestPlayerUnit);
+	if (closestDistance > mAdjacentToActorThreshold)
+	{
+		OrderMoveToActor(closestPlayerUnit);
+	}
+	else
+	{
+		mGameMode->EndTurn();
+	}
 }
 
 void ADREnemyAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
@@ -55,4 +66,3 @@ void ADREnemyAIController::OnFinishedAttack()
 		StartRequestAction();
 	}
 }
-

@@ -12,12 +12,15 @@ void UDRAbility_MultiTarget::OnLeftMouseDown()
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
 		ADRCharacter* characterUnderCursor = mPlayerController->GetCharacterUnderCursor();
-		if (characterUnderCursor != nullptr && IsValidTarget(characterUnderCursor) && IsInRange(characterUnderCursor))
+		if (characterUnderCursor != nullptr)
 		{
-			mTargetedCharacters.Add(characterUnderCursor);
-			if (mTargetedCharacters.Num() == mNumberOfTargets)
+			if (IsValidTarget(characterUnderCursor) && IsInRange(characterUnderCursor))
 			{
-				mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
+				mTargetedCharacters.Add(characterUnderCursor);
+				if (mTargetedCharacters.Num() == mNumberOfTargets)
+				{
+					mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
+				}
 			}
 		}
 		else
