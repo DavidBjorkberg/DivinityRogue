@@ -1,0 +1,18 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "DRAbility_GroundTarget.h"
+#include "DRAbility_Leap.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class DIVINITYROGUE_API UDRAbility_Leap : public UDRAbility_GroundTarget
+{
+	GENERATED_BODY()
+public:
+	virtual void Use() override;
+};

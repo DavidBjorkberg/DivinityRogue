@@ -3,6 +3,8 @@
 
 #include "DRGameplayStatics.h"
 
+#include "NavigationSystem.h"
+
 FHitResult UDRGameplayStatics::GetHitResultUnderCursor(const UObject* WorldContextObject, ECollisionChannel objectType)
 {
 	FHitResult hitResult;
@@ -13,5 +15,14 @@ FHitResult UDRGameplayStatics::GetHitResultUnderCursor(const UObject* WorldConte
 	World->GetFirstPlayerController()->GetHitResultUnderCursorForObjects(collisionArray, true, hitResult);
 
 	return hitResult;
+}
+
+bool UDRGameplayStatics::GetWalkableGroundPositionUnderCursor(const UObject* worldContextObject, FVector& outLocation)
+{
+	FHitResult hitResult = GetHitResultUnderCursor(worldContextObject,ECollisionChannel::ECC_WorldStatic);
+	FNavLocation positionOnNavMesh;
+	bool isOnNavMesh = UNavigationSystemV1::GetCurrent((UWorld*)worldContextObject)->ProjectPointToNavigation(hitResult.Location,positionOnNavMesh);
+	outLocation = positionOnNavMesh.Location;
+	return isOnNavMesh;
 }
 

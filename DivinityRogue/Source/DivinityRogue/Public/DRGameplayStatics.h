@@ -18,7 +18,8 @@ class DIVINITYROGUE_API UDRGameplayStatics : public UGameplayStatics
 public:
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
 	static FHitResult GetHitResultUnderCursor(const UObject* WorldContextObject, ECollisionChannel objectType);
-
+	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
+	static bool GetWalkableGroundPositionUnderCursor(const UObject* worldContextObject, FVector& outLocation);
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
 	static void SortActorListByDistance(AActor* thisActor, TArray<T*>& actorList)
