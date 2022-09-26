@@ -24,7 +24,7 @@ void UDRAbility::PostInitProperties()
 
 void UDRAbility::Use()
 {
-	mGameMode->GetCharacterInPlay()->ModifyEnergy(-mActionPointCost);
+	mGameMode->GetCharacterInPlay()->ModifyEnergy(-mAbilityInfo.mActionPointCost);
 }
 
 UWorld* UDRAbility::GetWorld() const
@@ -44,12 +44,12 @@ UWorld* UDRAbility::GetWorld() const
 bool UDRAbility::IsInRange(ADRCharacter* target)
 {
 	float distanceToTarget = UDRGameplayStatics::GetDistanceToEdge2D(mOwner,target);
-	return distanceToTarget <= mRange;
+	return distanceToTarget <= mAbilityInfo.mRange;
 }
 
 bool UDRAbility::IsValidTarget(ADRCharacter* target)
 {
-	switch (mTargetType)
+	switch (mAbilityInfo.mTargetType)
 	{
 	case TargetType::ENEMY:
 		return mOwner->GetTeam() != target->GetTeam();
@@ -64,7 +64,7 @@ bool UDRAbility::IsValidTarget(ADRCharacter* target)
 
 bool UDRAbility::CanAffordCast()
 {
-	return mOwner->GetCharacterStats().mCurrentActionPoints >= mActionPointCost;;
+	return mOwner->GetCharacterStats().mCurrentActionPoints >= mAbilityInfo.mActionPointCost;;
 }
 
 void UDRAbility::OnSelectedAbilityChanged(UDRAbility* ability)

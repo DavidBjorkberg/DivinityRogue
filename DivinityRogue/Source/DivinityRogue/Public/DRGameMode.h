@@ -37,19 +37,26 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	void EndTurn();
-	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; }
 	bool IsPlayersTurn();
-	UFUNCTION(BlueprintPure)
-	bool IsInGameplayState(EGameplayState state) { return state == mCurrentGameplayState; }
-
+	UFUNCTION(BlueprintCallable)
+	void SpawnCharacter(TSubclassOf<ADRCharacter> charToSpawn, FVector spawnPos);
+	//Set
 	void SetGameplayState(EGameplayState newState);
 	UFUNCTION(BlueprintCallable)
 	void SetSelectedAbility(int index);
+	//
+	
+	//Get
+	UFUNCTION(BlueprintPure)
+	bool IsInGameplayState(EGameplayState state) { return state == mCurrentGameplayState; }
 	UDRAbility* GetSelectedAbility() const { return mSelectedAbility; }
+	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; }
 	TArray<ADREnemyCharacter*> GetAllEnemyUnits();
 	TArray<ADRPlayerCharacter*> GetAllPlayerUnits();
 	UFUNCTION(BlueprintCallable)
 	UNavigationPath* GetPathToMouse();
+	//
+	
 	UPROPERTY(BlueprintAssignable)
 	FGameplayStateChange mOnGameplayStateChanged;
 	UPROPERTY(BlueprintAssignable)

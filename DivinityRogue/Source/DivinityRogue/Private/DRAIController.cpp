@@ -10,11 +10,12 @@ ADRAIController::ADRAIController()
 {
 }
 
-void ADRAIController::BeginPlay()
+void ADRAIController::OnPossess(APawn* InPawn)
 {
-	Super::BeginPlay();
-	mOwner = Cast<ADRCharacter>(GetPawn());
+	Super::OnPossess(InPawn);
+	mOwner = Cast<ADRCharacter>(InPawn);
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
+
 }
 
 void ADRAIController::OnFinishedAttack()

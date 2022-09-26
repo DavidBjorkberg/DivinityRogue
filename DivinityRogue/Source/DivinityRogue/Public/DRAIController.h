@@ -24,7 +24,7 @@ public:
 	void OrderMoveToLocation(FVector targetLoc);
 	void OrderMoveToActor(AActor* targetActor);
 	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
-	virtual void BeginPlay() override;
+	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnFinishedAttack();
 protected:
 	UPROPERTY()

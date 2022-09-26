@@ -103,6 +103,16 @@ bool ADRGameMode::IsPlayersTurn()
 	return Cast<ADRPlayerCharacter>(mCharacterInPlay) != nullptr;
 }
 
+void ADRGameMode::SpawnCharacter(TSubclassOf<ADRCharacter> charToSpawn, FVector spawnPos)
+{
+	ADRCharacter* spawnedChar = GetWorld()->SpawnActor<ADRCharacter>(charToSpawn);
+	check(spawnedChar)
+	spawnedChar->SetActorLocation(spawnPos);
+	spawnedChar->mOnUnitDied.AddDynamic(this, &ADRGameMode::OnUnitDied);
+	mALlCharacters.Add(spawnedChar);
+
+}
+
 void ADRGameMode::StartTurn()
 {
 	if (mTurnQueue.Num() == 0)
