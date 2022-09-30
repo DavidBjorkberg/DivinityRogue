@@ -5,19 +5,19 @@
 
 #include "DRGameplayStatics.h"
 #include "NavigationSystem.h"
+#include "Components/DecalComponent.h"
 
-void UDRAbility_GroundTarget::OnLeftMouseDown()
+
+void UDRAbility_GroundTarget::Tick(float DeltaTime)
 {
-	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
+	if (mIsSelected)
 	{
-		FVector walkableGroundUnderCursor;
-		if (UDRGameplayStatics::GetWalkableGroundPositionUnderCursor(GetWorld(), walkableGroundUnderCursor))
+		FHitResult mouseGroundHitResult;
+		if (UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, mouseGroundHitResult, false))
 		{
-			mTargetLocation = walkableGroundUnderCursor;
-			mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
+			mDecalActorInst->SetActorLocation(mouseGroundHitResult.Location);
+			mDecalActorInst->SetActorRotation((-mouseGroundHitResult.Normal).Rotation());
 		}
-		mGameMode->SetSelectedAbility(-1);
-		mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 	}
 }
 
@@ -42,4 +42,23 @@ bool UDRAbility_GroundTarget::CanCast()
 void UDRAbility_GroundTarget::ClearSelection()
 {
 	mTargetLocation = FVector::ZeroVector;
+}
+
+void UDRAbility_GroundTarget::OnAbilitySelected()
+{
+	Super::OnAbilitySelected();
+	mDecalActorInst = GetWorld()->SpawnActor<ADRGroundAreaDecal>(mDecalActor);
+	SetDecalMaterial(mDecalMaterial);
+	mDecalActorInst->SetRadius(mRadius);
+}
+
+void UDRAbility_GroundTarget::OnAbilityDeselected()
+{
+	Super::OnAbilityDeselected();
+	mDecalActorInst->Destroy();
+}
+
+void UDRAbility_GroundTarget::SetDecalMaterial(UMaterialInterface* newMaterial)
+{
+	mDecalActorInst->GetDecalComponent()->SetDecalMaterial(newMaterial);
 }

@@ -57,18 +57,23 @@ protected:
 	virtual void OnLeftMouseDown() PURE_VIRTUAL(UDRAbility::OnLeftMouseDown,);
 	virtual bool IsValidTarget(ADRCharacter* target);
 	virtual void ClearSelection() PURE_VIRTUAL(UDRAbility::ClearSelection,;)
+	virtual void OnAbilitySelected();
+	virtual void OnAbilityDeselected();
 	bool CanAffordCast();
 	bool IsInRange(ADRCharacter* target);
+	bool IsInRange(FVector targetLocation);
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	FAbilityInfo mAbilityInfo;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 	UPROPERTY()
+	UWorld* mWorld;
+	UPROPERTY()
 	ADRPlayerController* mPlayerController;
 	UPROPERTY()
 	ADRCharacter* mOwner;
+	bool mIsSelected;
 private:
 	UFUNCTION()
 	void OnSelectedAbilityChanged(UDRAbility* ability);
-	bool mIsSelected;
 };

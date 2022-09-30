@@ -25,6 +25,8 @@ ADRCharacter::ADRCharacter()
 	mHitBox->SetCollisionProfileName("Pawn");
 	mHitBox->SetCanEverAffectNavigation(false);
 	mHitBox->SetupAttachment(mRoot);
+	mSkeletalMeshComponent->SetReceivesDecals(false);
+	mHitBox->SetReceivesDecals(false);
 }
 
 void ADRCharacter::BeginPlay()

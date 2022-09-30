@@ -4,22 +4,42 @@
 
 #include "CoreMinimal.h"
 #include "DRAbility.h"
+#include "DRGroundAreaDecal.h"
+#include "Tickable.h"
 #include "DRAbility_GroundTarget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DIVINITYROGUE_API UDRAbility_GroundTarget : public UDRAbility
+class DIVINITYROGUE_API UDRAbility_GroundTarget : public UDRAbility, public FTickableGameObject
 {
 	GENERATED_BODY()
 
+public:
+	virtual TStatId GetStatId() const override
+	{
+		return UObject::GetStatID();
+	}
+
 protected:
-	virtual void OnLeftMouseDown() override;
+	virtual void Tick(float DeltaTime) override;
 	virtual bool TrySetRandomTargets() override;
 	virtual bool CanCast() override;
 	virtual void ClearSelection() override;
+	virtual void OnAbilitySelected() override;
+	virtual void OnAbilityDeselected() override;
+	void SetDecalMaterial(UMaterialInterface* newMaterial);
+	UPROPERTY(EditDefaultsOnly)
+	float mRadius;
 	UPROPERTY()
 	FVector mTargetLocation;
-	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ADRGroundAreaDecal> mDecalActor;
+	UPROPERTY(EditDefaultsOnly)
+	UMaterialInterface* mDecalMaterial;
+	UPROPERTY(EditDefaultsOnly)
+	UMaterialInterface* mInvalidDecalMaterial;
+	UPROPERTY()
+	ADRGroundAreaDecal* mDecalActorInst;
 };

@@ -17,7 +17,8 @@ void UDRAbility::PostInitProperties()
 	UObject::PostInitProperties();
 	if (!GetWorld()) return;
 
-	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
+	mWorld = GetWorld();
+	mGameMode = mWorld->GetAuthGameMode<ADRGameMode>();
 	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
 	mGameMode->mOnSelectedAbilityChanged.AddDynamic(this, &UDRAbility::OnSelectedAbilityChanged);
 }
@@ -25,6 +26,19 @@ void UDRAbility::PostInitProperties()
 void UDRAbility::Use()
 {
 	mGameMode->GetCharacterInPlay()->ModifyEnergy(-mAbilityInfo.mActionPointCost);
+}
+
+void UDRAbility::OnAbilitySelected()
+{
+	mIsSelected = true;
+	ClearSelection();
+	mPlayerController->mOnLeftMouseDown.AddDynamic(this, &UDRAbility::OnLeftMouseDown);
+}
+
+void UDRAbility::OnAbilityDeselected()
+{
+	mIsSelected = false;
+	mPlayerController->mOnLeftMouseDown.RemoveDynamic(this, &UDRAbility::OnLeftMouseDown);
 }
 
 UWorld* UDRAbility::GetWorld() const
@@ -44,6 +58,12 @@ UWorld* UDRAbility::GetWorld() const
 bool UDRAbility::IsInRange(ADRCharacter* target)
 {
 	float distanceToTarget = UDRGameplayStatics::GetDistanceToEdge2D(mOwner,target);
+	return distanceToTarget <= mAbilityInfo.mRange;
+}
+
+bool UDRAbility::IsInRange(FVector targetLocation)
+{
+	float distanceToTarget = FVector::Distance(mOwner->GetActorLocation(),targetLocation);
 	return distanceToTarget <= mAbilityInfo.mRange;
 }
 
@@ -71,13 +91,10 @@ void UDRAbility::OnSelectedAbilityChanged(UDRAbility* ability)
 {
 	if (ability == this && !mIsSelected)
 	{
-		mIsSelected = true;
-		ClearSelection();
-		mPlayerController->mOnLeftMouseDown.AddDynamic(this, &UDRAbility::OnLeftMouseDown);
+		OnAbilitySelected();
 	}
 	else
 	{
-		mIsSelected = false;
-		mPlayerController->mOnLeftMouseDown.RemoveDynamic(this, &UDRAbility::OnLeftMouseDown);
+		OnAbilityDeselected();
 	}
 }

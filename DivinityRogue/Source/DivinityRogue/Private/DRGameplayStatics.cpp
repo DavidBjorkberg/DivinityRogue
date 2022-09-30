@@ -17,12 +17,20 @@ FHitResult UDRGameplayStatics::GetHitResultUnderCursor(const UObject* WorldConte
 	return hitResult;
 }
 
-bool UDRGameplayStatics::GetWalkableGroundPositionUnderCursor(const UObject* worldContextObject, FVector& outLocation)
+bool UDRGameplayStatics::GetGroundHitResultUnderCursor(const UObject* worldContextObject, FHitResult& outHitResult,
+                                                       bool onlyWalkable)
 {
-	FHitResult hitResult = GetHitResultUnderCursor(worldContextObject,ECollisionChannel::ECC_WorldStatic);
-	FNavLocation positionOnNavMesh;
-	bool isOnNavMesh = UNavigationSystemV1::GetCurrent((UWorld*)worldContextObject)->ProjectPointToNavigation(hitResult.Location,positionOnNavMesh);
-	outLocation = positionOnNavMesh.Location;
-	return isOnNavMesh;
-}
+	FHitResult hitResult = GetHitResultUnderCursor(worldContextObject, ECollisionChannel::ECC_WorldStatic);
+	if (!hitResult.bBlockingHit) return false;
+	outHitResult = hitResult;
 
+	if (onlyWalkable)
+	{
+		FNavLocation positionOnNavMesh;
+		bool isOnNavMesh = UNavigationSystemV1::GetCurrent((UWorld*)worldContextObject)->ProjectPointToNavigation(
+			hitResult.Location, positionOnNavMesh);
+		outHitResult.Location = positionOnNavMesh.Location;
+		return isOnNavMesh;
+	}
+	return true;
+}

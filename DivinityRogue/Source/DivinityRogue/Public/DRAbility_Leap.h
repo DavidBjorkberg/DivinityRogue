@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DRAbility_GroundTarget.h"
+#include "DRAbility_GroundTarget_Exclusive.h"
 #include "DRAbility_Leap.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DIVINITYROGUE_API UDRAbility_Leap : public UDRAbility_GroundTarget
+class DIVINITYROGUE_API UDRAbility_Leap : public UDRAbility_GroundTarget_Exclusive
 {
 	GENERATED_BODY()
 public:

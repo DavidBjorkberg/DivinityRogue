@@ -19,7 +19,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
 	static FHitResult GetHitResultUnderCursor(const UObject* WorldContextObject, ECollisionChannel objectType);
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
-	static bool GetWalkableGroundPositionUnderCursor(const UObject* worldContextObject, FVector& outLocation);
+	static bool GetGroundHitResultUnderCursor(const UObject* worldContextObject, FHitResult& outHitResult, bool onlyWalkable);
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
 	static void SortActorListByDistance(AActor* thisActor, TArray<T*>& actorList)
