@@ -57,7 +57,7 @@ UWorld* UDRAbility::GetWorld() const
 
 bool UDRAbility::IsInRange(ADRCharacter* target)
 {
-	float distanceToTarget = UDRGameplayStatics::GetDistanceToEdge2D(mOwner,target);
+	float distanceToTarget = UDRGameplayStatics::GetDistanceToEdge2D(mOwner->GetActorLocation(),target);
 	return distanceToTarget <= mAbilityInfo.mRange;
 }
 

@@ -10,7 +10,10 @@ void UDRAbility_GroundTarget_Exclusive::OnLeftMouseDown()
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
 		FHitResult groundUnderCursorHitResult;
-		if (UDRGameplayStatics::GetGroundHitResultUnderCursor(GetWorld(), groundUnderCursorHitResult, true) && IsInRange(groundUnderCursorHitResult.Location))
+		if (UDRGameplayStatics::GetGroundHitResultUnderCursor(GetWorld(), groundUnderCursorHitResult, true) &&
+			IsInRange(groundUnderCursorHitResult.Location) &&
+			UDRGameplayStatics::GetAllCharactersInRadius(mWorld, groundUnderCursorHitResult.Location, mRadius).Num() ==
+			0)
 		{
 			mTargetLocation = groundUnderCursorHitResult.Location;
 			mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
@@ -26,7 +29,9 @@ void UDRAbility_GroundTarget_Exclusive::Tick(float DeltaTime)
 	if (mIsSelected)
 	{
 		FHitResult groundUnderCursorHitResult;
-		if (!UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, groundUnderCursorHitResult, true) || !IsInRange(groundUnderCursorHitResult.Location))
+		if (!UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, groundUnderCursorHitResult, true) ||
+			!IsInRange(groundUnderCursorHitResult.Location) ||
+			UDRGameplayStatics::GetAllCharactersInRadius(mWorld, groundUnderCursorHitResult.Location, mRadius).Num() > 0)
 		{
 			SetDecalMaterial(mInvalidDecalMaterial);
 		}

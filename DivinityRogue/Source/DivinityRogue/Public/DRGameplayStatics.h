@@ -43,7 +43,7 @@ public:
 
 			if (character == thisActor) continue;
 
-			float distanceToActor = GetDistanceToEdge2D(Cast<ADRCharacter>(thisActor),character);
+			float distanceToActor = GetDistanceToEdge2D(thisActor->GetActorLocation(),character);
 			if (closestDistance == -1 ||
 				distanceToActor < closestDistance)
 			{
@@ -59,11 +59,11 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
-	static float GetDistanceToEdge2D(ADRCharacter* thisActor, ADRCharacter* otherActor)
+	static float GetDistanceToEdge2D(FVector location, ADRCharacter* otherActor)
 	{
 		FVector closestPoint;
-		float test = otherActor->GetHitBox()->GetClosestPointOnCollision(thisActor->GetActorLocation(), closestPoint);
-		float distanceToActor = FVector::Dist2D(thisActor->GetActorLocation(), closestPoint);
+		otherActor->GetHitBox()->GetClosestPointOnCollision(location, closestPoint);
+		float distanceToActor = FVector::Dist2D(location, closestPoint);
 		return distanceToActor;
 
 	}
@@ -77,5 +77,20 @@ public:
 		{
 			outActors.Add(*It);
 		}
+	}
+	static TArray<ADRCharacter*> GetAllCharactersInRadius(const UObject* WorldContextObject, FVector location, float radius)
+	{
+		TArray<ADRCharacter*> allCharacters;
+		FindAllActors<ADRCharacter>(WorldContextObject,allCharacters);
+
+		TArray<ADRCharacter*> charactersInRadius;
+		for (auto character : allCharacters)
+		{
+			if(GetDistanceToEdge2D(location,character) <= radius)
+			{
+				charactersInRadius.Add(character);
+			}
+		}
+		return charactersInRadius;
 	}
 };
