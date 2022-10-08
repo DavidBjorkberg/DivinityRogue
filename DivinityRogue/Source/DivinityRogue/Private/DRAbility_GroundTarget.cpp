@@ -18,6 +18,14 @@ void UDRAbility_GroundTarget::Tick(float DeltaTime)
 			mDecalActorInst->SetActorLocation(mouseGroundHitResult.Location);
 			mDecalActorInst->SetActorRotation((-mouseGroundHitResult.Normal).Rotation());
 		}
+		if (IsOnValidArea())
+		{
+			SetDecalMaterial(mDecalMaterial);
+		}
+		else
+		{
+			SetDecalMaterial(mInvalidDecalMaterial);
+		}
 	}
 }
 
@@ -56,6 +64,13 @@ void UDRAbility_GroundTarget::OnAbilityDeselected()
 {
 	Super::OnAbilityDeselected();
 	mDecalActorInst->Destroy();
+}
+
+bool UDRAbility_GroundTarget::IsOnValidArea()
+{
+	FHitResult groundUnderCursorHitResult;
+	UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, groundUnderCursorHitResult, false);
+	return IsInRange(groundUnderCursorHitResult.Location);
 }
 
 void UDRAbility_GroundTarget::SetDecalMaterial(UMaterialInterface* newMaterial)

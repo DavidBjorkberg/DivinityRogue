@@ -93,7 +93,7 @@ void UDRAbility::OnSelectedAbilityChanged(UDRAbility* ability)
 	{
 		OnAbilitySelected();
 	}
-	else
+	else if(mIsSelected)
 	{
 		OnAbilityDeselected();
 	}

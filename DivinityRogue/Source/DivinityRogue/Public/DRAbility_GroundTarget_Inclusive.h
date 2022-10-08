@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "DRAbility_GroundTarget.h"
-#include "DRAbility_GroundTarget_Exclusive.generated.h"
+#include "DRAbility_GroundTarget_Inclusive.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DIVINITYROGUE_API UDRAbility_GroundTarget_Exclusive : public UDRAbility_GroundTarget
+class DIVINITYROGUE_API UDRAbility_GroundTarget_Inclusive : public UDRAbility_GroundTarget
 {
 	GENERATED_BODY()
 public:
 	virtual void OnLeftMouseDown() override;
 protected:
-	virtual bool IsOnValidArea() override;
-
+	UPROPERTY()
+	TArray<ADRCharacter*> mTargets;
 };

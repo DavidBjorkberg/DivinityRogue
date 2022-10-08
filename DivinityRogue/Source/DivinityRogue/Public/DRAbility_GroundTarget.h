@@ -29,6 +29,7 @@ protected:
 	virtual void ClearSelection() override;
 	virtual void OnAbilitySelected() override;
 	virtual void OnAbilityDeselected() override;
+	virtual bool IsOnValidArea();
 	void SetDecalMaterial(UMaterialInterface* newMaterial);
 	UPROPERTY(EditDefaultsOnly)
 	float mRadius;
