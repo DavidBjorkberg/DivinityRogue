@@ -25,7 +25,6 @@ void UDRAbility_GroundTarget_Inclusive::OnLeftMouseDown()
 			}
 			mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
 		}
-		mGameMode->SetSelectedAbility(-1);
-		mGameMode->SetGameplayState(EGameplayState::PlanningPath);
+			DeselectAbility();
 	}
 }

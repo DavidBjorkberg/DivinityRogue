@@ -41,6 +41,12 @@ void UDRAbility::OnAbilityDeselected()
 	mPlayerController->mOnLeftMouseDown.RemoveDynamic(this, &UDRAbility::OnLeftMouseDown);
 }
 
+void UDRAbility::DeselectAbility()
+{
+	mGameMode->SetSelectedAbility(-1);
+	mGameMode->SetGameplayState(EGameplayState::PlanningPath);
+}
+
 UWorld* UDRAbility::GetWorld() const
 {
 	// Return pointer to World from object owner, if we don’t work in editor

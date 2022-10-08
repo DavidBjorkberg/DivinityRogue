@@ -12,28 +12,24 @@ void UDRAbility_MultiTarget::OnLeftMouseDown()
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
 		ADRCharacter* characterUnderCursor = mPlayerController->GetCharacterUnderCursor();
-		if (characterUnderCursor != nullptr)
+		if (characterUnderCursor == nullptr || !IsValidTarget(characterUnderCursor) || !IsInRange(characterUnderCursor))
 		{
-			if (IsValidTarget(characterUnderCursor) && IsInRange(characterUnderCursor))
-			{
-				mTargetedCharacters.Add(characterUnderCursor);
-				if (mTargetedCharacters.Num() == mNumberOfTargets)
-				{
-					mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
-				}
-			}
+			DeselectAbility();
+			return;
 		}
-		else
+		
+		mTargets.Add(characterUnderCursor);
+		if (mTargets.Num() == mNumberOfTargets)
 		{
-			mGameMode->SetSelectedAbility(-1);
-			mGameMode->SetGameplayState(EGameplayState::PlanningPath);
+			mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
+			DeselectAbility();
 		}
 	}
 }
 
 bool UDRAbility_MultiTarget::TrySetRandomTargets()
 {
-	mTargetedCharacters.Empty();
+	mTargets.Empty();
 
 	TArray<ADRCharacter*> allEnemyUnits;
 	if (Cast<ADRPlayerCharacter>(mOwner))
@@ -55,7 +51,7 @@ bool UDRAbility_MultiTarget::TrySetRandomTargets()
 	{
 		if (IsInRange(enemy))
 		{
-			mTargetedCharacters.Add(enemy);
+			mTargets.Add(enemy);
 		}
 	}
 
@@ -64,10 +60,10 @@ bool UDRAbility_MultiTarget::TrySetRandomTargets()
 
 bool UDRAbility_MultiTarget::CanCast()
 {
-	return mTargetedCharacters.Num() > 0 && CanAffordCast();
+	return mTargets.Num() > 0 && CanAffordCast();
 }
 
 void UDRAbility_MultiTarget::ClearSelection()
 {
-	mTargetedCharacters.Empty();
+	mTargets.Empty();
 }

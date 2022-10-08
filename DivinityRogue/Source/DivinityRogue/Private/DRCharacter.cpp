@@ -19,7 +19,7 @@ ADRCharacter::ADRCharacter()
 	mSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	mSkeletalMeshComponent->SetupAttachment(mRoot);
 	mSkeletalMeshComponent->CustomDepthStencilValue = 1; //Enables outline
-	
+
 	mHitBox = CreateDefaultSubobject<UBoxComponent>("HitBox");
 	mHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	mHitBox->SetCollisionProfileName("Pawn");
@@ -65,6 +65,12 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 		Died();
 	}
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
+void ADRCharacter::Heal(int healAmount)
+{
+	mStats.mCurrentHealth = FMath::Min(mStats.mCurrentHealth + healAmount, mStats.mMaxHealth);
+	mOnHealthChange.Broadcast(mStats.mCurrentHealth);
 }
 
 void ADRCharacter::Died()

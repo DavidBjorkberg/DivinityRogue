@@ -17,15 +17,14 @@ void UDRAbility_SingleTarget::OnLeftMouseDown()
 			mTarget = characterUnderCursor;
 			mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
 		}
-		mGameMode->SetSelectedAbility(-1);
-		mGameMode->SetGameplayState(EGameplayState::PlanningPath);
+		DeselectAbility();
 	}
 }
 
 bool UDRAbility_SingleTarget::TrySetRandomTargets()
 {
 	mTarget = nullptr;
-	
+
 	TArray<ADRCharacter*> allEnemyUnits;
 	if (Cast<ADRPlayerCharacter>(mOwner))
 	{
@@ -44,7 +43,7 @@ bool UDRAbility_SingleTarget::TrySetRandomTargets()
 	ADRCharacter* closestEnemyUnit;
 	float closestDistance;
 	UDRGameplayStatics::GetClosestDRCharacterInList(mOwner, allEnemyUnits, closestEnemyUnit, closestDistance);
-	if(IsInRange(closestEnemyUnit))
+	if (IsInRange(closestEnemyUnit))
 	{
 		mTarget = closestEnemyUnit;
 	}

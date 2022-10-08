@@ -94,6 +94,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
+	void Heal(int healAmount);
 	virtual void Tick(float DeltaSeconds) override;
 	void OrderMoveToLocation(FVector targetLoc);
 	void OrderMoveToActor(AActor* targetActor);

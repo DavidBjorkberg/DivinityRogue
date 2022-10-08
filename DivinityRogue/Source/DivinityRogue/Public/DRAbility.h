@@ -59,6 +59,7 @@ protected:
 	virtual void ClearSelection() PURE_VIRTUAL(UDRAbility::ClearSelection,;)
 	virtual void OnAbilitySelected();
 	virtual void OnAbilityDeselected();
+	void DeselectAbility();
 	bool CanAffordCast();
 	bool IsInRange(ADRCharacter* target);
 	bool IsInRange(FVector targetLocation);
