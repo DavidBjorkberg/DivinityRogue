@@ -16,15 +16,19 @@ void UDRAbility_GroundTarget_Inclusive::OnLeftMouseDown()
 			mTargetLocation = groundUnderCursorHitResult.Location;
 			mTargets = UDRGameplayStatics::GetAllCharactersInRadius(GetWorld(), groundUnderCursorHitResult.Location,
 			                                                        mRadius);
-			for(int i = mTargets.Num()-1; i >= 0; i--)
+			for (int i = mTargets.Num() - 1; i >= 0; i--)
 			{
-				if(!IsValidTarget(mTargets[i]))
+				if (!IsValidTarget(mTargets[i]))
 				{
 					mTargets.RemoveAt(i);
 				}
 			}
 			mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
 		}
-			DeselectAbility();
+		else
+		{
+			mGameMode->SetGameplayState(EGameplayState::PlanningPath);
+		}
+		DeselectAbility();
 	}
 }

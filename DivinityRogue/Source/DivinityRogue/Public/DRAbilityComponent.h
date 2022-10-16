@@ -20,6 +20,8 @@ public:
 public:
 	UFUNCTION(BlueprintPure)
 	TArray<UDRAbility*> GetAbilities() const { return mAbilities; }
+
+	UDRAbility_BasicAttack* GetBasicAttack() const { return mBasicAttack; }
 protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Abilities")

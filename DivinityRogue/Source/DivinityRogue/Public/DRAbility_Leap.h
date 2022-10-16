@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class DIVINITYROGUE_API UDRAbility_Leap : public UDRAbility_GroundTarget_Exclusive
 {
 	GENERATED_BODY()

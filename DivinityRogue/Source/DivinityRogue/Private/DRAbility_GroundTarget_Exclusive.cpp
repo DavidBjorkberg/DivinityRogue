@@ -15,7 +15,11 @@ void UDRAbility_GroundTarget_Exclusive::OnLeftMouseDown()
 			mTargetLocation = groundUnderCursorHitResult.Location;
 			mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
 		}
-			DeselectAbility();
+		else
+		{
+			mGameMode->SetGameplayState(EGameplayState::PlanningPath);
+		}
+		DeselectAbility();
 	}
 }
 

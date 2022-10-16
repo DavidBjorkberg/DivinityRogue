@@ -39,6 +39,7 @@ void ADRGameMode::SetGameplayState(EGameplayState newState)
 {
 	mOnGameplayStateChanged.Broadcast(mCurrentGameplayState, newState);
 	mCurrentGameplayState = newState;
+	UE_LOG(LogTemp, Warning, TEXT("Changed to state: %s"), *UEnum::GetValueAsString( newState));
 }
 
 void ADRGameMode::SetSelectedAbility(int index)
@@ -110,7 +111,6 @@ void ADRGameMode::SpawnCharacter(TSubclassOf<ADRCharacter> charToSpawn, FVector 
 	spawnedChar->SetActorLocation(spawnPos);
 	spawnedChar->mOnUnitDied.AddDynamic(this, &ADRGameMode::OnUnitDied);
 	mALlCharacters.Add(spawnedChar);
-
 }
 
 void ADRGameMode::StartTurn()
@@ -129,6 +129,7 @@ void ADRGameMode::StartTurn()
 	SetGameplayState(EGameplayState::PlanningPath);
 	if (ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController()))
 	{
+		UE_LOG(LogTemp,Warning, TEXT("StartTurn"));
 		enemyController->StartRequestAction();
 	}
 }

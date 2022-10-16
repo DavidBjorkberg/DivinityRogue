@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class DIVINITYROGUE_API UDRAbility_Whirlwind : public UDRAbility_NoTarget
 {
 	GENERATED_BODY()

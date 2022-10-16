@@ -53,11 +53,11 @@ public:
 	float GetRange() const { return mAbilityInfo.mRange; }
 	void SetOwner(ADRCharacter* owner) { mOwner = owner; }
 	bool IsInRange(ADRCharacter* target);
+	virtual bool IsValidTarget(ADRCharacter* target);
 protected:
 	virtual UWorld* GetWorld() const override;
 	UFUNCTION()
 	virtual void OnLeftMouseDown() PURE_VIRTUAL(UDRAbility::OnLeftMouseDown,);
-	virtual bool IsValidTarget(ADRCharacter* target);
 	virtual void ClearSelection() PURE_VIRTUAL(UDRAbility::ClearSelection,;)
 	virtual void OnAbilitySelected();
 	virtual void OnAbilityDeselected();

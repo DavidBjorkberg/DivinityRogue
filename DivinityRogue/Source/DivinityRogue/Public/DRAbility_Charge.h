@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class DIVINITYROGUE_API UDRAbility_Charge : public UDRAbility_SingleTarget
 {
 	GENERATED_BODY()

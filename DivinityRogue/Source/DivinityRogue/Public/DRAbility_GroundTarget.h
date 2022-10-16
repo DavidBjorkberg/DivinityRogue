@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class DIVINITYROGUE_API UDRAbility_GroundTarget : public UDRAbility, public FTickableGameObject
 {
 	GENERATED_BODY()

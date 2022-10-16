@@ -18,6 +18,10 @@ void UDRAbility_SingleTarget::OnLeftMouseDown()
 			mTarget = characterUnderCursor;
 			mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
 		}
+		else
+		{
+			mGameMode->SetGameplayState(EGameplayState::PlanningPath);
+		}
 		DeselectAbility();
 	}
 }

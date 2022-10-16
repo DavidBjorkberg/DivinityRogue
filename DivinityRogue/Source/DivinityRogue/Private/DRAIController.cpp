@@ -20,6 +20,7 @@ void ADRAIController::OnPossess(APawn* InPawn)
 
 void ADRAIController::OnFinishedAttack()
 {
+	GetWorld()->GetAuthGameMode<ADRGameMode>()->SetGameplayState(EGameplayState::PlanningPath);
 	mOwner->GetAnimationComponent()->PlayIdleAnimation();
 	mOwner->EndTurnIfOutOfActionPoints();
 }

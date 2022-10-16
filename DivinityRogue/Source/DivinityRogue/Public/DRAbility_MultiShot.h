@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class DIVINITYROGUE_API UDRAbility_MultiShot : public UDRAbility_MultiTarget
 {
 	GENERATED_BODY()

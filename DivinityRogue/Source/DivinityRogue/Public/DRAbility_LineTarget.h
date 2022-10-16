@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class DIVINITYROGUE_API UDRAbility_LineTarget : public UDRAbility, public FTickableGameObject
 {
 	GENERATED_BODY()

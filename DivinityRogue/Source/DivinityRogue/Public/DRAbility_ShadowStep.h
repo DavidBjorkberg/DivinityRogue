@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class DIVINITYROGUE_API UDRAbility_ShadowStep : public UDRAbility_SingleTarget
 {
 	GENERATED_BODY()

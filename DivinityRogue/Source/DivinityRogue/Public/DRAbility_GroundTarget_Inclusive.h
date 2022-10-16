@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class DIVINITYROGUE_API UDRAbility_GroundTarget_Inclusive : public UDRAbility_GroundTarget
 {
 	GENERATED_BODY()

@@ -60,15 +60,17 @@ void ADRPlayerController::OnLeftMouseClick()
 	{
 		if (mCharacterUnderCursor != nullptr)
 		{
-			// if(mGameMode->GetCharacterInPlay()->GetCharacterStats().mBasicAttack.IsInRange(mCharacterUnderCursor))
-			// {
-			// 	
-			// 	mGameMode->GetCharacterInPlay()->GetCharacterStats().mBasicAttack.SetTarget(mCharacterUnderCursor);
-			// 	mGameMode->GetCharacterInPlay()->GetCharacterStats().mBasicAttack.Use();
-			// }
-			// else
+			ADRCharacter* characterInPlay = mGameMode->GetCharacterInPlay();
+			UDRAbility_BasicAttack* basicAttack = characterInPlay->GetAbilityComponent()->GetBasicAttack();
+			
+			if(basicAttack->IsInRange(mCharacterUnderCursor) && basicAttack->IsValidTarget(mCharacterUnderCursor))
 			{
-				//mGameMode->GetCharacterInPlay()->OrderMoveToActor(mCharacterUnderCursor);
+				basicAttack->SetTarget(mCharacterUnderCursor);
+				characterInPlay->GetAnimationComponent()->PlayAttackAnimation(basicAttack);
+			}
+			else
+			{
+				characterInPlay->OrderMoveToActor(mCharacterUnderCursor);
 			}
 		}
 		else

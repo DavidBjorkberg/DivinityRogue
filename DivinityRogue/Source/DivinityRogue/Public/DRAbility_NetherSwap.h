@@ -6,7 +6,7 @@
 #include "DRAbility_MultiTarget.h"
 #include "DRAbility_NetherSwap.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class DIVINITYROGUE_API UDRAbility_NetherSwap : public UDRAbility_MultiTarget
 {
 	GENERATED_BODY()

@@ -44,7 +44,6 @@ void UDRAbility::OnAbilityDeselected()
 void UDRAbility::DeselectAbility()
 {
 	mGameMode->SetSelectedAbility(-1);
-	mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 }
 
 UWorld* UDRAbility::GetWorld() const

@@ -24,6 +24,7 @@ void UDRCharacterAnimationComponent::BeginPlay()
 
 void UDRCharacterAnimationComponent::PlayAttackAnimation(UDRAbility* ability)
 {
+	GetWorld()->GetAuthGameMode<ADRGameMode>()->SetGameplayState(EGameplayState::PerformingAbility);
 	Cast<UDRUseAbilityNotify>(mAttackAnimation->Notifies[0].Notify)->SetParameters(ability);
 	SetAnimState(EAnimState::ATTACK);
 }

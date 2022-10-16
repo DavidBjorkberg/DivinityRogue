@@ -16,6 +16,7 @@ void UDRAbility_MultiTarget::OnLeftMouseDown()
 		if (characterUnderCursor == nullptr || !IsValidTarget(characterUnderCursor) || !IsInRange(characterUnderCursor))
 		{
 			DeselectAbility();
+			mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 			return;
 		}
 		

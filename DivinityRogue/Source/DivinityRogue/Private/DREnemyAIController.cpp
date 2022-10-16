@@ -53,15 +53,17 @@ void ADREnemyAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFo
 	Super::OnMoveCompleted(RequestID, Result);
 	if (Result.IsSuccess() && mOwner->GetStatsComponent()->GetStats().mCurrentActionPoints > 0)
 	{
+		UE_LOG(LogTemp,Warning, TEXT("MoveCompleted"));
 		StartRequestAction();
 	}
 }
 
 void ADREnemyAIController::OnFinishedAttack()
 {
-	Super::OnFinishedAttack();
 	if (mOwner->GetStatsComponent()->GetStats().mCurrentActionPoints > 0)
 	{
+		UE_LOG(LogTemp,Warning, TEXT("FinishedAttack"));
 		StartRequestAction();
 	}
+	Super::OnFinishedAttack();
 }
