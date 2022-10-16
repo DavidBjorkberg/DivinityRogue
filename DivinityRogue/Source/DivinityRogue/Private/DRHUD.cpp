@@ -34,11 +34,11 @@ void ADRHUD::DrawHUD()
 	}
 	else if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath))
 	{
-		const float characterMovement = mGameMode->GetCharacterInPlay()->GetCharacterStats().mMovement;
+		const float characterMovement = mGameMode->GetCharacterInPlay()->GetStatsComponent()->GetStats().mMovement;
 		float pathLength = mGameMode->GetPathToMouse()->GetPathLength();
 		if (pathLength > 0)
 		{
-			pathLength -= mGameMode->GetCharacterInPlay()->mDistanceLeftUntilEnergyCost;
+			pathLength -= mGameMode->GetCharacterInPlay()->GetMovementComp()->mDistanceLeftUntilEnergyCost;
 			int energyCost = FMath::CeilToInt(pathLength / characterMovement);
 			float x;
 			float y;

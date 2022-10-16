@@ -20,20 +20,20 @@ void ADRAIController::OnPossess(APawn* InPawn)
 
 void ADRAIController::OnFinishedAttack()
 {
-	mOwner->PlayIdleAnimation();
+	mOwner->GetAnimationComponent()->PlayIdleAnimation();
 	mOwner->EndTurnIfOutOfActionPoints();
 }
 
 void ADRAIController::OrderMoveToLocation(FVector targetLoc)
 {
 	MoveToLocation(targetLoc, 5, false);
-	mOwner->PlayRunAnimation();
+	mOwner->GetAnimationComponent()->PlayRunAnimation();
 	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 }
 
 void ADRAIController::OrderMoveToActor(AActor* targetActor)
 {
-	mOwner->PlayRunAnimation();
+	mOwner->GetAnimationComponent()->PlayRunAnimation();
 	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 	MoveToActor(targetActor, 5, false);
 }
@@ -44,6 +44,6 @@ void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowi
 	if (Result.IsSuccess())
 	{
 		mGameMode->SetGameplayState(EGameplayState::PlanningPath);
-		mOwner->PlayIdleAnimation();
+		mOwner->GetAnimationComponent()->PlayIdleAnimation();
 	}
 }

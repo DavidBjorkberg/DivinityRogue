@@ -5,7 +5,6 @@
 
 #include "DRCharacterAnimInstance.h"
 #include "DRGameMode.h"
-#include "DRUseAbilityNotify.h"
 #include "Components/WidgetComponent.h"
 
 ADRCharacter::ADRCharacter()
@@ -16,6 +15,9 @@ ADRCharacter::ADRCharacter()
 	SetRootComponent(mRoot);
 	mMovementComponent = CreateDefaultSubobject<UDRMovementComponent>("MovementComponent");
 	mSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMeshComponent");
+	mAnimationComponent = CreateDefaultSubobject<UDRCharacterAnimationComponent>("DRAnimationComponent");
+	mStatsComponent = CreateDefaultSubobject<UDRStatsComponent>("DRStatsComponent");
+	mAbilityComponent = CreateDefaultSubobject<UDRAbilityComponent>("DRAbilityComponent");
 	mSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	mSkeletalMeshComponent->SetupAttachment(mRoot);
 	mSkeletalMeshComponent->CustomDepthStencilValue = 1; //Enables outline
@@ -34,16 +36,9 @@ void ADRCharacter::BeginPlay()
 	Super::BeginPlay();
 	mController = Cast<ADRAIController>(GetController());
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
-	mAttackAnimation = Cast<UDRCharacterAnimInstance>(mSkeletalMeshComponent->GetAnimInstance())->mAttackAnimation;
 	mOnTurnStart.AddDynamic(this, &ADRCharacter::OnTurnStart);
-	ApplyBaseStats();
-	PlayIdleAnimation();
 }
 
-void ADRCharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-}
 
 void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
 {
@@ -58,9 +53,8 @@ void ADRCharacter::OrderMoveToActor(AActor* targetActor)
 float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
                                AActor* DamageCauser)
 {
-	mStats.mCurrentHealth = FMath::Max(mStats.mCurrentHealth - DamageAmount, 0);
-	mOnHealthChange.Broadcast(mStats.mCurrentHealth);
-	if (mStats.mCurrentHealth <= 0)
+	mStatsComponent->UpdateHealth(-DamageAmount);
+	if (mStatsComponent->GetStats().mCurrentHealth <= 0)
 	{
 		Died();
 	}
@@ -69,8 +63,7 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 void ADRCharacter::Heal(int healAmount)
 {
-	mStats.mCurrentHealth = FMath::Min(mStats.mCurrentHealth + healAmount, mStats.mMaxHealth);
-	mOnHealthChange.Broadcast(mStats.mCurrentHealth);
+	mStatsComponent->UpdateHealth(healAmount);
 }
 
 void ADRCharacter::Died()
@@ -79,32 +72,12 @@ void ADRCharacter::Died()
 	Destroy();
 }
 
-void ADRCharacter::ApplyBaseStats()
-{
-	mStats.mAbilities.Empty();
-	for (TSubclassOf<UDRAbility> ability : mBaseStats.mAbilities)
-	{
-		UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetLevel(), ability);
-		spawnedAbility->SetOwner(this);
-		mStats.mAbilities.Add(spawnedAbility);
-	}
-	mStats.mName = mBaseStats.mName;
-	mStats.mMaxHealth = mBaseStats.mMaxHealth;
-	mStats.mCurrentHealth = mBaseStats.mMaxHealth;
-	mStats.mSpeed = mBaseStats.mSpeed;
-	mStats.mMaxActionPoints = mBaseStats.mMaxActionPoints;
-	mStats.mStartActionPoints = mBaseStats.mStartActionPoints;
-	mStats.mCurrentActionPoints = mBaseStats.mStartActionPoints;
-	mStats.mActionPointsPerTurn = mBaseStats.mActionPointsPerTurn;
-	mStats.mMovement = mBaseStats.mMovement;
-	mStats.mMovementSpeed = mBaseStats.mMovementSpeed;
-}
 
 void ADRCharacter::EndTurnIfOutOfActionPoints()
 {
-	if (mStats.mCurrentActionPoints <= 0)
+	if (mStatsComponent->GetStats().mCurrentActionPoints <= 0)
 	{
-		PlayIdleAnimation();
+		mAnimationComponent->PlayIdleAnimation();
 		mController->StopMovement();
 		mGameMode->EndTurn();
 	}
@@ -112,28 +85,11 @@ void ADRCharacter::EndTurnIfOutOfActionPoints()
 
 void ADRCharacter::OnTurnStart()
 {
-	ModifyEnergy(mStats.mActionPointsPerTurn);
+	ModifyEnergy(mStatsComponent->GetStats().mActionPointsPerTurn);
 }
 
 void ADRCharacter::ModifyEnergy(int amount)
 {
-	check(mStats.mCurrentActionPoints + amount >= 0);
-	mStats.mCurrentActionPoints = FMath::Clamp(mStats.mCurrentActionPoints + amount, 0, mStats.mMaxActionPoints);
-	mOnEnergyChange.Broadcast(mStats.mCurrentActionPoints);
-}
-
-void ADRCharacter::PlayAttackAnimation(UDRAbility* ability)
-{
-	Cast<UDRUseAbilityNotify>(mAttackAnimation->Notifies[0].Notify)->SetParameters(ability);
-	SetAnimState(EAnimState::ATTACK);
-}
-
-void ADRCharacter::PlayIdleAnimation()
-{
-	SetAnimState(EAnimState::IDLE);
-}
-
-void ADRCharacter::PlayRunAnimation()
-{
-	SetAnimState(EAnimState::MOVE);
+	check(mStatsComponent->GetStats().mCurrentActionPoints + amount >= 0);
+	mStatsComponent->UpdateEnergy(amount);
 }

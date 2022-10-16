@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DRPlayerController.h"
 #include "DRAbility.generated.h"
 
+class ADRPlayerController;
+class ADRGameMode;
 UENUM()
 enum class TargetType : uint8
 {
@@ -51,6 +52,7 @@ public:
 	UTexture2D* GetIcon() const { return mAbilityInfo.mIcon; }
 	float GetRange() const { return mAbilityInfo.mRange; }
 	void SetOwner(ADRCharacter* owner) { mOwner = owner; }
+	bool IsInRange(ADRCharacter* target);
 protected:
 	virtual UWorld* GetWorld() const override;
 	UFUNCTION()
@@ -61,7 +63,6 @@ protected:
 	virtual void OnAbilityDeselected();
 	void DeselectAbility();
 	bool CanAffordCast();
-	bool IsInRange(ADRCharacter* target);
 	bool IsInRange(FVector targetLocation);
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	FAbilityInfo mAbilityInfo;

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRAbility.h"
-#include "DRGroundAreaDecal.h"
+#include "DRCircleDecal.h"
 #include "Tickable.h"
 #include "DRAbility_GroundTarget.generated.h"
 
@@ -36,11 +36,11 @@ protected:
 	UPROPERTY()
 	FVector mTargetLocation;
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<ADRGroundAreaDecal> mDecalActor;
+	TSubclassOf<ADRCircleDecal> mDecalActor;
 	UPROPERTY(EditDefaultsOnly)
 	UMaterialInterface* mDecalMaterial;
 	UPROPERTY(EditDefaultsOnly)
 	UMaterialInterface* mInvalidDecalMaterial;
 	UPROPERTY()
-	ADRGroundAreaDecal* mDecalActorInst;
+	ADRCircleDecal* mDecalActorInst;
 };

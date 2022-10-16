@@ -3,6 +3,8 @@
 
 #include "DRAbility_MultiShot.h"
 
+#include "DRCharacter.h"
+
 void UDRAbility_MultiShot::Use()
 {
 	Super::Use();

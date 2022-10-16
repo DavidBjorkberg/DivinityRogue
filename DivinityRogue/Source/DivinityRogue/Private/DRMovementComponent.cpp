@@ -33,14 +33,14 @@ void UDRMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool b
 		return;
 	}
 	SetDesiredRotation(MoveVelocity.GetSafeNormal2D().Rotation());
-	FVector moveVec = MoveVelocity.GetSafeNormal() * mOwner->GetCharacterStats().mMovementSpeed;
-	mOwner->mDistanceLeftUntilEnergyCost -= moveVec.Length();
+	FVector moveVec = MoveVelocity.GetSafeNormal() * mOwner->GetStatsComponent()->GetStats().mMovementSpeed;
+	mDistanceLeftUntilEnergyCost -= moveVec.Length();
 
-	if(mOwner->mDistanceLeftUntilEnergyCost <= 0)
+	if(mDistanceLeftUntilEnergyCost <= 0)
 	{
 		mOwner->ModifyEnergy(-1);
 		mOwner->EndTurnIfOutOfActionPoints();
-		mOwner->mDistanceLeftUntilEnergyCost = mOwner->GetCharacterStats().mMovement;
+		mDistanceLeftUntilEnergyCost = mOwner->GetStatsComponent()->GetStats().mMovement;
 	}	
 	FHitResult result;
 	SafeMoveUpdatedComponent(moveVec, GetOwner()->GetActorRotation(), false,
@@ -53,5 +53,5 @@ void UDRMovementComponent::OrderMoveToActor(AActor* targetActor)
 }
 void UDRMovementComponent::OnTurnStart()
 {
-	mOwner->mDistanceLeftUntilEnergyCost = mOwner->GetCharacterStats().mMovement;
+	mDistanceLeftUntilEnergyCost = mOwner->GetStatsComponent()->GetStats().mMovement;
 }

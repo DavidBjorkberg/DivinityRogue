@@ -46,7 +46,7 @@ void ADRGameMode::SetSelectedAbility(int index)
 	UDRAbility* ability = nullptr;
 	if (index >= 0)
 	{
-		ability = mCharacterInPlay->GetCharacterStats().mAbilities[index];
+		ability = mCharacterInPlay->GetAbilityComponent()->GetAbilities()[index];
 		SetGameplayState(EGameplayState::SelectingTarget);
 	}
 	mSelectedAbility = ability;
@@ -145,7 +145,7 @@ void ADRGameMode::FillTurnQueue()
 	mTurnQueue = allCharacters;
 	mTurnQueue.Sort([](const ADRCharacter& a, const ADRCharacter& b)
 	{
-		return a.GetCharacterStats().mSpeed > b.GetCharacterStats().mSpeed;
+		return a.GetStatsComponent()->GetStats().mSpeed > b.GetStatsComponent()->GetStats().mSpeed;
 	});
 }
 

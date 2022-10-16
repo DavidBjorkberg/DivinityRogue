@@ -1,0 +1,39 @@
+﻿// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "DRCharacterAnimationComponent.h"
+
+#include "DRCharacter.h"
+#include "DRCharacterAnimInstance.h"
+#include "DRUseAbilityNotify.h"
+
+
+UDRCharacterAnimationComponent::UDRCharacterAnimationComponent()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+
+}
+
+void UDRCharacterAnimationComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	USkeletalMeshComponent* ownerMeshComp = Cast<ADRCharacter>(GetOwner())->GetSkeletalMeshComp();
+	mAttackAnimation = Cast<UDRCharacterAnimInstance>(ownerMeshComp->GetAnimInstance())->mAttackAnimation;
+	PlayIdleAnimation();
+}
+
+void UDRCharacterAnimationComponent::PlayAttackAnimation(UDRAbility* ability)
+{
+	Cast<UDRUseAbilityNotify>(mAttackAnimation->Notifies[0].Notify)->SetParameters(ability);
+	SetAnimState(EAnimState::ATTACK);
+}
+
+void UDRCharacterAnimationComponent::PlayIdleAnimation()
+{
+	SetAnimState(EAnimState::IDLE);
+}
+
+void UDRCharacterAnimationComponent::PlayRunAnimation()
+{
+	SetAnimState(EAnimState::MOVE);
+}

@@ -3,6 +3,8 @@
 
 #include "DRAbility_NetherSwap.h"
 
+#include "DRCharacter.h"
+
 void UDRAbility_NetherSwap::Use()
 {
 	Super::Use();

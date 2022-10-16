@@ -3,6 +3,8 @@
 
 #include "DRAbility_Haste.h"
 
+#include "DRCharacter.h"
+
 void UDRAbility_Haste::Use()
 {
 	Super::Use();

@@ -4,17 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "DRGroundAreaDecal.generated.h"
+#include "DRLineDecal.generated.h"
 
 UCLASS()
-class DIVINITYROGUE_API ADRGroundAreaDecal : public AActor
+class DIVINITYROGUE_API ADRLineDecal : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	ADRGroundAreaDecal();
+	ADRLineDecal();
 	UFUNCTION(BlueprintImplementableEvent)
-	void SetRadius(float radius);
+	void SetLength(float length);
 	UFUNCTION(BlueprintImplementableEvent)
 	UDecalComponent* GetDecalComponent();
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	float mLength;
 };

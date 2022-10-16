@@ -3,6 +3,8 @@
 
 #include "DRAbility_Battlecry.h"
 
+#include "DRCharacter.h"
+
 void UDRAbility_Battlecry::Use()
 {
 	Super::Use();

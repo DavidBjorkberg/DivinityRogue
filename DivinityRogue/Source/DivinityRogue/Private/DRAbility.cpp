@@ -90,7 +90,7 @@ bool UDRAbility::IsValidTarget(ADRCharacter* target)
 
 bool UDRAbility::CanAffordCast()
 {
-	return mOwner->GetCharacterStats().mCurrentActionPoints >= mAbilityInfo.mActionPointCost;;
+	return mOwner->GetStatsComponent()->GetStats().mCurrentActionPoints >= mAbilityInfo.mActionPointCost;;
 }
 
 void UDRAbility::OnSelectedAbilityChanged(UDRAbility* ability)

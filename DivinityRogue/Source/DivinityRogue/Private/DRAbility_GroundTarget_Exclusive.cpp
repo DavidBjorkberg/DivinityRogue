@@ -13,7 +13,7 @@ void UDRAbility_GroundTarget_Exclusive::OnLeftMouseDown()
 		if (IsOnValidArea())
 		{
 			mTargetLocation = groundUnderCursorHitResult.Location;
-			mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
+			mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
 		}
 			DeselectAbility();
 	}

@@ -6,6 +6,7 @@
 #include "DREnemyCharacter.h"
 #include "DRGameplayStatics.h"
 #include "DRPlayerCharacter.h"
+#include "DRPlayerController.h"
 
 void UDRAbility_MultiTarget::OnLeftMouseDown()
 {
@@ -21,7 +22,7 @@ void UDRAbility_MultiTarget::OnLeftMouseDown()
 		mTargets.Add(characterUnderCursor);
 		if (mTargets.Num() == mNumberOfTargets)
 		{
-			mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
+			mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
 			DeselectAbility();
 		}
 	}

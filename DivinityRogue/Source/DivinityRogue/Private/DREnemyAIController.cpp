@@ -5,7 +5,6 @@
 
 #include "DRGameplayStatics.h"
 #include "DRPlayerCharacter.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "DRAbility.h"
 #include "DRGameMode.h"
 
@@ -26,11 +25,11 @@ void ADREnemyAIController::RequestAction()
 {
 	GetWorldTimerManager().ClearTimer(RequestActionTimer); // This shouldn't be necessary, timer has run out.
 	UE_LOG(LogTemp, Warning, TEXT("End: %f"), FPlatformTime::Seconds());
-	for (UDRAbility* ability : mOwner->GetCharacterStats().mAbilities)
+	for (UDRAbility* ability : mOwner->GetAbilityComponent()->GetAbilities())
 	{
 		if (ability->TrySetRandomTargets())
 		{
-			mOwner->PlayAttackAnimation(ability);
+			mOwner->GetAnimationComponent()->PlayAttackAnimation(ability);
 			return;
 		}
 	}
@@ -52,7 +51,7 @@ void ADREnemyAIController::RequestAction()
 void ADREnemyAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
 	Super::OnMoveCompleted(RequestID, Result);
-	if (Result.IsSuccess() && mOwner->GetCharacterStats().mCurrentActionPoints > 0)
+	if (Result.IsSuccess() && mOwner->GetStatsComponent()->GetStats().mCurrentActionPoints > 0)
 	{
 		StartRequestAction();
 	}
@@ -61,7 +60,7 @@ void ADREnemyAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFo
 void ADREnemyAIController::OnFinishedAttack()
 {
 	Super::OnFinishedAttack();
-	if (mOwner->GetCharacterStats().mCurrentActionPoints > 0)
+	if (mOwner->GetStatsComponent()->GetStats().mCurrentActionPoints > 0)
 	{
 		StartRequestAction();
 	}

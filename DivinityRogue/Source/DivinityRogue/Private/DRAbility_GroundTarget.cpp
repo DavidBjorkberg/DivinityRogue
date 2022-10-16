@@ -55,7 +55,7 @@ void UDRAbility_GroundTarget::ClearSelection()
 void UDRAbility_GroundTarget::OnAbilitySelected()
 {
 	Super::OnAbilitySelected();
-	mDecalActorInst = GetWorld()->SpawnActor<ADRGroundAreaDecal>(mDecalActor);
+	mDecalActorInst = GetWorld()->SpawnActor<ADRCircleDecal>(mDecalActor);
 	SetDecalMaterial(mDecalMaterial);
 	mDecalActorInst->SetRadius(mRadius);
 }

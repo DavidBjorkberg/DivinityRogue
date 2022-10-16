@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "DRCharacter.h"
-#include "DRHUD.h"
 #include "DRMovementSpline.h"
 #include "GameFramework/PlayerController.h"
 #include "DRPlayerController.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterUnderCursorChanged,ADRCharacter*, previousCharacter, ADRCharacter*, characterUnderCursor);
+class ADRHUD;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterUnderCursorChanged, ADRCharacter*, previousCharacter,
+                                             ADRCharacter*, characterUnderCursor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLeftMouseDown);
 UCLASS()
 class DIVINITYROGUE_API ADRPlayerController : public APlayerController

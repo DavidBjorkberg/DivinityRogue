@@ -21,6 +21,5 @@ protected:
 	virtual void ClearSelection() override;
 	UPROPERTY()
 	ADRCharacter* mTarget;
-
 private:
 };

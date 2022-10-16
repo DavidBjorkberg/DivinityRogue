@@ -7,6 +7,7 @@
 #include "DRGameplayStatics.h"
 #include "DRHUD.h"
 #include "NavigationSystem.h"
+#include "DRCharacter.h"
 #include "GameFramework/InputSettings.h"
 
 ADRPlayerController::ADRPlayerController()
@@ -59,7 +60,16 @@ void ADRPlayerController::OnLeftMouseClick()
 	{
 		if (mCharacterUnderCursor != nullptr)
 		{
-			mGameMode->GetCharacterInPlay()->OrderMoveToActor(mCharacterUnderCursor);
+			// if(mGameMode->GetCharacterInPlay()->GetCharacterStats().mBasicAttack.IsInRange(mCharacterUnderCursor))
+			// {
+			// 	
+			// 	mGameMode->GetCharacterInPlay()->GetCharacterStats().mBasicAttack.SetTarget(mCharacterUnderCursor);
+			// 	mGameMode->GetCharacterInPlay()->GetCharacterStats().mBasicAttack.Use();
+			// }
+			// else
+			{
+				//mGameMode->GetCharacterInPlay()->OrderMoveToActor(mCharacterUnderCursor);
+			}
 		}
 		else
 		{

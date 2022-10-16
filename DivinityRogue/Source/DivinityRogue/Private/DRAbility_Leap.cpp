@@ -3,6 +3,8 @@
 
 #include "DRAbility_Leap.h"
 
+#include "DRCharacter.h"
+
 void UDRAbility_Leap::Use()
 {
 	Super::Use();

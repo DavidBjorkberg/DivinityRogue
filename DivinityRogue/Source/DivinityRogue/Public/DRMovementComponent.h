@@ -18,6 +18,8 @@ public:
 	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
 	void SetDesiredRotation(FRotator desiredRotation) { mDesiredRotation = desiredRotation; };
 	void OrderMoveToActor(AActor* targetActor);
+	
+	float mDistanceLeftUntilEnergyCost;
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	int mRotationRate = 4;

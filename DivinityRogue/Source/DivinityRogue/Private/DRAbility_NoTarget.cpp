@@ -3,6 +3,9 @@
 
 #include "DRAbility_NoTarget.h"
 
+#include "DRCharacter.h"
+#include "DRGameMode.h"
+
 bool UDRAbility_NoTarget::CanCast()
 {
 	return true;
@@ -21,7 +24,7 @@ void UDRAbility_NoTarget::OnLeftMouseDown()
 {
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
-		mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
+		mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
 		DeselectAbility();
 	}
 }

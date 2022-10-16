@@ -23,7 +23,7 @@ void UDRAbility_GroundTarget_Inclusive::OnLeftMouseDown()
 					mTargets.RemoveAt(i);
 				}
 			}
-			mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
+			mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
 		}
 			DeselectAbility();
 	}

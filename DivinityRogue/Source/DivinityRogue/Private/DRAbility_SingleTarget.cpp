@@ -6,6 +6,7 @@
 #include "DREnemyCharacter.h"
 #include "DRGameplayStatics.h"
 #include "DRPlayerCharacter.h"
+#include "DRPlayerController.h"
 
 void UDRAbility_SingleTarget::OnLeftMouseDown()
 {
@@ -15,7 +16,7 @@ void UDRAbility_SingleTarget::OnLeftMouseDown()
 		if (characterUnderCursor != nullptr && IsValidTarget(characterUnderCursor) && IsInRange(characterUnderCursor))
 		{
 			mTarget = characterUnderCursor;
-			mGameMode->GetCharacterInPlay()->PlayAttackAnimation(this);
+			mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
 		}
 		DeselectAbility();
 	}

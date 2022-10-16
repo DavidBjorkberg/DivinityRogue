@@ -3,6 +3,8 @@
 
 #include "DRAbility_FlameStrike.h"
 
+#include "DRCharacter.h"
+
 void UDRAbility_FlameStrike::Use()
 {
 	Super::Use();

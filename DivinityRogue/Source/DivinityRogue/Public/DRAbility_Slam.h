@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "DRAbility_SingleTarget.h"
-#include "DRAbility_BasicAttack.generated.h"
+#include "DRAbility_Slam.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DIVINITYROGUE_API UDRAbility_BasicAttack : public UDRAbility_SingleTarget
+class DIVINITYROGUE_API UDRAbility_Slam : public UDRAbility_SingleTarget
 {
 	GENERATED_BODY()
 public:
 	virtual void Use() override;
-	void SetTarget(ADRCharacter* target);
 protected:
-	UPROPERTY(EditDefaultsOnly, Category= "DRAbility")
+	UPROPERTY(EditDefaultsOnly)
 	int mDamage;
+
 };
