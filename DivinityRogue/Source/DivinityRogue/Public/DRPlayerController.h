@@ -9,9 +9,23 @@
 #include "DRPlayerController.generated.h"
 
 class ADRHUD;
+
+UENUM()
+enum EMouseHoverState
+{
+	NoCharacter,
+	AllyCharacter,
+	EnemyCharacter,
+	EnemyCharacterInBasicAttackRange
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterUnderCursorChanged, ADRCharacter*, previousCharacter,
                                              ADRCharacter*, characterUnderCursor);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLeftMouseDown);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMouseHoverStateChanged, EMouseHoverState, newState);
+
 UCLASS()
 class DIVINITYROGUE_API ADRPlayerController : public APlayerController
 {
@@ -21,9 +35,14 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintPure)
-	ADRCharacter* GetCharacterUnderCursor() const {return mCharacterUnderCursor;}
+	ADRCharacter* GetCharacterUnderCursor() const { return mCharacterUnderCursor; }
+
+	UFUNCTION(BlueprintPure)
+	EMouseHoverState GetMouseHoverState() const { return mMouseHoverState; }
+
 	FCharacterUnderCursorChanged mOnCharacterUnderCursorChanged;
 	FLeftMouseDown mOnLeftMouseDown;
+	FOnMouseHoverStateChanged mOnMouseHoverStateChanged;
 protected:
 	virtual void SetupInputComponent() override;
 	UFUNCTION()
@@ -41,6 +60,8 @@ private:
 	void OnNewTurn(ADRCharacter* previousCharacter, ADRCharacter* newCharacter);
 	UFUNCTION()
 	void OnCharacterUnderCursorChanged(ADRCharacter* previousCharacter, ADRCharacter* characterUnderCursor);
+	void UpdateCursor();
+	void UpdateMouseHoverState(ADRCharacter* characterUnderCursor);
 	void UpdateCharacterUnderCursor();
 	UPROPERTY()
 	ADRGameMode* mGameMode;
@@ -50,4 +71,5 @@ private:
 	ADRMovementSpline* mMovementSpline;
 	UPROPERTY()
 	ADRCharacter* mCharacterUnderCursor;
+	EMouseHoverState mMouseHoverState;
 };

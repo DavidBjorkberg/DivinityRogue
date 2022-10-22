@@ -90,14 +90,6 @@ UNavigationPath* ADRGameMode::GetPathToMouse()
 	}
 	return mPathToMouse;
 }
-
-bool ADRGameMode::IsMouseOnValidEnemyForBasicAttack()
-{
-	UDRAbility_BasicAttack* basicAttack = GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
-	return mPlayerController->GetCharacterUnderCursor() &&
-		basicAttack->IsValidTarget(mPlayerController->GetCharacterUnderCursor());
-}
-
 void ADRGameMode::StartMatch()
 {
 	StartTurn();
@@ -185,7 +177,8 @@ void ADRGameMode::FindPathToMouse()
 	}
 	FVector pathStart = mCharacterInPlay->GetActorLocation();
 	FVector pathEnd;
-	if (IsMouseOnValidEnemyForBasicAttack())
+	
+	if (mPlayerController->GetMouseHoverState() == EMouseHoverState::EnemyCharacterInBasicAttackRange)
 	{
 		pathEnd = mPlayerController->GetCharacterUnderCursor()->GetActorLocation();
 	}

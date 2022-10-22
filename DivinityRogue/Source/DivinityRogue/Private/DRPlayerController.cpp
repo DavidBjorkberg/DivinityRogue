@@ -61,8 +61,8 @@ void ADRPlayerController::OnLeftMouseClick()
 		{
 			ADRCharacter* characterInPlay = mGameMode->GetCharacterInPlay();
 			UDRAbility_BasicAttack* basicAttack = characterInPlay->GetAbilityComponent()->GetBasicAttack();
-			
-			if(basicAttack->IsInRange(mCharacterUnderCursor) && basicAttack->IsValidTarget(mCharacterUnderCursor))
+
+			if (basicAttack->IsInRange(mCharacterUnderCursor) && basicAttack->IsValidTarget(mCharacterUnderCursor))
 			{
 				characterInPlay->BasicAttack(mCharacterUnderCursor);
 			}
@@ -101,6 +101,8 @@ void ADRPlayerController::OnNewTurn(ADRCharacter* previousCharacter, ADRCharacte
 void ADRPlayerController::OnCharacterUnderCursorChanged(ADRCharacter* previousCharacter,
                                                         ADRCharacter* characterUnderCursor)
 {
+	UpdateMouseHoverState(characterUnderCursor);
+	UpdateCursor();
 	if (previousCharacter != nullptr)
 	{
 		previousCharacter->FindComponentByClass<UPrimitiveComponent>()->SetRenderCustomDepth(false);
@@ -108,13 +110,48 @@ void ADRPlayerController::OnCharacterUnderCursorChanged(ADRCharacter* previousCh
 	if (characterUnderCursor != nullptr)
 	{
 		mHUD->ShowHoverPanel(mCharacterUnderCursor);
-		CurrentMouseCursor = EMouseCursor::Type::Crosshairs;
 		characterUnderCursor->FindComponentByClass<UPrimitiveComponent>()->SetRenderCustomDepth(true);
 	}
 	else
 	{
 		mHUD->HideHoverPanel();
+	}
+}
+
+void ADRPlayerController::UpdateCursor()
+{
+	if(mMouseHoverState == EMouseHoverState::EnemyCharacter ||
+		mMouseHoverState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
+	{
+		CurrentMouseCursor = EMouseCursor::Type::Crosshairs;
+	}
+	else
+	{
 		CurrentMouseCursor = EMouseCursor::Type::Default;
+	}
+}
+
+void ADRPlayerController::UpdateMouseHoverState(ADRCharacter* characterUnderCursor)
+{
+	if (characterUnderCursor == nullptr)
+	{
+		mMouseHoverState = EMouseHoverState::NoCharacter;
+	}
+	else if (characterUnderCursor->GetTeam() == ETeam::ENEMY)
+	{
+		UDRAbility_BasicAttack* BasicAttack = mGameMode->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
+		if (mGameMode->IsPlayersTurn() && BasicAttack->IsInRange(characterUnderCursor))
+		{
+			mMouseHoverState = EMouseHoverState::EnemyCharacterInBasicAttackRange;
+		}
+		else
+		{
+			mMouseHoverState = EMouseHoverState::EnemyCharacter;
+		}
+	}
+	else if (characterUnderCursor->GetTeam() == ETeam::PLAYER)
+	{
+		mMouseHoverState = EMouseHoverState::AllyCharacter;
 	}
 }
 
@@ -134,7 +171,7 @@ void ADRPlayerController::UpdateCharacterUnderCursor()
 	{
 		mCharacterUnderCursor = nullptr;
 	}
-	
+
 	if (previousCharacter != mCharacterUnderCursor)
 	{
 		mOnCharacterUnderCursorChanged.Broadcast(previousCharacter, mCharacterUnderCursor);

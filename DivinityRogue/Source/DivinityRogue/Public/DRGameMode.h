@@ -61,7 +61,6 @@ public:
 	ADRPlayerController* GetPlayerController() const { return mPlayerController; }
 	//
 
-	bool IsMouseOnValidEnemyForBasicAttack();
 	UPROPERTY(BlueprintAssignable)
 	FGameplayStateChange mOnGameplayStateChanged;
 	UPROPERTY(BlueprintAssignable)
