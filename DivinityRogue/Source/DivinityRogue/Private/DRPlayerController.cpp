@@ -60,9 +60,8 @@ void ADRPlayerController::OnLeftMouseClick()
 		if (mCharacterUnderCursor != nullptr)
 		{
 			ADRCharacter* characterInPlay = mGameMode->GetCharacterInPlay();
-			UDRAbility_BasicAttack* basicAttack = characterInPlay->GetAbilityComponent()->GetBasicAttack();
 
-			if (basicAttack->IsInRange(mCharacterUnderCursor) && basicAttack->IsValidTarget(mCharacterUnderCursor))
+			if (mMouseHoverState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
 			{
 				characterInPlay->BasicAttack(mCharacterUnderCursor);
 			}

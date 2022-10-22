@@ -128,9 +128,14 @@ void ADRGameMode::StartTurn()
 	mOnNewTurn.Broadcast(previousCharacter, mCharacterInPlay);
 	mCharacterInPlay->mOnTurnStart.Broadcast();
 	SetGameplayState(EGameplayState::PlanningPath);
-	if (ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController()))
+	if(mCharacterInPlay->GetTeam() == ETeam::PLAYER)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("StartTurn"));
+		mPlayerController->EnableInput(mPlayerController);		
+	}
+	else
+	{
+		mPlayerController->DisableInput(mPlayerController);		
+		ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController());
 		enemyController->StartRequestAction();
 	}
 }
