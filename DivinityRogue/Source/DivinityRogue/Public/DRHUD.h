@@ -30,10 +30,13 @@ protected:
 private:
 	UFUNCTION()
 	void OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState);
+	UFUNCTION()
+	void OnCharacterUnderCursorChanged(ADRCharacter* previousCharacter, ADRCharacter* characterUnderCursor);
 	UPROPERTY()
 	UDRScreenUI* mScreenUI;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
+	int mAttackCost;
 	bool mIsTargeting;
 	bool mShowHoverPanel;
 };

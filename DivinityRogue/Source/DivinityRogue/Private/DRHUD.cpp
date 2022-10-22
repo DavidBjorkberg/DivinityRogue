@@ -9,12 +9,15 @@
 #include "NavigationSystem.h"
 #include "DRAbility.h"
 #include "DRGameMode.h"
+#include "DRPlayerController.h"
 
 void ADRHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mGameMode->mOnGameplayStateChanged.AddDynamic(this, &ADRHUD::OnGameplayStateChanged);
+	Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController())->mOnCharacterUnderCursorChanged.AddDynamic(
+		this, &ADRHUD::OnCharacterUnderCursorChanged);
 	mScreenUI = CreateWidget<UDRScreenUI>(GetGameInstance(), mScreenUIBP);
 	mScreenUI->AddToViewport(9999);
 }
@@ -34,17 +37,12 @@ void ADRHUD::DrawHUD()
 	}
 	else if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath))
 	{
-		const float characterMovement = mGameMode->GetCharacterInPlay()->GetStatsComponent()->GetStats().mMovement;
-		float pathLength = mGameMode->GetPathToMouse()->GetPathLength();
-		if (pathLength > 0)
-		{
-			pathLength -= mGameMode->GetCharacterInPlay()->GetMovementComp()->mDistanceLeftUntilEnergyCost;
-			int energyCost = FMath::CeilToInt(pathLength / characterMovement);
-			float x;
-			float y;
-			GetWorld()->GetFirstPlayerController()->GetMousePosition(x, y);
-			DrawText(TEXT("Cost: " + FString::FromInt(energyCost)), FLinearColor::Black, x + 30, y, nullptr, 1.5);
-		}
+		int energyCost = mGameMode->GetCharacterInPlay()->GetMovementComp()->GetEnergyCostToMouse();
+		float x;
+		float y;
+		GetWorld()->GetFirstPlayerController()->GetMousePosition(x, y);
+		DrawText(TEXT("Cost: " + FString::FromInt(energyCost + mAttackCost)), FLinearColor::Black, x + 30, y, nullptr,
+		         1.5);
 	}
 }
 
@@ -80,5 +78,21 @@ void ADRHUD::OnGameplayStateChanged(EGameplayState oldState, EGameplayState newS
 	else if (oldState == EGameplayState::SelectingTarget)
 	{
 		StopTargeting();
+	}
+}
+
+void ADRHUD::OnCharacterUnderCursorChanged(ADRCharacter* previousCharacter, ADRCharacter* characterUnderCursor)
+{
+	if (characterUnderCursor == nullptr)
+	{
+		mAttackCost = 0;
+	}
+	else
+	{
+		UDRAbility_BasicAttack* basicAttack = mGameMode->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
+		if (basicAttack->IsValidTarget(characterUnderCursor))
+		{
+			mAttackCost = basicAttack->GetAbilityInfo().mActionPointCost;
+		}
 	}
 }

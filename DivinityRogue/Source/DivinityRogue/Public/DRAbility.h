@@ -20,19 +20,19 @@ USTRUCT(BlueprintType)
 struct FAbilityInfo
 {
 	GENERATED_BODY()
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FString mName;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FString mDescription;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TargetType mTargetType;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float mRange;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int mActionPointCost = 1;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int mCooldown = 1;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UTexture2D* mIcon;
 };
 
@@ -45,26 +45,28 @@ public:
 	UDRAbility();
 	virtual void PostInitProperties() override;
 	virtual void Use();
-	virtual bool CanCast()PURE_VIRTUAL(UDRAbility::CanCast,return true;)
-	virtual bool TrySetRandomTargets() PURE_VIRTUAL(UDRAbility::SetRandomTargets,return true;)
-	
+	virtual bool CanCast()PURE_VIRTUAL(UDRAbility::CanCast, return true;)
+	virtual bool TrySetRandomTargets() PURE_VIRTUAL(UDRAbility::SetRandomTargets, return true;)
+
 	UFUNCTION(BlueprintCallable)
 	UTexture2D* GetIcon() const { return mAbilityInfo.mIcon; }
+
 	float GetRange() const { return mAbilityInfo.mRange; }
 	void SetOwner(ADRCharacter* owner) { mOwner = owner; }
 	bool IsInRange(ADRCharacter* target);
 	virtual bool IsValidTarget(ADRCharacter* target);
+	FAbilityInfo GetAbilityInfo() const { return mAbilityInfo; }
 protected:
 	virtual UWorld* GetWorld() const override;
 	UFUNCTION()
 	virtual void OnLeftMouseDown() PURE_VIRTUAL(UDRAbility::OnLeftMouseDown,);
-	virtual void ClearSelection() PURE_VIRTUAL(UDRAbility::ClearSelection,;)
+	virtual void ClearSelection() PURE_VIRTUAL(UDRAbility::ClearSelection, ;)
 	virtual void OnAbilitySelected();
 	virtual void OnAbilityDeselected();
 	void DeselectAbility();
 	bool CanAffordCast();
 	bool IsInRange(FVector targetLocation);
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FAbilityInfo mAbilityInfo;
 	UPROPERTY()
 	ADRGameMode* mGameMode;

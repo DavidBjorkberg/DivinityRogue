@@ -10,7 +10,8 @@ void UDRMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	mOwner = Cast<ADRCharacter>(GetOwner());
-	mOwner->mOnTurnStart.AddDynamic(this,&UDRMovementComponent::OnTurnStart);
+	mOwner->mOnTurnStart.AddDynamic(this, &UDRMovementComponent::OnTurnStart);
+	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 }
 
 void UDRMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -36,21 +37,26 @@ void UDRMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool b
 	FVector moveVec = MoveVelocity.GetSafeNormal() * mOwner->GetStatsComponent()->GetStats().mMovementSpeed;
 	mDistanceLeftUntilEnergyCost -= moveVec.Length();
 
-	if(mDistanceLeftUntilEnergyCost <= 0)
+	if (mDistanceLeftUntilEnergyCost <= 0)
 	{
 		mOwner->ModifyEnergy(-1);
 		mOwner->EndTurnIfOutOfActionPoints();
 		mDistanceLeftUntilEnergyCost = mOwner->GetStatsComponent()->GetStats().mMovement;
-	}	
+	}
 	FHitResult result;
 	SafeMoveUpdatedComponent(moveVec, GetOwner()->GetActorRotation(), false,
 	                         result);
 }
 
-void UDRMovementComponent::OrderMoveToActor(AActor* targetActor)
+int UDRMovementComponent::GetEnergyCostToMouse()
 {
-	Cast<ADRAIController>(Cast<APawn>(GetOwner())->GetController())->OrderMoveToActor(targetActor);
+	const float characterMovement = mOwner->GetStatsComponent()->GetStats().mMovement;
+	float pathLength = mGameMode->GetPathToMouse()->GetPathLength();
+	pathLength -= mGameMode->GetCharacterInPlay()->GetMovementComp()->mDistanceLeftUntilEnergyCost;
+	int energyCost = FMath::CeilToInt(pathLength / characterMovement);
+	return energyCost;
 }
+
 void UDRMovementComponent::OnTurnStart()
 {
 	mDistanceLeftUntilEnergyCost = mOwner->GetStatsComponent()->GetStats().mMovement;

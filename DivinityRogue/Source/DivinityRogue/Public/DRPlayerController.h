@@ -20,6 +20,7 @@ public:
 	ADRPlayerController();
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
+	UFUNCTION(BlueprintPure)
 	ADRCharacter* GetCharacterUnderCursor() const {return mCharacterUnderCursor;}
 	FCharacterUnderCursorChanged mOnCharacterUnderCursorChanged;
 	FLeftMouseDown mOnLeftMouseDown;
@@ -40,7 +41,6 @@ private:
 	void OnNewTurn(ADRCharacter* previousCharacter, ADRCharacter* newCharacter);
 	UFUNCTION()
 	void OnCharacterUnderCursorChanged(ADRCharacter* previousCharacter, ADRCharacter* characterUnderCursor);
-	void HoverPanelCheck();
 	void UpdateCharacterUnderCursor();
 	UPROPERTY()
 	ADRGameMode* mGameMode;

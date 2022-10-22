@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DRGameMode.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "DRMovementComponent.generated.h"
 
@@ -17,8 +18,7 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
 	void SetDesiredRotation(FRotator desiredRotation) { mDesiredRotation = desiredRotation; };
-	void OrderMoveToActor(AActor* targetActor);
-	
+	int GetEnergyCostToMouse();
 	float mDistanceLeftUntilEnergyCost;
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -29,6 +29,8 @@ private:
 	void OnTurnStart();
 	UPROPERTY()
 	ADRCharacter* mOwner;
+	UPROPERTY()
+	ADRGameMode* mGameMode;
 	FRotator mDesiredRotation;
 	int mMovementSpeed;
 };

@@ -18,8 +18,7 @@ void ADRPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mGameMode->IsPlayersTurn() &&
-		mCharacterUnderCursor == nullptr)
+	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mGameMode->IsPlayersTurn())
 	{
 		mMovementSpline->DrawMovementSpline();
 	}
@@ -65,12 +64,11 @@ void ADRPlayerController::OnLeftMouseClick()
 			
 			if(basicAttack->IsInRange(mCharacterUnderCursor) && basicAttack->IsValidTarget(mCharacterUnderCursor))
 			{
-				basicAttack->SetTarget(mCharacterUnderCursor);
-				characterInPlay->GetAnimationComponent()->PlayAttackAnimation(basicAttack);
+				characterInPlay->BasicAttack(mCharacterUnderCursor);
 			}
 			else
 			{
-				characterInPlay->OrderMoveToActor(mCharacterUnderCursor);
+				characterInPlay->OrderAttackMoveToActor(mCharacterUnderCursor);
 			}
 		}
 		else
@@ -110,7 +108,6 @@ void ADRPlayerController::OnCharacterUnderCursorChanged(ADRCharacter* previousCh
 	if (characterUnderCursor != nullptr)
 	{
 		mHUD->ShowHoverPanel(mCharacterUnderCursor);
-		mMovementSpline->ClearSpline();
 		CurrentMouseCursor = EMouseCursor::Type::Crosshairs;
 		characterUnderCursor->FindComponentByClass<UPrimitiveComponent>()->SetRenderCustomDepth(true);
 	}

@@ -40,11 +40,12 @@ public:
 	void Heal(int healAmount);
 	void ModifyEnergy(int amount);
 	void OrderMoveToLocation(FVector targetLoc);
-	void OrderMoveToActor(AActor* targetActor);
+	void OrderMoveToActor(ADRCharacter* targetActor);
+	void OrderAttackMoveToActor(ADRCharacter* targetActor);
+	void BasicAttack(ADRCharacter* targetActor);
 	void EndTurnIfOutOfActionPoints();
 	UFUNCTION()
 	void OnTurnStart();
-
 	//Getters
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	USkeletalMeshComponent* GetSkeletalMeshComp() const { return mSkeletalMeshComponent; }

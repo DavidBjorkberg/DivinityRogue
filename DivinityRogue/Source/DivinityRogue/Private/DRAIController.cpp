@@ -15,7 +15,6 @@ void ADRAIController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 	mOwner = Cast<ADRCharacter>(InPawn);
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
-
 }
 
 void ADRAIController::OnFinishedAttack()
@@ -32,11 +31,20 @@ void ADRAIController::OrderMoveToLocation(FVector targetLoc)
 	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 }
 
-void ADRAIController::OrderMoveToActor(AActor* targetActor)
+void ADRAIController::OrderMoveToActor(ADRCharacter* targetActor)
 {
 	mOwner->GetAnimationComponent()->PlayRunAnimation();
 	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 	MoveToActor(targetActor, 5, false);
+}
+
+void ADRAIController::OrderAttackMoveToActor(ADRCharacter* targetActor)
+{
+	OrderMoveToActor(targetActor);
+	mOnMoveCompleted = [this,targetActor]()
+	{
+		mOwner->BasicAttack(targetActor);
+	};
 }
 
 void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
@@ -44,7 +52,15 @@ void ADRAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowi
 	Super::OnMoveCompleted(RequestID, Result);
 	if (Result.IsSuccess())
 	{
-		mGameMode->SetGameplayState(EGameplayState::PlanningPath);
-		mOwner->GetAnimationComponent()->PlayIdleAnimation();
+		if (mOnMoveCompleted != nullptr)
+		{
+			mOnMoveCompleted();
+		}
+		else
+		{
+			mGameMode->SetGameplayState(EGameplayState::PlanningPath);
+			mOwner->GetAnimationComponent()->PlayIdleAnimation();
+		}
 	}
+	mOnMoveCompleted = nullptr;
 }

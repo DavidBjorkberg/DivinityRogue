@@ -29,6 +29,7 @@ ADRCharacter::ADRCharacter()
 	mHitBox->SetupAttachment(mRoot);
 	mSkeletalMeshComponent->SetReceivesDecals(false);
 	mHitBox->SetReceivesDecals(false);
+
 }
 
 void ADRCharacter::BeginPlay()
@@ -45,9 +46,21 @@ void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
 	mController->OrderMoveToLocation(targetLoc);
 }
 
-void ADRCharacter::OrderMoveToActor(AActor* targetActor)
+void ADRCharacter::OrderMoveToActor(ADRCharacter* targetActor)
 {
 	mController->OrderMoveToActor(targetActor);
+}
+
+void ADRCharacter::OrderAttackMoveToActor(ADRCharacter* targetActor)
+{
+	mController->OrderAttackMoveToActor(targetActor);
+}
+
+void ADRCharacter::BasicAttack(ADRCharacter* targetActor)
+{
+	UDRAbility_BasicAttack* basicAttack = GetAbilityComponent()->GetBasicAttack();
+	basicAttack->SetTarget(targetActor);
+	GetAnimationComponent()->PlayAttackAnimation(basicAttack);
 }
 
 float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,

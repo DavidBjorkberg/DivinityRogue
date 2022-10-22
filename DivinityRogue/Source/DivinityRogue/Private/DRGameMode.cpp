@@ -8,6 +8,7 @@
 #include "DREnemyCharacter.h"
 #include "DRGameplayStatics.h"
 #include "DRPlayerCharacter.h"
+#include "DRPlayerController.h"
 #include "NavigationSystem.h"
 
 ADRGameMode::ADRGameMode()
@@ -24,6 +25,7 @@ void ADRGameMode::BeginPlay()
 	{
 		character->mOnUnitDied.AddDynamic(this, &ADRGameMode::OnUnitDied);
 	}
+	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
 void ADRGameMode::Tick(float DeltaSeconds)
@@ -89,6 +91,13 @@ UNavigationPath* ADRGameMode::GetPathToMouse()
 	return mPathToMouse;
 }
 
+bool ADRGameMode::IsMouseOnValidEnemyForBasicAttack()
+{
+	UDRAbility_BasicAttack* basicAttack = GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
+	return mPlayerController->GetCharacterUnderCursor() &&
+		basicAttack->IsValidTarget(mPlayerController->GetCharacterUnderCursor());
+}
+
 void ADRGameMode::StartMatch()
 {
 	StartTurn();
@@ -129,7 +138,7 @@ void ADRGameMode::StartTurn()
 	SetGameplayState(EGameplayState::PlanningPath);
 	if (ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController()))
 	{
-		UE_LOG(LogTemp,Warning, TEXT("StartTurn"));
+		UE_LOG(LogTemp, Warning, TEXT("StartTurn"));
 		enemyController->StartRequestAction();
 	}
 }
@@ -175,7 +184,16 @@ void ADRGameMode::FindPathToMouse()
 		return;
 	}
 	FVector pathStart = mCharacterInPlay->GetActorLocation();
-	FVector pathEnd = UDRGameplayStatics::GetHitResultUnderCursor(GetWorld(), ECC_WorldStatic).Location;
+	FVector pathEnd;
+	if (IsMouseOnValidEnemyForBasicAttack())
+	{
+		pathEnd = mPlayerController->GetCharacterUnderCursor()->GetActorLocation();
+	}
+	else
+	{
+		pathEnd =UDRGameplayStatics::GetHitResultUnderCursor(GetWorld(), ECC_WorldStatic).Location;
+		
+	}
 	mPathToMouse = UNavigationSystemV1::FindPathToLocationSynchronously(
 		GetWorld(), pathStart, pathEnd, mCharacterInPlay);
 }

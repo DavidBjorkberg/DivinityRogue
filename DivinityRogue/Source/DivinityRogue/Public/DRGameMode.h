@@ -8,6 +8,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "DRGameMode.generated.h"
 
+class ADRPlayerController;
 class UDRAbility;
 class ADRPlayerCharacter;
 class ADREnemyCharacter;
@@ -26,6 +27,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameplayStateChange, EGameplayStat
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNewturn, ADRCharacter*, previousCharacter, ADRCharacter*, newCharacter);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSelectedAbilityChanged, UDRAbility*, ability);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNewRound);
 
 UCLASS()
@@ -45,18 +47,21 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetSelectedAbility(int index);
 	//
-	
+
 	//Get
 	UFUNCTION(BlueprintPure)
 	bool IsInGameplayState(EGameplayState state) { return state == mCurrentGameplayState; }
+
 	UDRAbility* GetSelectedAbility() const { return mSelectedAbility; }
 	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; }
 	TArray<ADREnemyCharacter*> GetAllEnemyUnits();
 	TArray<ADRPlayerCharacter*> GetAllPlayerUnits();
 	UFUNCTION(BlueprintCallable)
 	UNavigationPath* GetPathToMouse();
+	ADRPlayerController* GetPlayerController() const { return mPlayerController; }
 	//
-	
+
+	bool IsMouseOnValidEnemyForBasicAttack();
 	UPROPERTY(BlueprintAssignable)
 	FGameplayStateChange mOnGameplayStateChanged;
 	UPROPERTY(BlueprintAssignable)
@@ -70,7 +75,6 @@ protected:
 	ADRCharacter* mCharacterInPlay;
 	UPROPERTY()
 	TArray<ADRCharacter*> mTurnQueue;
-
 private:
 	UFUNCTION()
 	void StartMatch();
@@ -86,5 +90,7 @@ private:
 	TArray<ADRCharacter*> mALlCharacters;
 	UPROPERTY()
 	UDRAbility* mSelectedAbility;
+	UPROPERTY()
+	ADRPlayerController* mPlayerController;
 	EGameplayState mCurrentGameplayState;
 };
