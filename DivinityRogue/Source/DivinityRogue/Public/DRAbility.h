@@ -55,6 +55,7 @@ public:
 	void SetOwner(ADRCharacter* owner) { mOwner = owner; }
 	bool IsInRange(ADRCharacter* target);
 	virtual bool IsValidTarget(ADRCharacter* target);
+	bool CanAffordCast();
 	FAbilityInfo GetAbilityInfo() const { return mAbilityInfo; }
 protected:
 	virtual UWorld* GetWorld() const override;
@@ -64,7 +65,6 @@ protected:
 	virtual void OnAbilitySelected();
 	virtual void OnAbilityDeselected();
 	void DeselectAbility();
-	bool CanAffordCast();
 	bool IsInRange(FVector targetLocation);
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FAbilityInfo mAbilityInfo;

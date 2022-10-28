@@ -26,5 +26,8 @@ protected:
 private:
 	UFUNCTION()
 	void RequestAction();
+	bool TryUseAbility();
+	bool TryBasicAttack(ADRCharacter* target);
+	bool TryMoveTo(ADRCharacter* target);
 	FTimerHandle RequestActionTimer;
 };

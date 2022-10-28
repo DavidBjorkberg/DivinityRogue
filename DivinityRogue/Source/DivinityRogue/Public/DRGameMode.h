@@ -39,6 +39,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	void EndTurn();
+	UFUNCTION(BlueprintCallable)
 	bool IsPlayersTurn();
 	UFUNCTION(BlueprintCallable)
 	void SpawnCharacter(TSubclassOf<ADRCharacter> charToSpawn, FVector spawnPos);

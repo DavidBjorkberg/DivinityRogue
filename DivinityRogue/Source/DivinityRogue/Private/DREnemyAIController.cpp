@@ -25,27 +25,51 @@ void ADREnemyAIController::RequestAction()
 {
 	GetWorldTimerManager().ClearTimer(RequestActionTimer); // This shouldn't be necessary, timer has run out.
 	UE_LOG(LogTemp, Warning, TEXT("End: %f"), FPlatformTime::Seconds());
-	for (UDRAbility* ability : mOwner->GetAbilityComponent()->GetAbilities())
-	{
-		if (ability->TrySetRandomTargets())
-		{
-			mOwner->GetAnimationComponent()->PlayAttackAnimation(ability);
-			return;
-		}
-	}
+
 	TArray<ADRPlayerCharacter*> allPlayerUnits = mGameMode->GetAllPlayerUnits();
 	ADRPlayerCharacter* closestPlayerUnit;
 	float closestDistance;
 	UDRGameplayStatics::GetClosestDRCharacterInList(mOwner, allPlayerUnits, closestPlayerUnit, closestDistance);
 
-	if (closestDistance > mAdjacentToActorThreshold)
+	if (TryUseAbility()) return;
+	if (TryBasicAttack(closestPlayerUnit)) return;
+	if (TryMoveTo(closestPlayerUnit)) return;
+	mGameMode->EndTurn();
+}
+
+bool ADREnemyAIController::TryUseAbility()
+{
+	for (UDRAbility* ability : mOwner->GetAbilityComponent()->GetAbilities())
 	{
-		OrderMoveToActor(closestPlayerUnit);
+		if (ability->CanAffordCast() && ability->TrySetRandomTargets())
+		{
+			mOwner->GetAnimationComponent()->PlayAttackAnimation(ability);
+			return true;
+		}
 	}
-	else
+	return false;
+}
+
+bool ADREnemyAIController::TryBasicAttack(ADRCharacter* target)
+{
+	UDRAbility_BasicAttack* basicAttack = mOwner->GetAbilityComponent()->GetBasicAttack();
+	if (basicAttack->CanAffordCast() && basicAttack->IsInRange(target))
 	{
-		mGameMode->EndTurn();
+		mOwner->BasicAttack(target);
+		return true;
 	}
+	return false;
+}
+
+bool ADREnemyAIController::TryMoveTo(ADRCharacter* target)
+{
+	float distance = UDRGameplayStatics::GetDistanceToEdge2D(mOwner->GetActorLocation(), target);
+	if (distance > mAdjacentToActorThreshold)
+	{
+		OrderMoveToActor(target);
+		return true;
+	}
+	return false;
 }
 
 void ADREnemyAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
@@ -53,7 +77,7 @@ void ADREnemyAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFo
 	Super::OnMoveCompleted(RequestID, Result);
 	if (Result.IsSuccess() && mOwner->GetStatsComponent()->GetStats().mCurrentActionPoints > 0)
 	{
-		UE_LOG(LogTemp,Warning, TEXT("MoveCompleted"));
+		UE_LOG(LogTemp, Warning, TEXT("MoveCompleted"));
 		StartRequestAction();
 	}
 }
@@ -62,7 +86,7 @@ void ADREnemyAIController::OnFinishedAttack()
 {
 	if (mOwner->GetStatsComponent()->GetStats().mCurrentActionPoints > 0)
 	{
-		UE_LOG(LogTemp,Warning, TEXT("FinishedAttack"));
+		UE_LOG(LogTemp, Warning, TEXT("FinishedAttack"));
 		StartRequestAction();
 	}
 	Super::OnFinishedAttack();
