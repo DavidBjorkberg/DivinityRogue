@@ -13,8 +13,6 @@ struct FCharacterBaseStats
 	UPROPERTY(EditAnywhere, Category = "DRCharacter")
 	int mSpeed = 5;
 	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	int mMaxHealth = 10;
-	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
 	int mMaxActionPoints = 2;
 	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
 	int mStartActionPoints = 2;
@@ -34,10 +32,6 @@ struct FCharacterStats
 	GENERATED_BODY()
 	UPROPERTY(BlueprintReadOnly, DisplayName="Name")
 	FString mName;
-	UPROPERTY(BlueprintReadOnly, DisplayName="Max Health")
-	int mMaxHealth;
-	UPROPERTY(BlueprintReadOnly, DisplayName="Current Health")
-	int mCurrentHealth;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Speed")
 	int mSpeed;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Movement Speed")
@@ -54,8 +48,6 @@ struct FCharacterStats
 	int mActionPointsPerTurn;
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHealthChange, int, newHealth);
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnergyChange, int, newEnergy);
 
 UCLASS()
@@ -64,12 +56,9 @@ class DIVINITYROGUE_API UDRStatsComponent : public UActorComponent
 	GENERATED_BODY()
 public:
 	UDRStatsComponent();
-	void UpdateHealth(int difference);
 	void UpdateEnergy(int difference);
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	FCharacterStats GetStats() const { return mStats; }
-	UPROPERTY(BlueprintAssignable)
-	FHealthChange mOnHealthChange;
 	UPROPERTY(BlueprintAssignable)
 	FEnergyChange mOnEnergyChange;
 protected:

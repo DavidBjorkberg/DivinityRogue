@@ -6,6 +6,7 @@
 #include "DRAbilityComponent.h"
 #include "DRAIController.h"
 #include "DRCharacterAnimationComponent.h"
+#include "DRHealthComponent.h"
 #include "DRMovementComponent.h"
 #include "DRStatsComponent.h"
 #include "Components/BoxComponent.h"
@@ -25,8 +26,11 @@ enum class ETeam :uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUnitDied, ADRCharacter*, deadUnit);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUsedAbility, UDRAbility*, ability);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPreUsedAbility, UDRAbility*, ability);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnStart);
 
 UCLASS()
@@ -50,20 +54,27 @@ public:
 	UFUNCTION()
 	void OnTurnStart();
 	//Getters
-	UFUNCTION(BlueprintCallable,BlueprintPure)
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	USkeletalMeshComponent* GetSkeletalMeshComp() const { return mSkeletalMeshComponent; }
-	UFUNCTION(BlueprintCallable,BlueprintPure)
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UBoxComponent* GetHitBox() const { return mHitBox; }
-	UFUNCTION(BlueprintCallable,BlueprintPure)
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	ETeam GetTeam() const { return mTeam; }
-	UFUNCTION(BlueprintCallable,BlueprintPure)
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRCharacterAnimationComponent* GetAnimationComponent() const { return mAnimationComponent; }
-	UFUNCTION(BlueprintCallable,BlueprintPure)
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRStatsComponent* GetStatsComponent() const { return mStatsComponent; }
-	UFUNCTION(BlueprintCallable,BlueprintPure)
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRAbilityComponent* GetAbilityComponent() const { return mAbilityComponent; }
-	UFUNCTION(BlueprintCallable,BlueprintPure)
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRMovementComponent* GetMovementComp() const { return mMovementComponent; }
+
 	//Getters - End
 
 	UPROPERTY(BlueprintAssignable)
@@ -87,6 +98,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRStatsComponent* mStatsComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UDRHealthComponent* mHealthComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRAbilityComponent* mAbilityComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* mHitBox;
@@ -94,6 +107,7 @@ protected:
 
 	ETeam mTeam;
 private:
+	UFUNCTION()
 	void Died();
 	UPROPERTY()
 	ADRAIController* mController;

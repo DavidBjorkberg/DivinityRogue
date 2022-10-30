@@ -18,18 +18,19 @@ ADRCharacter::ADRCharacter()
 	mAnimationComponent = CreateDefaultSubobject<UDRCharacterAnimationComponent>("DRAnimationComponent");
 	mStatsComponent = CreateDefaultSubobject<UDRStatsComponent>("DRStatsComponent");
 	mAbilityComponent = CreateDefaultSubobject<UDRAbilityComponent>("DRAbilityComponent");
+	mHealthComponent = CreateDefaultSubobject<UDRHealthComponent>("DRHealthComponent");
+	mHealthComponent->mOnDied.AddDynamic(this, &ADRCharacter::Died);
 	mSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	mSkeletalMeshComponent->SetupAttachment(mRoot);
 	mSkeletalMeshComponent->CustomDepthStencilValue = 1; //Enables outline
+	mSkeletalMeshComponent->SetReceivesDecals(false);
 
 	mHitBox = CreateDefaultSubobject<UBoxComponent>("HitBox");
 	mHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	mHitBox->SetCollisionProfileName("Pawn");
 	mHitBox->SetCanEverAffectNavigation(false);
 	mHitBox->SetupAttachment(mRoot);
-	mSkeletalMeshComponent->SetReceivesDecals(false);
 	mHitBox->SetReceivesDecals(false);
-
 }
 
 void ADRCharacter::BeginPlay()
@@ -66,17 +67,13 @@ void ADRCharacter::BasicAttack(ADRCharacter* targetActor)
 float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
                                AActor* DamageCauser)
 {
-	mStatsComponent->UpdateHealth(-DamageAmount);
-	if (mStatsComponent->GetStats().mCurrentHealth <= 0)
-	{
-		Died();
-	}
+	mHealthComponent->ModifyHealth(-DamageAmount);
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
 void ADRCharacter::Heal(int healAmount)
 {
-	mStatsComponent->UpdateHealth(healAmount);
+	mHealthComponent->ModifyHealth(healAmount);
 }
 
 void ADRCharacter::Died()
