@@ -29,9 +29,6 @@ virtual void BeginPlay() override;
 	void PlayAttackAnimation(UDRAbility* ability);
 	void PlayIdleAnimation();
 	void PlayRunAnimation();
-	
-protected:
-
 private:
 	void SetAnimState(EAnimState newState) {mCurrentAnimState = newState; }
 	UPROPERTY()

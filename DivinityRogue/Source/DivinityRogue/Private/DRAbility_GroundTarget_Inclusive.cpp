@@ -23,7 +23,7 @@ void UDRAbility_GroundTarget_Inclusive::OnLeftMouseDown()
 					mTargets.RemoveAt(i);
 				}
 			}
-			mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
+			mGameMode->GetCharacterInPlay()->UseAbility(this);
 		}
 		else
 		{

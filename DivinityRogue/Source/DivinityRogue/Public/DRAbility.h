@@ -56,6 +56,7 @@ public:
 	bool IsInRange(ADRCharacter* target);
 	virtual bool IsValidTarget(ADRCharacter* target);
 	bool CanAffordCast();
+	bool IsOnCooldown() const { return mRemainingCooldown > 0; }
 	FAbilityInfo GetAbilityInfo() const { return mAbilityInfo; }
 protected:
 	virtual UWorld* GetWorld() const override;
@@ -68,6 +69,8 @@ protected:
 	bool IsInRange(FVector targetLocation);
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FAbilityInfo mAbilityInfo;
+	UPROPERTY(BlueprintReadOnly)
+	int mRemainingCooldown;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 	UPROPERTY()
@@ -80,4 +83,6 @@ protected:
 private:
 	UFUNCTION()
 	void OnSelectedAbilityChanged(UDRAbility* ability);
+	UFUNCTION()
+	void OnNewRound();
 };

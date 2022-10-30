@@ -16,7 +16,7 @@ void UDRAbility_SingleTarget::OnLeftMouseDown()
 		if (characterUnderCursor != nullptr && IsValidTarget(characterUnderCursor) && IsInRange(characterUnderCursor))
 		{
 			mTarget = characterUnderCursor;
-			mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
+			mGameMode->GetCharacterInPlay()->UseAbility(this);
 		}
 		else
 		{

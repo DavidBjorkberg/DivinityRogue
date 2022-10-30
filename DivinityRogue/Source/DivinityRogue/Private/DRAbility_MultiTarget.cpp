@@ -23,7 +23,7 @@ void UDRAbility_MultiTarget::OnLeftMouseDown()
 		mTargets.Add(characterUnderCursor);
 		if (mTargets.Num() == mNumberOfTargets)
 		{
-			mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
+			mGameMode->GetCharacterInPlay()->UseAbility(this);
 			DeselectAbility();
 		}
 	}

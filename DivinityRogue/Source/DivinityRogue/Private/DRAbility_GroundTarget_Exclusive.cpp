@@ -13,7 +13,7 @@ void UDRAbility_GroundTarget_Exclusive::OnLeftMouseDown()
 		if (IsOnValidArea())
 		{
 			mTargetLocation = groundUnderCursorHitResult.Location;
-			mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
+			mGameMode->GetCharacterInPlay()->UseAbility(this);
 		}
 		else
 		{

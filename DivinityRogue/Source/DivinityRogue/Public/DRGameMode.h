@@ -46,7 +46,7 @@ public:
 	//Set
 	void SetGameplayState(EGameplayState newState);
 	UFUNCTION(BlueprintCallable)
-	void SetSelectedAbility(int index);
+	void TrySelectAbility(int index);
 	//
 
 	//Get

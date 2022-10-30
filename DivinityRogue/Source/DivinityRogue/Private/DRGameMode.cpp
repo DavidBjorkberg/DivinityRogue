@@ -44,16 +44,20 @@ void ADRGameMode::SetGameplayState(EGameplayState newState)
 	UE_LOG(LogTemp, Warning, TEXT("Changed to state: %s"), *UEnum::GetValueAsString( newState));
 }
 
-void ADRGameMode::SetSelectedAbility(int index)
+void ADRGameMode::TrySelectAbility(int index)
 {
-	UDRAbility* ability = nullptr;
-	if (index >= 0)
+	TArray<UDRAbility*> abilities = mCharacterInPlay->GetAbilityComponent()->GetAbilities();
+	if (index >= 0 && !abilities[index]->IsOnCooldown())
 	{
-		ability = mCharacterInPlay->GetAbilityComponent()->GetAbilities()[index];
+		mSelectedAbility = abilities[index];
 		SetGameplayState(EGameplayState::SelectingTarget);
 	}
-	mSelectedAbility = ability;
-	mOnSelectedAbilityChanged.Broadcast(ability);
+	else
+	{
+		mSelectedAbility = nullptr;
+		SetGameplayState(EGameplayState::PlanningPath);
+	}
+	mOnSelectedAbilityChanged.Broadcast(mSelectedAbility);
 }
 
 TArray<ADREnemyCharacter*> ADRGameMode::GetAllEnemyUnits()
@@ -90,6 +94,7 @@ UNavigationPath* ADRGameMode::GetPathToMouse()
 	}
 	return mPathToMouse;
 }
+
 void ADRGameMode::StartMatch()
 {
 	StartTurn();
@@ -125,16 +130,17 @@ void ADRGameMode::StartTurn()
 	ADRCharacter* previousCharacter = mCharacterInPlay;
 	mCharacterInPlay = mTurnQueue[0];
 	mTurnQueue.RemoveAt(0);
+
 	mOnNewTurn.Broadcast(previousCharacter, mCharacterInPlay);
 	mCharacterInPlay->mOnTurnStart.Broadcast();
 	SetGameplayState(EGameplayState::PlanningPath);
-	if(mCharacterInPlay->GetTeam() == ETeam::PLAYER)
+	if (mCharacterInPlay->GetTeam() == ETeam::PLAYER)
 	{
-		mPlayerController->EnableInput(mPlayerController);		
+		mPlayerController->EnableInput(mPlayerController);
 	}
 	else
 	{
-		mPlayerController->DisableInput(mPlayerController);		
+		mPlayerController->DisableInput(mPlayerController);
 		ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController());
 		enemyController->StartRequestAction();
 	}
@@ -182,15 +188,14 @@ void ADRGameMode::FindPathToMouse()
 	}
 	FVector pathStart = mCharacterInPlay->GetActorLocation();
 	FVector pathEnd;
-	
+
 	if (mPlayerController->GetMouseHoverState() == EMouseHoverState::EnemyCharacterInBasicAttackRange)
 	{
 		pathEnd = mPlayerController->GetCharacterUnderCursor()->GetActorLocation();
 	}
 	else
 	{
-		pathEnd =UDRGameplayStatics::GetHitResultUnderCursor(GetWorld(), ECC_WorldStatic).Location;
-		
+		pathEnd = UDRGameplayStatics::GetHitResultUnderCursor(GetWorld(), ECC_WorldStatic).Location;
 	}
 	mPathToMouse = UNavigationSystemV1::FindPathToLocationSynchronously(
 		GetWorld(), pathStart, pathEnd, mCharacterInPlay);

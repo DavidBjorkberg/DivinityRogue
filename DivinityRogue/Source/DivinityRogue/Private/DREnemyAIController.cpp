@@ -43,7 +43,7 @@ bool ADREnemyAIController::TryUseAbility()
 	{
 		if (ability->CanAffordCast() && ability->TrySetRandomTargets())
 		{
-			mOwner->GetAnimationComponent()->PlayAttackAnimation(ability);
+			mOwner->UseAbility(ability);
 			return true;
 		}
 	}

@@ -24,7 +24,7 @@ void UDRAbility_NoTarget::OnLeftMouseDown()
 {
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
-		mGameMode->GetCharacterInPlay()->GetAnimationComponent()->PlayAttackAnimation(this);
+		mGameMode->GetCharacterInPlay()->UseAbility(this);
 		DeselectAbility();
 	}
 }

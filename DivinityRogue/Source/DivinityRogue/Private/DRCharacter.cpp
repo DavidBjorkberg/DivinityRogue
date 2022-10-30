@@ -60,7 +60,7 @@ void ADRCharacter::BasicAttack(ADRCharacter* targetActor)
 {
 	UDRAbility_BasicAttack* basicAttack = GetAbilityComponent()->GetBasicAttack();
 	basicAttack->SetTarget(targetActor);
-	GetAnimationComponent()->PlayAttackAnimation(basicAttack);
+	UseAbility(basicAttack);
 }
 
 float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -94,6 +94,12 @@ void ADRCharacter::EndTurnIfOutOfActionPoints()
 		mController->StopMovement();
 		mGameMode->EndTurn();
 	}
+}
+
+void ADRCharacter::UseAbility(UDRAbility* ability)
+{
+	mOnPreUsedAbility.Broadcast(ability);
+	mAnimationComponent->PlayAttackAnimation(ability);
 }
 
 void ADRCharacter::OnTurnStart()

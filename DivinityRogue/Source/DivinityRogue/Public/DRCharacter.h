@@ -25,6 +25,8 @@ enum class ETeam :uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUnitDied, ADRCharacter*, deadUnit);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUsedAbility, UDRAbility*, ability);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPreUsedAbility, UDRAbility*, ability);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnStart);
 
 UCLASS()
@@ -44,6 +46,7 @@ public:
 	void OrderAttackMoveToActor(ADRCharacter* targetActor);
 	void BasicAttack(ADRCharacter* targetActor);
 	void EndTurnIfOutOfActionPoints();
+	void UseAbility(UDRAbility* ability);
 	UFUNCTION()
 	void OnTurnStart();
 	//Getters
@@ -67,6 +70,10 @@ public:
 	FUnitDied mOnUnitDied;
 	UPROPERTY(BlueprintAssignable)
 	FTurnStart mOnTurnStart;
+	UPROPERTY(BlueprintAssignable)
+	FUsedAbility mOnUsedAbility;
+	UPROPERTY(BlueprintAssignable)
+	FPreUsedAbility mOnPreUsedAbility;
 protected:
 	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

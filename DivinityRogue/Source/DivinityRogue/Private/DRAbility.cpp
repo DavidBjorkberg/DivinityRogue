@@ -21,11 +21,14 @@ void UDRAbility::PostInitProperties()
 	mGameMode = mWorld->GetAuthGameMode<ADRGameMode>();
 	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
 	mGameMode->mOnSelectedAbilityChanged.AddDynamic(this, &UDRAbility::OnSelectedAbilityChanged);
+	mGameMode->mOnNewRound.AddDynamic(this, &UDRAbility::OnNewRound);
 }
 
 void UDRAbility::Use()
 {
-	mGameMode->GetCharacterInPlay()->ModifyEnergy(-mAbilityInfo.mActionPointCost);
+	mOwner->ModifyEnergy(-mAbilityInfo.mActionPointCost);
+	mRemainingCooldown = mAbilityInfo.mCooldown;
+	mOwner->mOnUsedAbility.Broadcast(this);
 }
 
 void UDRAbility::OnAbilitySelected()
@@ -43,7 +46,7 @@ void UDRAbility::OnAbilityDeselected()
 
 void UDRAbility::DeselectAbility()
 {
-	mGameMode->SetSelectedAbility(-1);
+	mGameMode->TrySelectAbility(-1);
 }
 
 UWorld* UDRAbility::GetWorld() const
@@ -62,13 +65,13 @@ UWorld* UDRAbility::GetWorld() const
 
 bool UDRAbility::IsInRange(ADRCharacter* target)
 {
-	float distanceToTarget = UDRGameplayStatics::GetDistanceToEdge2D(mOwner->GetActorLocation(),target);
+	float distanceToTarget = UDRGameplayStatics::GetDistanceToEdge2D(mOwner->GetActorLocation(), target);
 	return distanceToTarget <= mAbilityInfo.mRange;
 }
 
 bool UDRAbility::IsInRange(FVector targetLocation)
 {
-	float distanceToTarget = FVector::Distance(mOwner->GetActorLocation(),targetLocation);
+	float distanceToTarget = FVector::Distance(mOwner->GetActorLocation(), targetLocation);
 	return distanceToTarget <= mAbilityInfo.mRange;
 }
 
@@ -98,8 +101,16 @@ void UDRAbility::OnSelectedAbilityChanged(UDRAbility* ability)
 	{
 		OnAbilitySelected();
 	}
-	else if(mIsSelected)
+	else if (mIsSelected)
 	{
 		OnAbilityDeselected();
+	}
+}
+
+void UDRAbility::OnNewRound()
+{
+	if (mRemainingCooldown > 0)
+	{
+		mRemainingCooldown--;
 	}
 }
