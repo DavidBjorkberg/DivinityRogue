@@ -57,9 +57,9 @@ void ADRHUD::StopTargeting()
 	mIsTargeting = false;
 }
 
-void ADRHUD::ShowHoverPanel(ADRCharacter* hoveredCharacter)
+void ADRHUD::ShowHoverPanel(UDRAbilityTargetComponent* selectableComp)
 {
-	mScreenUI->ShowHoverCharacterPanel(hoveredCharacter);
+	mScreenUI->ShowHoverPanel(selectableComp);
 	mShowHoverPanel = true;
 }
 
@@ -81,16 +81,16 @@ void ADRHUD::OnGameplayStateChanged(EGameplayState oldState, EGameplayState newS
 	}
 }
 
-void ADRHUD::OnCharacterUnderCursorChanged(ADRCharacter* previousCharacter, ADRCharacter* characterUnderCursor)
+void ADRHUD::OnCharacterUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp, UDRAbilityTargetComponent* newSelectableComp)
 {
-	if (characterUnderCursor == nullptr)
+	if (newSelectableComp == nullptr)
 	{
 		mAttackCost = 0;
 	}
 	else
 	{
 		UDRAbility_BasicAttack* basicAttack = mGameMode->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
-		if (basicAttack->IsValidTarget(characterUnderCursor))
+		if (basicAttack->IsValidTarget(newSelectableComp))
 		{
 			mAttackCost = basicAttack->GetAbilityInfo().mActionPointCost;
 		}

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DRAbilityTargetComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "DRScreenUI.generated.h"
 
@@ -17,7 +18,7 @@ class DIVINITYROGUE_API UDRScreenUI : public UUserWidget
 public:
 	UDRScreenUI(const FObjectInitializer& ObjectInitializer);
 	UFUNCTION(BlueprintImplementableEvent)
-	void ShowHoverCharacterPanel(ADRCharacter* hoveredCharacter);
+	void ShowHoverPanel(UDRAbilityTargetComponent* selectableComp);
 	UFUNCTION(BlueprintImplementableEvent)
 	void HideHoverCharacterPanel();
 };

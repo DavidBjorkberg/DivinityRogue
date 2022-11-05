@@ -6,22 +6,28 @@
 // Sets default values
 ADRNexus::ADRNexus()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	mRoot = CreateDefaultSubobject<USceneComponent>("Root");
+	SetRootComponent(mRoot);
+	mStaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
+	mStaticMeshComponent->SetupAttachment(mRoot);
+	mAbilityTargetComponent = CreateDefaultSubobject<UDRAbilityTargetComponent>("DRAbilityTargetComponent");
+	mAbilityTargetComponent->SetupAttachment(mRoot);
+	mAbilityTargetComponent->SetHighlightMesh(mStaticMeshComponent);
+	mHealthComponent = CreateDefaultSubobject<UDRHealthComponent>("DRHealthComponent");
+	mHealthComponent->mOnDied.AddDynamic(this, &ADRNexus::OnDeath);
+	mAbilityTargetComponent->SetTeam(ETeam::PLAYER);
 }
 
-// Called when the game starts or when spawned
-void ADRNexus::BeginPlay()
+float ADRNexus::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
 {
-	Super::BeginPlay();
-	
+	mHealthComponent->ModifyHealth(-DamageAmount);
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
-// Called every frame
-void ADRNexus::Tick(float DeltaTime)
+void ADRNexus::OnDeath()
 {
-	Super::Tick(DeltaTime);
-
+	UE_LOG(LogTemp,Warning,TEXT("Nexus died"));
 }
+
 

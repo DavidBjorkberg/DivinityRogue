@@ -56,7 +56,7 @@ class DIVINITYROGUE_API UDRStatsComponent : public UActorComponent
 	GENERATED_BODY()
 public:
 	UDRStatsComponent();
-	void UpdateEnergy(int difference);
+	void ModifyEnergy(int difference);
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	FCharacterStats GetStats() const { return mStats; }
 	UPROPERTY(BlueprintAssignable)

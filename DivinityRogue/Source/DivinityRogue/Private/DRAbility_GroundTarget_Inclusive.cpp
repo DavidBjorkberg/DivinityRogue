@@ -14,7 +14,7 @@ void UDRAbility_GroundTarget_Inclusive::OnLeftMouseDown()
 		if (IsOnValidArea())
 		{
 			mTargetLocation = groundUnderCursorHitResult.Location;
-			mTargets = UDRGameplayStatics::GetAllCharactersInRadius(GetWorld(), groundUnderCursorHitResult.Location,
+			mTargets = UDRGameplayStatics::GetAllAbilityTargetsInRadius(GetWorld(), groundUnderCursorHitResult.Location,
 			                                                        mRadius);
 			for (int i = mTargets.Num() - 1; i >= 0; i--)
 			{

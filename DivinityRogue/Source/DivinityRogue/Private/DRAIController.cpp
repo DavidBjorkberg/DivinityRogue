@@ -31,19 +31,19 @@ void ADRAIController::OrderMoveToLocation(FVector targetLoc)
 	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 }
 
-void ADRAIController::OrderMoveToActor(ADRCharacter* targetActor)
+void ADRAIController::OrderMoveToActor(UDRAbilityTargetComponent* target)
 {
 	mOwner->GetAnimationComponent()->PlayRunAnimation();
 	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
-	MoveToActor(targetActor, 5, false);
+	MoveToActor(target->GetOwner(), 5, false);
 }
 
-void ADRAIController::OrderAttackMoveToActor(ADRCharacter* targetActor)
+void ADRAIController::OrderAttackMoveToActor(UDRAbilityTargetComponent* target)
 {
-	OrderMoveToActor(targetActor);
-	mOnMoveCompleted = [this,targetActor]()
+	OrderMoveToActor(target);
+	mOnMoveCompleted = [this,target]()
 	{
-		mOwner->BasicAttack(targetActor);
+		mOwner->BasicAttack(target);
 	};
 }
 

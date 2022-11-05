@@ -8,11 +8,9 @@
 void UDRAbility_ShadowStep::Use()
 {
 	Super::Use();
-	FVector targetLocation = mTarget->GetActorLocation();
-	FVector targetRotation = mTarget->GetActorRotation().Vector();
+	FVector targetLocation = mTarget->GetOwner()->GetActorLocation();
+	FVector targetRotation = mTarget->GetOwner()->GetActorRotation().Vector();
 	FVector behindTargetLocation = targetLocation - (targetRotation * 150);
-	mOwner->SetActorLocation(behindTargetLocation);
-	const FDamageEvent damageEvent;
-
-	mTarget->TakeDamage(mDamage, damageEvent, mOwner->GetController(), mOwner);
+	mTarget->TeleportTo(behindTargetLocation);
+	mTarget->TakeDamage(mDamage, mOwner);
 }

@@ -19,7 +19,7 @@ protected:
 	virtual bool CanCast() override;
 	virtual void ClearSelection() override;
 	UPROPERTY()
-	TArray<ADRCharacter*> mTargets;
+	TArray<UDRAbilityTargetComponent*> mTargets;
 	UPROPERTY(EditDefaultsOnly)
 	int mNumberOfTargets;
 private:

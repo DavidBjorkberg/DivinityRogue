@@ -56,7 +56,7 @@ public:
 	UDRAbility* GetSelectedAbility() const { return mSelectedAbility; }
 	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; }
 	TArray<ADREnemyCharacter*> GetAllEnemyUnits();
-	TArray<ADRPlayerCharacter*> GetAllPlayerUnits();
+	TArray<UDRAbilityTargetComponent*> GetAllPlayerAbilityTargets();
 	UFUNCTION(BlueprintCallable)
 	UNavigationPath* GetPathToMouse();
 	ADRPlayerController* GetPlayerController() const { return mPlayerController; }

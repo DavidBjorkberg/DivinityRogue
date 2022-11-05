@@ -22,8 +22,8 @@ class DIVINITYROGUE_API ADRAIController : public AAIController
 public:
 	ADRAIController();
 	void OrderMoveToLocation(FVector targetLoc);
-	void OrderMoveToActor(ADRCharacter* targetActor);
-	void OrderAttackMoveToActor(ADRCharacter* targetActor);
+	void OrderMoveToActor(UDRAbilityTargetComponent* target);
+	void OrderAttackMoveToActor(UDRAbilityTargetComponent* target);
 	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnFinishedAttack();

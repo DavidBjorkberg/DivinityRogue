@@ -11,7 +11,6 @@ void UDRAbility_MultiShot::Use()
 
 	for (auto target : mTargets)
 	{
-		const FDamageEvent damageEvent;
-		target->TakeDamage(mDamage, damageEvent, mOwner->GetController(), mOwner);
+		target->TakeDamage(mDamage, mOwner);
 	}
 }

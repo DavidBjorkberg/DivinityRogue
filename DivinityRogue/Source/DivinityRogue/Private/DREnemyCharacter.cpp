@@ -11,7 +11,7 @@ ADREnemyCharacter::ADREnemyCharacter()
 void ADREnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	mTeam = ETeam::ENEMY;
+	FindComponentByClass<UDRAbilityTargetComponent>()->SetTeam(ETeam::ENEMY);
 }
 
 

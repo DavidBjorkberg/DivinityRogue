@@ -17,13 +17,6 @@
 class UDRAbility;
 class UDRAbility_BasicAttack;
 
-UENUM()
-enum class ETeam :uint8
-{
-	PLAYER,
-	ENEMY,
-	NEUTRAL
-};
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUnitDied, ADRCharacter*, deadUnit);
 
@@ -44,11 +37,10 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
 	void Heal(int healAmount);
-	void ModifyEnergy(int amount);
 	void OrderMoveToLocation(FVector targetLoc);
-	void OrderMoveToActor(ADRCharacter* targetActor);
-	void OrderAttackMoveToActor(ADRCharacter* targetActor);
-	void BasicAttack(ADRCharacter* targetActor);
+	void OrderMoveToActor(UDRAbilityTargetComponent* target);
+	void OrderAttackMoveToActor(UDRAbilityTargetComponent* target);
+	void BasicAttack(UDRAbilityTargetComponent* target);
 	void EndTurnIfOutOfActionPoints();
 	void UseAbility(UDRAbility* ability);
 	UFUNCTION()
@@ -56,12 +48,6 @@ public:
 	//Getters
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	USkeletalMeshComponent* GetSkeletalMeshComp() const { return mSkeletalMeshComponent; }
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	UBoxComponent* GetHitBox() const { return mHitBox; }
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	ETeam GetTeam() const { return mTeam; }
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRCharacterAnimationComponent* GetAnimationComponent() const { return mAnimationComponent; }
@@ -102,10 +88,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRAbilityComponent* mAbilityComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UBoxComponent* mHitBox;
+	UDRAbilityTargetComponent* mAbilityTargetComponent;
+
 	//Components - End
 
-	ETeam mTeam;
+
 private:
 	UFUNCTION()
 	void Died();

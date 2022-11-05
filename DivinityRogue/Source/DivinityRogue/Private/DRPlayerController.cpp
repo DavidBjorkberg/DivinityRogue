@@ -8,6 +8,7 @@
 #include "DRHUD.h"
 #include "NavigationSystem.h"
 #include "DRCharacter.h"
+#include "DRAbilityTargetComponent.h"
 #include "GameFramework/InputSettings.h"
 
 ADRPlayerController::ADRPlayerController()
@@ -35,7 +36,7 @@ void ADRPlayerController::BeginPlay()
 	mMovementSpline = GetWorld()->SpawnActor<ADRMovementSpline>(mMovementSplineBP);
 	mGameMode->mOnGameplayStateChanged.AddDynamic(this, &ADRPlayerController::OnGameplayStateChanged);
 	mGameMode->mOnNewTurn.AddDynamic(this, &ADRPlayerController::OnNewTurn);
-	mOnCharacterUnderCursorChanged.AddDynamic(this, &ADRPlayerController::OnCharacterUnderCursorChanged);
+	mOnCharacterUnderCursorChanged.AddDynamic(this, &ADRPlayerController::OnSelectableUnderCursorChanged);
 	SetInputMode(FInputModeGameAndUI());
 }
 
@@ -57,17 +58,17 @@ void ADRPlayerController::OnLeftMouseClick()
 	if (!mGameMode->IsPlayersTurn()) return;
 	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath))
 	{
-		if (mCharacterUnderCursor != nullptr)
+		if (mSelectableUnderCursor != nullptr)
 		{
 			ADRCharacter* characterInPlay = mGameMode->GetCharacterInPlay();
 
 			if (mMouseHoverState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
 			{
-				characterInPlay->BasicAttack(mCharacterUnderCursor);
+				characterInPlay->BasicAttack(mSelectableUnderCursor);
 			}
 			else
 			{
-				characterInPlay->OrderAttackMoveToActor(mCharacterUnderCursor);
+				characterInPlay->OrderAttackMoveToActor(mSelectableUnderCursor);
 			}
 		}
 		else
@@ -97,19 +98,19 @@ void ADRPlayerController::OnNewTurn(ADRCharacter* previousCharacter, ADRCharacte
 	mMovementSpline->ClearSpline();
 }
 
-void ADRPlayerController::OnCharacterUnderCursorChanged(ADRCharacter* previousCharacter,
-                                                        ADRCharacter* characterUnderCursor)
+void ADRPlayerController::OnSelectableUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp,
+                                                         UDRAbilityTargetComponent* newSelectableComp)
 {
-	UpdateMouseHoverState(characterUnderCursor);
+	UpdateMouseHoverState(newSelectableComp);
 	UpdateCursor();
-	if (previousCharacter != nullptr)
+	if (previousSelectableComp != nullptr)
 	{
-		previousCharacter->FindComponentByClass<UPrimitiveComponent>()->SetRenderCustomDepth(false);
+		previousSelectableComp->SetHighlight(false);
 	}
-	if (characterUnderCursor != nullptr)
+	if (newSelectableComp != nullptr)
 	{
-		mHUD->ShowHoverPanel(mCharacterUnderCursor);
-		characterUnderCursor->FindComponentByClass<UPrimitiveComponent>()->SetRenderCustomDepth(true);
+		newSelectableComp->SetHighlight(true);
+		mHUD->ShowHoverPanel(newSelectableComp);
 	}
 	else
 	{
@@ -119,7 +120,7 @@ void ADRPlayerController::OnCharacterUnderCursorChanged(ADRCharacter* previousCh
 
 void ADRPlayerController::UpdateCursor()
 {
-	if(mMouseHoverState == EMouseHoverState::EnemyCharacter ||
+	if (mMouseHoverState == EMouseHoverState::EnemyCharacter ||
 		mMouseHoverState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
 	{
 		CurrentMouseCursor = EMouseCursor::Type::Crosshairs;
@@ -130,27 +131,32 @@ void ADRPlayerController::UpdateCursor()
 	}
 }
 
-void ADRPlayerController::UpdateMouseHoverState(ADRCharacter* characterUnderCursor)
+void ADRPlayerController::UpdateMouseHoverState(UDRAbilityTargetComponent* abilityTargetUnderCursor)
 {
-	if (characterUnderCursor == nullptr)
+	if (abilityTargetUnderCursor == nullptr)
 	{
 		mMouseHoverState = EMouseHoverState::NoCharacter;
 	}
-	else if (characterUnderCursor->GetTeam() == ETeam::ENEMY)
+	else
 	{
-		UDRAbility_BasicAttack* BasicAttack = mGameMode->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
-		if (mGameMode->IsPlayersTurn() && BasicAttack->IsInRange(characterUnderCursor))
+		ETeam targetTeam = abilityTargetUnderCursor->GetTeam();
+		if (targetTeam == ETeam::ENEMY)
 		{
-			mMouseHoverState = EMouseHoverState::EnemyCharacterInBasicAttackRange;
+			UDRAbility_BasicAttack* BasicAttack = mGameMode->GetCharacterInPlay()->GetAbilityComponent()->
+			                                                 GetBasicAttack();
+			if (mGameMode->IsPlayersTurn() && BasicAttack->IsInRange(abilityTargetUnderCursor))
+			{
+				mMouseHoverState = EMouseHoverState::EnemyCharacterInBasicAttackRange;
+			}
+			else
+			{
+				mMouseHoverState = EMouseHoverState::EnemyCharacter;
+			}
 		}
-		else
+		if (targetTeam == ETeam::PLAYER)
 		{
-			mMouseHoverState = EMouseHoverState::EnemyCharacter;
+			mMouseHoverState = EMouseHoverState::AllyCharacter;
 		}
-	}
-	else if (characterUnderCursor->GetTeam() == ETeam::PLAYER)
-	{
-		mMouseHoverState = EMouseHoverState::AllyCharacter;
 	}
 }
 
@@ -158,21 +164,22 @@ void ADRPlayerController::UpdateCharacterUnderCursor()
 {
 	FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(
 		GetWorld(), ECollisionChannel::ECC_Pawn);
-	ADRCharacter* previousCharacter = mCharacterUnderCursor;
+	UDRAbilityTargetComponent* previousSelectable = mSelectableUnderCursor;
 	if (hitResult.bBlockingHit)
 	{
-		if (ADRCharacter* hitCharacter = Cast<ADRCharacter>(hitResult.GetActor()))
+		if (UDRAbilityTargetComponent* hitSelectable = hitResult.GetActor()->FindComponentByClass<
+			UDRAbilityTargetComponent>())
 		{
-			mCharacterUnderCursor = hitCharacter;
+			mSelectableUnderCursor = hitSelectable;
 		}
 	}
 	else
 	{
-		mCharacterUnderCursor = nullptr;
+		mSelectableUnderCursor = nullptr;
 	}
 
-	if (previousCharacter != mCharacterUnderCursor)
+	if (previousSelectable != mSelectableUnderCursor)
 	{
-		mOnCharacterUnderCursorChanged.Broadcast(previousCharacter, mCharacterUnderCursor);
+		mOnCharacterUnderCursorChanged.Broadcast(previousSelectable, mSelectableUnderCursor);
 	}
 }

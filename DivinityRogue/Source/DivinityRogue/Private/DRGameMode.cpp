@@ -73,14 +73,16 @@ TArray<ADREnemyCharacter*> ADRGameMode::GetAllEnemyUnits()
 	return returnList;
 }
 
-TArray<ADRPlayerCharacter*> ADRGameMode::GetAllPlayerUnits()
+TArray<UDRAbilityTargetComponent*> ADRGameMode::GetAllPlayerAbilityTargets()
 {
-	TArray<ADRPlayerCharacter*> returnList;
-	for (ADRCharacter* character : mALlCharacters)
+	TArray<UDRAbilityTargetComponent*> allAbilityTargets;
+	TArray<UDRAbilityTargetComponent*> returnList;
+	UDRGameplayStatics::FindAllComponents<UDRAbilityTargetComponent>(GetWorld(), allAbilityTargets);
+	for (UDRAbilityTargetComponent* abilityTarget : allAbilityTargets)
 	{
-		if (ADRPlayerCharacter* playerUnit = Cast<ADRPlayerCharacter>(character))
+		if (abilityTarget->GetTeam() == ETeam::PLAYER)
 		{
-			returnList.Add(playerUnit);
+			returnList.Add(abilityTarget);
 		}
 	}
 	return returnList;
@@ -134,15 +136,15 @@ void ADRGameMode::StartTurn()
 	mOnNewTurn.Broadcast(previousCharacter, mCharacterInPlay);
 	mCharacterInPlay->mOnTurnStart.Broadcast();
 	SetGameplayState(EGameplayState::PlanningPath);
-	if (mCharacterInPlay->GetTeam() == ETeam::PLAYER)
+
+	if (ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController()))
 	{
-		mPlayerController->EnableInput(mPlayerController);
+		mPlayerController->DisableInput(mPlayerController);
+		enemyController->StartRequestAction();
 	}
 	else
 	{
-		mPlayerController->DisableInput(mPlayerController);
-		ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController());
-		enemyController->StartRequestAction();
+		mPlayerController->EnableInput(mPlayerController);
 	}
 }
 
@@ -172,7 +174,7 @@ void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 {
 	mALlCharacters.Remove(deadUnit);
 	mTurnQueue.Remove(deadUnit);
-	if (GetAllPlayerUnits().Num() == 0 || GetAllEnemyUnits().Num() == 0)
+	if (GetAllPlayerAbilityTargets().Num() == 0 || GetAllEnemyUnits().Num() == 0)
 	{
 		UDRGameplayStatics::OpenLevel(GetWorld(), FName(*GetWorld()->GetName()), false);
 	}
@@ -191,7 +193,7 @@ void ADRGameMode::FindPathToMouse()
 
 	if (mPlayerController->GetMouseHoverState() == EMouseHoverState::EnemyCharacterInBasicAttackRange)
 	{
-		pathEnd = mPlayerController->GetCharacterUnderCursor()->GetActorLocation();
+		pathEnd = mPlayerController->GetAbilityTargetUnderCursor()->GetOwner()->GetActorLocation();
 	}
 	else
 	{

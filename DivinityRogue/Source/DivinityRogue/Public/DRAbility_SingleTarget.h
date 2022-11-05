@@ -20,6 +20,6 @@ protected:
 	virtual bool CanCast() override;
 	virtual void ClearSelection() override;
 	UPROPERTY()
-	ADRCharacter* mTarget;
+	UDRAbilityTargetComponent* mTarget;
 private:
 };

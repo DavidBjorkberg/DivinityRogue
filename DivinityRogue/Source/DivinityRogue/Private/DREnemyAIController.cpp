@@ -16,7 +16,6 @@ void ADREnemyAIController::BeginPlay()
 void ADREnemyAIController::StartRequestAction()
 {
 	check(!GetWorldTimerManager().IsTimerActive(RequestActionTimer));
-	UE_LOG(LogTemp, Warning, TEXT("Start: %f"), FPlatformTime::Seconds());
 	GetWorldTimerManager().SetTimer(RequestActionTimer, this, &ADREnemyAIController::RequestAction,
 	                                mRequestActionDelay);
 }
@@ -24,16 +23,12 @@ void ADREnemyAIController::StartRequestAction()
 void ADREnemyAIController::RequestAction()
 {
 	GetWorldTimerManager().ClearTimer(RequestActionTimer); // This shouldn't be necessary, timer has run out.
-	UE_LOG(LogTemp, Warning, TEXT("End: %f"), FPlatformTime::Seconds());
 
-	TArray<ADRPlayerCharacter*> allPlayerUnits = mGameMode->GetAllPlayerUnits();
-	ADRPlayerCharacter* closestPlayerUnit;
-	float closestDistance;
-	UDRGameplayStatics::GetClosestDRCharacterInList(mOwner, allPlayerUnits, closestPlayerUnit, closestDistance);
-
+	TArray<UDRAbilityTargetComponent*> allPlayerUnits = mGameMode->GetAllPlayerAbilityTargets();
+	UDRGameplayStatics::SortComponentListByDistance(mOwner,allPlayerUnits);
 	if (TryUseAbility()) return;
-	if (TryBasicAttack(closestPlayerUnit)) return;
-	if (TryMoveTo(closestPlayerUnit)) return;
+	if (TryBasicAttack(allPlayerUnits[0])) return;
+	if (TryMoveTo(allPlayerUnits[0])) return;
 	mGameMode->EndTurn();
 }
 
@@ -50,7 +45,7 @@ bool ADREnemyAIController::TryUseAbility()
 	return false;
 }
 
-bool ADREnemyAIController::TryBasicAttack(ADRCharacter* target)
+bool ADREnemyAIController::TryBasicAttack(UDRAbilityTargetComponent* target)
 {
 	UDRAbility_BasicAttack* basicAttack = mOwner->GetAbilityComponent()->GetBasicAttack();
 	if (basicAttack->CanAffordCast() && basicAttack->IsInRange(target))
@@ -61,7 +56,7 @@ bool ADREnemyAIController::TryBasicAttack(ADRCharacter* target)
 	return false;
 }
 
-bool ADREnemyAIController::TryMoveTo(ADRCharacter* target)
+bool ADREnemyAIController::TryMoveTo(UDRAbilityTargetComponent* target)
 {
 	float distance = UDRGameplayStatics::GetDistanceToEdge2D(mOwner->GetActorLocation(), target);
 	if (distance > mAdjacentToActorThreshold)

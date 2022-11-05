@@ -8,13 +8,9 @@
 void UDRAbility_Charge::Use()
 {
 	Super::Use();
-	FVector targetLocation = mTarget->GetActorLocation();
-	FVector targetRotation = mTarget->GetActorRotation().Vector();
+	FVector targetLocation = mTarget->GetOwner()->GetActorLocation();
+	FVector targetRotation = mTarget->GetOwner()->GetActorRotation().Vector();
 	FVector frontOfTargetLocation = targetLocation + (targetRotation * 150);
-	mOwner->SetActorLocation(frontOfTargetLocation);
-	const FDamageEvent damageEvent;
-
-	mTarget->TakeDamage(mDamage, damageEvent, mOwner->GetController(), mOwner);
+	mOwner->FindComponentByClass<UDRAbilityTargetComponent>()->TeleportTo(frontOfTargetLocation);
+	mTarget->TakeDamage(mDamage, mOwner);
 }
-
-

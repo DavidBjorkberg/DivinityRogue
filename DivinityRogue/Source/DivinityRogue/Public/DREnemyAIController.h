@@ -27,7 +27,7 @@ private:
 	UFUNCTION()
 	void RequestAction();
 	bool TryUseAbility();
-	bool TryBasicAttack(ADRCharacter* target);
-	bool TryMoveTo(ADRCharacter* target);
+	bool TryBasicAttack(UDRAbilityTargetComponent* target);
+	bool TryMoveTo(UDRAbilityTargetComponent* target);
 	FTimerHandle RequestActionTimer;
 };

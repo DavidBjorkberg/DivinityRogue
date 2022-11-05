@@ -6,6 +6,7 @@
 #include "DRCharacter.h"
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "DRGameplayStatics.generated.h"
 
 /**
@@ -19,17 +20,27 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
 	static FHitResult GetHitResultUnderCursor(const UObject* WorldContextObject, ECollisionChannel objectType);
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
-	static bool GetGroundHitResultUnderCursor(const UObject* worldContextObject, FHitResult& outHitResult, bool onlyWalkable);
+	static bool GetGroundHitResultUnderCursor(const UObject* worldContextObject, FHitResult& outHitResult,
+	                                          bool onlyWalkable);
+
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
 	static void SortActorListByDistance(AActor* thisActor, TArray<T*>& actorList)
 	{
 		actorList.Sort([thisActor](const AActor& A, const AActor& B)
 		{
-			return  A.GetDistanceTo(thisActor) > B.GetDistanceTo(thisActor);
+			return A.GetDistanceTo(thisActor) < B.GetDistanceTo(thisActor);
 		});
 	}
-
+	template <class T>
+	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
+	static void SortComponentListByDistance(AActor* thisActor, TArray<T*>& actorList)
+	{
+		actorList.Sort([thisActor](const UActorComponent& A, const UActorComponent& B)
+		{
+			return A.GetOwner()->GetDistanceTo(thisActor) < B.GetOwner()->GetDistanceTo(thisActor);
+		});
+	}
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
 	static bool GetClosestDRCharacterInList(AActor* thisActor, TArray<T*> actorList, T*& outClosestPawn,
@@ -43,7 +54,7 @@ public:
 
 			if (character == thisActor) continue;
 
-			float distanceToActor = GetDistanceToEdge2D(thisActor->GetActorLocation(),character);
+			float distanceToActor = GetDistanceToEdge2D(thisActor->GetActorLocation(), character);
 			if (closestDistance == -1 ||
 				distanceToActor < closestDistance)
 			{
@@ -59,15 +70,13 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
-	static float GetDistanceToEdge2D(FVector location, ADRCharacter* otherActor)
+	static float GetDistanceToEdge2D(FVector location, UDRAbilityTargetComponent* otherTarget)
 	{
 		FVector closestPoint;
-		otherActor->GetHitBox()->GetClosestPointOnCollision(location, closestPoint);
+		otherTarget->GetClosestPointOnCollision(location, closestPoint);
 		float distanceToActor = FVector::Dist2D(location, closestPoint);
 		return distanceToActor;
-
 	}
-
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
 	static void FindAllActors(const UObject* WorldContextObject, TArray<T*>& outActors)
@@ -78,19 +87,35 @@ public:
 			outActors.Add(*It);
 		}
 	}
-	static TArray<ADRCharacter*> GetAllCharactersInRadius(const UObject* WorldContextObject, FVector location, float radius)
-	{
-		TArray<ADRCharacter*> allCharacters;
-		FindAllActors<ADRCharacter>(WorldContextObject,allCharacters);
 
-		TArray<ADRCharacter*> charactersInRadius;
-		for (auto character : allCharacters)
+	template <class T>
+	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
+	static void FindAllComponents(const UObject* WorldContextObject, TArray<T*>& outComponents)
+	{
+		UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+		for (TActorIterator<AActor> It(World); It; ++It)
 		{
-			if(GetDistanceToEdge2D(location,character) <= radius)
+			if (T* comp = It->FindComponentByClass<T>())
 			{
-				charactersInRadius.Add(character);
+				outComponents.Add(comp);
 			}
 		}
-		return charactersInRadius;
+	}
+
+	static TArray<UDRAbilityTargetComponent*> GetAllAbilityTargetsInRadius(
+		const UObject* WorldContextObject, FVector location, float radius)
+	{
+		TArray<UDRAbilityTargetComponent*> allAbilityTargets;
+		FindAllComponents<UDRAbilityTargetComponent>(WorldContextObject, allAbilityTargets);
+
+		TArray<UDRAbilityTargetComponent*> abilityTargetsInRadius;
+		for (auto abilityTarget : allAbilityTargets)
+		{
+			if (GetDistanceToEdge2D(location, abilityTarget) <= radius)
+			{
+				abilityTargetsInRadius.Add(abilityTarget);
+			}
+		}
+		return abilityTargetsInRadius;
 	}
 };

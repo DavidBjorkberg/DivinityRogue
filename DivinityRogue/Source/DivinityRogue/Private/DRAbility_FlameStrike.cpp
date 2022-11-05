@@ -8,9 +8,8 @@
 void UDRAbility_FlameStrike::Use()
 {
 	Super::Use();
-	FDamageEvent damageEvent;
 	for (auto target : mTargets)
 	{
-		target->TakeDamage(mDamage,damageEvent,mOwner->GetController(),mOwner);
+		target->TakeDamage(mDamage, mOwner);
 	}
 }

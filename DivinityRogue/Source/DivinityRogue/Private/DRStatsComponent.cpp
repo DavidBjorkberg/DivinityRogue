@@ -6,7 +6,7 @@ UDRStatsComponent::UDRStatsComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UDRStatsComponent::UpdateEnergy(int difference)
+void UDRStatsComponent::ModifyEnergy(int difference)
 {
 	mStats.mCurrentActionPoints = FMath::Clamp(mStats.mCurrentActionPoints + difference, 0, mStats.mMaxActionPoints);
 	mOnEnergyChange.Broadcast(mStats.mCurrentActionPoints);

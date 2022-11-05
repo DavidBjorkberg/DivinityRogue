@@ -10,5 +10,5 @@ ADRPlayerCharacter::ADRPlayerCharacter()
 void ADRPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	mTeam = ETeam::PLAYER;
+	mAbilityTargetComponent->SetTeam(ETeam::PLAYER);
 }

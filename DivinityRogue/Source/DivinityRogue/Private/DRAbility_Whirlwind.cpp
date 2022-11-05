@@ -8,13 +8,16 @@
 void UDRAbility_Whirlwind::Use()
 {
 	Super::Use();
-	TArray<ADRCharacter*> charactersInRange = UDRGameplayStatics::GetAllCharactersInRadius(mWorld, mOwner->GetActorLocation(), mAbilityInfo.mRange);
-	for (ADRCharacter* characterInRange : charactersInRange)
+	TArray<UDRAbilityTargetComponent*> abilityTargetsInRange = UDRGameplayStatics::GetAllAbilityTargetsInRadius(
+		mWorld,
+		mOwner->GetActorLocation(),
+		mAbilityInfo.mRange);
+	
+	for (UDRAbilityTargetComponent* AbilityTargetInRange : abilityTargetsInRange)
 	{
-		if(IsValidTarget(characterInRange))
+		if (IsValidTarget(AbilityTargetInRange))
 		{
-			const FDamageEvent damageEvent;
-			characterInRange->TakeDamage(mDamage, damageEvent, mOwner->GetController(), mOwner);
+			AbilityTargetInRange->TakeDamage(mDamage, mOwner);
 		}
 	}
 }

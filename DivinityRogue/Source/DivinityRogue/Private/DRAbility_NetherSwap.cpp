@@ -8,8 +8,8 @@
 void UDRAbility_NetherSwap::Use()
 {
 	Super::Use();
-	FVector locationA = mTargets[0]->GetActorLocation();
-	FVector locationB = mTargets[1]->GetActorLocation();
-	mTargets[0]->SetActorLocation(locationB);
-	mTargets[1]->SetActorLocation(locationA);
+	FVector locationA = mTargets[0]->GetOwner()->GetActorLocation();
+	FVector locationB = mTargets[1]->GetOwner()->GetActorLocation();
+	mTargets[0]->TeleportTo(locationB);
+	mTargets[1]->TeleportTo(locationA);
 }

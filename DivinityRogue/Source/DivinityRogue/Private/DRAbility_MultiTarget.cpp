@@ -12,15 +12,16 @@ void UDRAbility_MultiTarget::OnLeftMouseDown()
 {
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
-		ADRCharacter* characterUnderCursor = mPlayerController->GetCharacterUnderCursor();
-		if (characterUnderCursor == nullptr || !IsValidTarget(characterUnderCursor) || !IsInRange(characterUnderCursor))
+		UDRAbilityTargetComponent* abilityTargetUnderCursor = mPlayerController->GetAbilityTargetUnderCursor();
+		if (abilityTargetUnderCursor == nullptr || !IsValidTarget(abilityTargetUnderCursor) || !IsInRange(
+			abilityTargetUnderCursor))
 		{
 			DeselectAbility();
 			mGameMode->SetGameplayState(EGameplayState::PlanningPath);
 			return;
 		}
-		
-		mTargets.Add(characterUnderCursor);
+
+		mTargets.Add(abilityTargetUnderCursor);
 		if (mTargets.Num() == mNumberOfTargets)
 		{
 			mGameMode->GetCharacterInPlay()->UseAbility(this);
@@ -33,23 +34,19 @@ bool UDRAbility_MultiTarget::TrySetRandomTargets()
 {
 	mTargets.Empty();
 
-	TArray<ADRCharacter*> allEnemyUnits;
-	if (Cast<ADRPlayerCharacter>(mOwner))
+	TArray<UDRAbilityTargetComponent*> allEnemyTargets;
+	TArray<UDRAbilityTargetComponent*> allAbilityTargets;
+	UDRGameplayStatics::FindAllComponents<UDRAbilityTargetComponent>(GetWorld(), allAbilityTargets);
+	UDRAbilityTargetComponent* ownerAbilityTarget = mOwner->FindComponentByClass<UDRAbilityTargetComponent>();
+	for (auto abilityTarget : allAbilityTargets)
 	{
-		for (auto enemy : mGameMode->GetAllEnemyUnits())
+		if (abilityTarget->GetTeam() != ownerAbilityTarget->GetTeam() && abilityTarget->GetTeam() != ETeam::NEUTRAL)
 		{
-			allEnemyUnits.Add(enemy);
+			allEnemyTargets.Add(abilityTarget);
 		}
 	}
-	else if (Cast<ADREnemyCharacter>(mOwner))
-	{
-		for (auto enemy : mGameMode->GetAllPlayerUnits())
-		{
-			allEnemyUnits.Add(enemy);
-		}
-	}
-	UDRGameplayStatics::SortActorListByDistance(mOwner, allEnemyUnits);
-	for (auto enemy : allEnemyUnits)
+	UDRGameplayStatics::SortComponentListByDistance(mOwner, allEnemyTargets);
+	for (auto enemy : allEnemyTargets)
 	{
 		if (IsInRange(enemy))
 		{

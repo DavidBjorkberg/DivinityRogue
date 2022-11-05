@@ -8,6 +8,5 @@
 void UDRAbility_Slam::Use()
 {
 	Super::Use();
-	const FDamageEvent damageEvent;
-	mTarget->TakeDamage(mDamage, damageEvent, mOwner->GetController(), mOwner);
+	mTarget->TakeDamage(mDamage, mOwner);
 }

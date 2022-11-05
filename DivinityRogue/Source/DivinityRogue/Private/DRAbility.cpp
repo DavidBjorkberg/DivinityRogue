@@ -26,7 +26,7 @@ void UDRAbility::PostInitProperties()
 
 void UDRAbility::Use()
 {
-	mOwner->ModifyEnergy(-mAbilityInfo.mActionPointCost);
+	mOwner->FindComponentByClass<UDRAbilityTargetComponent>()->ModifyEnergy(-mAbilityInfo.mActionPointCost);
 	mRemainingCooldown = mAbilityInfo.mCooldown;
 	mOwner->mOnUsedAbility.Broadcast(this);
 }
@@ -63,7 +63,7 @@ UWorld* UDRAbility::GetWorld() const
 	return nullptr;
 }
 
-bool UDRAbility::IsInRange(ADRCharacter* target)
+bool UDRAbility::IsInRange(UDRAbilityTargetComponent* target)
 {
 	float distanceToTarget = UDRGameplayStatics::GetDistanceToEdge2D(mOwner->GetActorLocation(), target);
 	return distanceToTarget <= mAbilityInfo.mRange;
@@ -75,14 +75,16 @@ bool UDRAbility::IsInRange(FVector targetLocation)
 	return distanceToTarget <= mAbilityInfo.mRange;
 }
 
-bool UDRAbility::IsValidTarget(ADRCharacter* target)
+bool UDRAbility::IsValidTarget(UDRAbilityTargetComponent* targetSelectable)
 {
+	ETeam ownerTeam = mOwner->FindComponentByClass<UDRAbilityTargetComponent>()->GetTeam();
+	ETeam targetTeam = targetSelectable->GetTeam();
 	switch (mAbilityInfo.mTargetType)
 	{
 	case TargetType::ENEMY:
-		return mOwner->GetTeam() != target->GetTeam();
+		return ownerTeam != targetTeam;
 	case TargetType::ALLY:
-		return mOwner->GetTeam() == target->GetTeam() || target->GetTeam() == ETeam::NEUTRAL;
+		return ownerTeam == targetTeam || targetTeam == ETeam::NEUTRAL;
 	case TargetType::ANY:
 		return true;
 	default:

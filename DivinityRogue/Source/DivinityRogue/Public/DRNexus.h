@@ -3,24 +3,29 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DRAbilityTargetComponent.h"
+#include "DRHealthComponent.h"
 #include "Engine/StaticMeshActor.h"
 #include "DRNexus.generated.h"
 
 UCLASS()
-class DIVINITYROGUE_API ADRNexus : public AStaticMeshActor
+class DIVINITYROGUE_API ADRNexus : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ADRNexus();
-
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UDRAbilityTargetComponent* mAbilityTargetComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UDRHealthComponent* mHealthComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* mStaticMeshComponent;
+private:
+	UFUNCTION()
+	void OnDeath();
+	UPROPERTY()
+	USceneComponent* mRoot;
 };

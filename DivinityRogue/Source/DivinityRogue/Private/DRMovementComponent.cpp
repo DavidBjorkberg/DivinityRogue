@@ -39,7 +39,7 @@ void UDRMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool b
 
 	if (mDistanceLeftUntilEnergyCost <= 0)
 	{
-		mOwner->ModifyEnergy(-1);
+		mOwner->FindComponentByClass<UDRStatsComponent>()->ModifyEnergy(-1);
 		mOwner->EndTurnIfOutOfActionPoints();
 		mDistanceLeftUntilEnergyCost = mOwner->GetStatsComponent()->GetStats().mMovement;
 	}

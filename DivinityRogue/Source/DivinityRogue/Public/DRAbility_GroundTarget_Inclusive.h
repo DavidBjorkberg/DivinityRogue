@@ -17,5 +17,5 @@ public:
 	virtual void OnLeftMouseDown() override;
 protected:
 	UPROPERTY()
-	TArray<ADRCharacter*> mTargets;
+	TArray<UDRAbilityTargetComponent*> mTargets;
 };

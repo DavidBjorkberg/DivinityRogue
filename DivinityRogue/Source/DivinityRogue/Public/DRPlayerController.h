@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "DRCharacter.h"
 #include "DRMovementSpline.h"
+#include "DRAbilityTargetComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "DRPlayerController.generated.h"
 
@@ -19,8 +20,9 @@ enum EMouseHoverState
 	EnemyCharacterInBasicAttackRange
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterUnderCursorChanged, ADRCharacter*, previousCharacter,
-                                             ADRCharacter*, characterUnderCursor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterUnderCursorChanged,
+                                             UDRAbilityTargetComponent*, previousSelectableComp,
+                                             UDRAbilityTargetComponent*, newSelectableComp);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLeftMouseDown);
 
@@ -35,7 +37,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintPure)
-	ADRCharacter* GetCharacterUnderCursor() const { return mCharacterUnderCursor; }
+	UDRAbilityTargetComponent* GetAbilityTargetUnderCursor() const { return mSelectableUnderCursor; }
 
 	UFUNCTION(BlueprintPure)
 	EMouseHoverState GetMouseHoverState() const { return mMouseHoverState; }
@@ -59,9 +61,10 @@ private:
 	UFUNCTION()
 	void OnNewTurn(ADRCharacter* previousCharacter, ADRCharacter* newCharacter);
 	UFUNCTION()
-	void OnCharacterUnderCursorChanged(ADRCharacter* previousCharacter, ADRCharacter* characterUnderCursor);
+	void OnSelectableUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp,
+	                                    UDRAbilityTargetComponent* newSelectableComp);
 	void UpdateCursor();
-	void UpdateMouseHoverState(ADRCharacter* characterUnderCursor);
+	void UpdateMouseHoverState(UDRAbilityTargetComponent* abilityTargetUnderCursor);
 	void UpdateCharacterUnderCursor();
 	UPROPERTY()
 	ADRGameMode* mGameMode;
@@ -70,6 +73,6 @@ private:
 	UPROPERTY()
 	ADRMovementSpline* mMovementSpline;
 	UPROPERTY()
-	ADRCharacter* mCharacterUnderCursor;
+	UDRAbilityTargetComponent* mSelectableUnderCursor;
 	EMouseHoverState mMouseHoverState;
 };

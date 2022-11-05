@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "DRAbility.generated.h"
 
+class UDRAbilityTargetComponent;
 class ADRPlayerController;
 class ADRGameMode;
 UENUM()
@@ -14,7 +15,6 @@ enum class TargetType : uint8
 	ENEMY,
 	ANY,
 };
-
 
 USTRUCT(BlueprintType)
 struct FAbilityInfo
@@ -53,8 +53,8 @@ public:
 
 	float GetRange() const { return mAbilityInfo.mRange; }
 	void SetOwner(ADRCharacter* owner) { mOwner = owner; }
-	bool IsInRange(ADRCharacter* target);
-	virtual bool IsValidTarget(ADRCharacter* target);
+	bool IsInRange(UDRAbilityTargetComponent* target);
+	virtual bool IsValidTarget(UDRAbilityTargetComponent* selectableComp);
 	bool CanAffordCast();
 	bool IsOnCooldown() const { return mRemainingCooldown > 0; }
 	FAbilityInfo GetAbilityInfo() const { return mAbilityInfo; }

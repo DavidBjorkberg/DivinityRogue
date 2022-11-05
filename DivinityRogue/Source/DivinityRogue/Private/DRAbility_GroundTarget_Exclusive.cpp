@@ -28,6 +28,6 @@ bool UDRAbility_GroundTarget_Exclusive::IsOnValidArea()
 	FHitResult groundUnderCursorHitResult;
 	return UDRGameplayStatics::GetGroundHitResultUnderCursor(GetWorld(), groundUnderCursorHitResult, true) &&
 		IsInRange(groundUnderCursorHitResult.Location) &&
-		UDRGameplayStatics::GetAllCharactersInRadius(mWorld, groundUnderCursorHitResult.Location, mRadius).Num() ==
+		UDRGameplayStatics::GetAllAbilityTargetsInRadius(mWorld, groundUnderCursorHitResult.Location, mRadius).Num() ==
 		0;
 }

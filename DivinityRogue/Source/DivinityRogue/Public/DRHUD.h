@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRScreenUI.h"
+#include "DRAbilityTargetComponent.h"
 #include "GameFramework/HUD.h"
 
 #include "DRHUD.generated.h"
@@ -21,7 +22,7 @@ public:
 	virtual void DrawHUD() override;
 	void StartTargeting();
 	void StopTargeting();
-	void ShowHoverPanel(ADRCharacter* hoveredCharacter);
+	void ShowHoverPanel(UDRAbilityTargetComponent* selectableComp);
 	void HideHoverPanel();
 	bool IsShowingHoverPanel() const { return mShowHoverPanel; }
 protected:
@@ -31,7 +32,7 @@ private:
 	UFUNCTION()
 	void OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState);
 	UFUNCTION()
-	void OnCharacterUnderCursorChanged(ADRCharacter* previousCharacter, ADRCharacter* characterUnderCursor);
+	void OnCharacterUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp, UDRAbilityTargetComponent* newSelectableComp);
 	UPROPERTY()
 	UDRScreenUI* mScreenUI;
 	UPROPERTY()

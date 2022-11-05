@@ -7,11 +7,10 @@
 void UDRAbility_BasicAttack::Use()
 {
 	Super::Use();
-	const FDamageEvent damageEvent;
-	mTarget->TakeDamage(mDamage, damageEvent, mOwner->GetController(), mOwner);
+	mTarget->TakeDamage(mDamage,mOwner);
 }
 
-void UDRAbility_BasicAttack::SetTarget(ADRCharacter* target)
+void UDRAbility_BasicAttack::SetTarget(UDRAbilityTargetComponent* target)
 {
 	mTarget = target;
 }

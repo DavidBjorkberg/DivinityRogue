@@ -12,10 +12,10 @@ void UDRAbility_SingleTarget::OnLeftMouseDown()
 {
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
-		ADRCharacter* characterUnderCursor = mPlayerController->GetCharacterUnderCursor();
-		if (characterUnderCursor != nullptr && IsValidTarget(characterUnderCursor) && IsInRange(characterUnderCursor))
+		UDRAbilityTargetComponent* abilityTargetUnderCursor = mPlayerController->GetAbilityTargetUnderCursor();
+		if (abilityTargetUnderCursor != nullptr && IsValidTarget(abilityTargetUnderCursor) && IsInRange(abilityTargetUnderCursor))
 		{
-			mTarget = characterUnderCursor;
+			mTarget = abilityTargetUnderCursor;
 			mGameMode->GetCharacterInPlay()->UseAbility(this);
 		}
 		else
@@ -30,27 +30,23 @@ bool UDRAbility_SingleTarget::TrySetRandomTargets()
 {
 	mTarget = nullptr;
 
-	TArray<ADRCharacter*> allEnemyUnits;
-	if (Cast<ADRPlayerCharacter>(mOwner))
+	TArray<UDRAbilityTargetComponent*> allEnemyTargets;
+	TArray<UDRAbilityTargetComponent*> allAbilityTargets;
+	UDRGameplayStatics::FindAllComponents<UDRAbilityTargetComponent>(GetWorld(), allAbilityTargets);
+	UDRAbilityTargetComponent* ownerAbilityTarget = mOwner->FindComponentByClass<UDRAbilityTargetComponent>();
+	for (auto abilityTarget : allAbilityTargets)
 	{
-		for (auto enemy : mGameMode->GetAllEnemyUnits())
+		if (abilityTarget->GetTeam() != ownerAbilityTarget->GetTeam() && abilityTarget->GetTeam() != ETeam::NEUTRAL)
 		{
-			allEnemyUnits.Add(enemy);
+			allEnemyTargets.Add(abilityTarget);
 		}
 	}
-	else if (Cast<ADREnemyCharacter>(mOwner))
+
+
+	UDRGameplayStatics::SortComponentListByDistance(mOwner,allEnemyTargets);
+	if (IsInRange(allEnemyTargets[0]))
 	{
-		for (auto enemy : mGameMode->GetAllPlayerUnits())
-		{
-			allEnemyUnits.Add(enemy);
-		}
-	}
-	ADRCharacter* closestEnemyUnit;
-	float closestDistance;
-	UDRGameplayStatics::GetClosestDRCharacterInList(mOwner, allEnemyUnits, closestEnemyUnit, closestDistance);
-	if (IsInRange(closestEnemyUnit))
-	{
-		mTarget = closestEnemyUnit;
+		mTarget = allEnemyTargets[0];
 	}
 	return CanCast();
 }

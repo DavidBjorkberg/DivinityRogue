@@ -18,19 +18,14 @@ ADRCharacter::ADRCharacter()
 	mAnimationComponent = CreateDefaultSubobject<UDRCharacterAnimationComponent>("DRAnimationComponent");
 	mStatsComponent = CreateDefaultSubobject<UDRStatsComponent>("DRStatsComponent");
 	mAbilityComponent = CreateDefaultSubobject<UDRAbilityComponent>("DRAbilityComponent");
+	mAbilityTargetComponent = CreateDefaultSubobject<UDRAbilityTargetComponent>("DRAbilityTargetComponent");
+	mAbilityTargetComponent->SetupAttachment(mRoot);
+	mAbilityTargetComponent->SetHighlightMesh(mSkeletalMeshComponent);
 	mHealthComponent = CreateDefaultSubobject<UDRHealthComponent>("DRHealthComponent");
 	mHealthComponent->mOnDied.AddDynamic(this, &ADRCharacter::Died);
 	mSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	mSkeletalMeshComponent->SetupAttachment(mRoot);
-	mSkeletalMeshComponent->CustomDepthStencilValue = 1; //Enables outline
 	mSkeletalMeshComponent->SetReceivesDecals(false);
-
-	mHitBox = CreateDefaultSubobject<UBoxComponent>("HitBox");
-	mHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	mHitBox->SetCollisionProfileName("Pawn");
-	mHitBox->SetCanEverAffectNavigation(false);
-	mHitBox->SetupAttachment(mRoot);
-	mHitBox->SetReceivesDecals(false);
 }
 
 void ADRCharacter::BeginPlay()
@@ -47,20 +42,20 @@ void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
 	mController->OrderMoveToLocation(targetLoc);
 }
 
-void ADRCharacter::OrderMoveToActor(ADRCharacter* targetActor)
+void ADRCharacter::OrderMoveToActor(UDRAbilityTargetComponent* target)
 {
-	mController->OrderMoveToActor(targetActor);
+	mController->OrderMoveToActor(target);
 }
 
-void ADRCharacter::OrderAttackMoveToActor(ADRCharacter* targetActor)
+void ADRCharacter::OrderAttackMoveToActor(UDRAbilityTargetComponent* target)
 {
-	mController->OrderAttackMoveToActor(targetActor);
+	mController->OrderAttackMoveToActor(target);
 }
 
-void ADRCharacter::BasicAttack(ADRCharacter* targetActor)
+void ADRCharacter::BasicAttack(UDRAbilityTargetComponent* target)
 {
 	UDRAbility_BasicAttack* basicAttack = GetAbilityComponent()->GetBasicAttack();
-	basicAttack->SetTarget(targetActor);
+	basicAttack->SetTarget(target);
 	UseAbility(basicAttack);
 }
 
@@ -101,11 +96,6 @@ void ADRCharacter::UseAbility(UDRAbility* ability)
 
 void ADRCharacter::OnTurnStart()
 {
-	ModifyEnergy(mStatsComponent->GetStats().mActionPointsPerTurn);
+	mStatsComponent->ModifyEnergy(mStatsComponent->GetStats().mActionPointsPerTurn);
 }
 
-void ADRCharacter::ModifyEnergy(int amount)
-{
-	check(mStatsComponent->GetStats().mCurrentActionPoints + amount >= 0);
-	mStatsComponent->UpdateEnergy(amount);
-}
