@@ -53,6 +53,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsInGameplayState(EGameplayState state) { return state == mCurrentGameplayState; }
 
+	bool IsGameOver() const { return mGameOver; }
+	void SetGameOver(bool gameOver) { mGameOver = gameOver; }
+
 	UDRAbility* GetSelectedAbility() const { return mSelectedAbility; }
 	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; }
 	TArray<ADREnemyCharacter*> GetAllEnemyUnits();
@@ -81,6 +84,7 @@ private:
 	void StartTurn();
 	void FillTurnQueue();
 	void StartRound();
+	void EndRound();
 	UFUNCTION()
 	void OnUnitDied(ADRCharacter* deadUnit);
 	void FindPathToMouse();
@@ -93,4 +97,6 @@ private:
 	UPROPERTY()
 	ADRPlayerController* mPlayerController;
 	EGameplayState mCurrentGameplayState;
+	bool mGameOver;
+	int mCurrentRound;
 };

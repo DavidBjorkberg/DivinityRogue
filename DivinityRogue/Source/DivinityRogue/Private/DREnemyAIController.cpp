@@ -24,6 +24,12 @@ void ADREnemyAIController::RequestAction()
 {
 	GetWorldTimerManager().ClearTimer(RequestActionTimer); // This shouldn't be necessary, timer has run out.
 
+	if(mGameMode->IsGameOver())
+	{
+		mGameMode->EndTurn();
+		return;
+	}
+	
 	TArray<UDRAbilityTargetComponent*> allPlayerUnits = mGameMode->GetAllPlayerAbilityTargets();
 	UDRGameplayStatics::SortComponentListByDistance(mOwner,allPlayerUnits);
 	if (TryUseAbility()) return;

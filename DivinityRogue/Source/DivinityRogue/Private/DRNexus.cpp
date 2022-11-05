@@ -3,6 +3,8 @@
 
 #include "DRNexus.h"
 
+#include "DRGameMode.h"
+
 // Sets default values
 ADRNexus::ADRNexus()
 {
@@ -27,7 +29,7 @@ float ADRNexus::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 
 void ADRNexus::OnDeath()
 {
-	UE_LOG(LogTemp,Warning,TEXT("Nexus died"));
+	GetWorld()->GetAuthGameMode<ADRGameMode>()->SetGameOver(true);
 }
 
 

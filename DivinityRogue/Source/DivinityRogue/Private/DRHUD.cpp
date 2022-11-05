@@ -9,17 +9,18 @@
 #include "NavigationSystem.h"
 #include "DRAbility.h"
 #include "DRGameMode.h"
+#include "DRGameOverUI.h"
 #include "DRPlayerController.h"
 
 void ADRHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
-	mGameMode->mOnGameplayStateChanged.AddDynamic(this, &ADRHUD::OnGameplayStateChanged);
-	Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController())->mOnCharacterUnderCursorChanged.AddDynamic(
-		this, &ADRHUD::OnCharacterUnderCursorChanged);
-	mScreenUI = CreateWidget<UDRScreenUI>(GetGameInstance(), mScreenUIBP);
+	Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController())->mOnMouseHoverStateChanged.AddDynamic(
+		this, &ADRHUD::OnMouseHoverStateChanged);
+	mScreenUI = CreateWidget<UDRScreenUI>(GetGameInstance(), mScreenUIClass);
 	mScreenUI->AddToViewport(9999);
+
 }
 
 void ADRHUD::DrawHUD()
@@ -29,70 +30,60 @@ void ADRHUD::DrawHUD()
 
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
-		const ADRCharacter* characterUsingAbility = mGameMode->GetCharacterInPlay();
-		DrawCircle(GetWorld(), characterUsingAbility->GetActorLocation() + FVector::UpVector * 0.1f,
-		           FVector::RightVector,
-		           FVector::ForwardVector,
-		           FColor::Orange, mGameMode->GetSelectedAbility()->GetRange(), 3000, false, -1, 0, 10);
+		DrawAbilityRangeCircle();
 	}
 	else if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath))
 	{
-		int energyCost = mGameMode->GetCharacterInPlay()->GetMovementComp()->GetEnergyCostToMouse();
-		float x;
-		float y;
-		GetWorld()->GetFirstPlayerController()->GetMousePosition(x, y);
-		DrawText(TEXT("Cost: " + FString::FromInt(energyCost + mAttackCost)), FLinearColor::Black, x + 30, y, nullptr,
-		         1.5);
+		DrawAbilityCostText();
 	}
 }
-
-
-void ADRHUD::StartTargeting()
-{
-	mIsTargeting = true;
-}
-
-void ADRHUD::StopTargeting()
-{
-	mIsTargeting = false;
-}
-
 void ADRHUD::ShowHoverPanel(UDRAbilityTargetComponent* selectableComp)
 {
 	mScreenUI->ShowHoverPanel(selectableComp);
-	mShowHoverPanel = true;
 }
 
 void ADRHUD::HideHoverPanel()
 {
 	mScreenUI->HideHoverCharacterPanel();
-	mShowHoverPanel = false;
 }
 
-void ADRHUD::OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState)
+void ADRHUD::ShowGameOverScreen(int nrOfRoundsSurvived)
 {
-	if (newState == EGameplayState::SelectingTarget)
-	{
-		StartTargeting();
-	}
-	else if (oldState == EGameplayState::SelectingTarget)
-	{
-		StopTargeting();
-	}
+	mScreenUI->SetVisibility(ESlateVisibility::Collapsed);
+	UDRGameOverUI* gameOverUI = CreateWidget<UDRGameOverUI>(GetWorld(),mGameOverUIClass);
+	gameOverUI->SetValues(nrOfRoundsSurvived);
+	gameOverUI->AddToViewport();
 }
 
-void ADRHUD::OnCharacterUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp, UDRAbilityTargetComponent* newSelectableComp)
+void ADRHUD::DrawAbilityRangeCircle()
 {
-	if (newSelectableComp == nullptr)
+	const ADRCharacter* characterUsingAbility = mGameMode->GetCharacterInPlay();
+	DrawCircle(GetWorld(), characterUsingAbility->GetActorLocation() + FVector::UpVector * 0.1f,
+			   FVector::RightVector,
+			   FVector::ForwardVector,
+			   FColor::Orange, mGameMode->GetSelectedAbility()->GetRange(), 3000, false, -1, 0, 10);
+}
+
+void ADRHUD::DrawAbilityCostText()
+{
+	int energyCost = mGameMode->GetCharacterInPlay()->GetMovementComp()->GetEnergyCostToMouse();
+	float x;
+	float y;
+	GetWorld()->GetFirstPlayerController()->GetMousePosition(x, y);
+	DrawText(TEXT("Cost: " + FString::FromInt(energyCost + mAttackCost)), FLinearColor::Black, x + 30, y, nullptr,
+			 1.5);
+}
+
+void ADRHUD::OnMouseHoverStateChanged(EMouseHoverState newState)
+{
+	if(newState == EMouseHoverState::EnemyCharacter ||
+		newState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
 	{
-		mAttackCost = 0;
+		UDRAbility_BasicAttack* basicAttack = mGameMode->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
+		mAttackCost = basicAttack->GetAbilityInfo().mActionPointCost;
 	}
 	else
 	{
-		UDRAbility_BasicAttack* basicAttack = mGameMode->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
-		if (basicAttack->IsValidTarget(newSelectableComp))
-		{
-			mAttackCost = basicAttack->GetAbilityInfo().mActionPointCost;
-		}
+		mAttackCost = 0;
 	}
 }

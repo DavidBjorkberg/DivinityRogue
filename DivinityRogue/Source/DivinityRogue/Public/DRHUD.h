@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "DRScreenUI.h"
 #include "DRAbilityTargetComponent.h"
+#include "DRPlayerController.h"
 #include "GameFramework/HUD.h"
 
 #include "DRHUD.generated.h"
@@ -20,24 +21,23 @@ class DIVINITYROGUE_API ADRHUD : public AHUD
 public:
 	virtual void BeginPlay() override;
 	virtual void DrawHUD() override;
-	void StartTargeting();
-	void StopTargeting();
 	void ShowHoverPanel(UDRAbilityTargetComponent* selectableComp);
 	void HideHoverPanel();
-	bool IsShowingHoverPanel() const { return mShowHoverPanel; }
+	void ShowGameOverScreen(int nrOfRoundsSurvived);
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UDRScreenUI> mScreenUIBP;
+	TSubclassOf<UDRScreenUI> mScreenUIClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> mGameOverUIClass;
 private:
+	void DrawAbilityRangeCircle();
+	void DrawAbilityCostText();
 	UFUNCTION()
-	void OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState);
-	UFUNCTION()
-	void OnCharacterUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp, UDRAbilityTargetComponent* newSelectableComp);
+	void OnMouseHoverStateChanged(EMouseHoverState newState);
 	UPROPERTY()
 	UDRScreenUI* mScreenUI;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 	int mAttackCost;
 	bool mIsTargeting;
-	bool mShowHoverPanel;
 };

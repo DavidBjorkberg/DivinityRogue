@@ -7,6 +7,7 @@
 #include "DREnemyAIController.h"
 #include "DREnemyCharacter.h"
 #include "DRGameplayStatics.h"
+#include "DRHUD.h"
 #include "DRPlayerCharacter.h"
 #include "DRPlayerController.h"
 #include "NavigationSystem.h"
@@ -99,12 +100,19 @@ UNavigationPath* ADRGameMode::GetPathToMouse()
 
 void ADRGameMode::StartMatch()
 {
-	StartTurn();
+	StartRound();
 }
 
 void ADRGameMode::EndTurn()
 {
-	StartTurn();
+	if (IsGameOver())
+	{
+		Cast<ADRHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->ShowGameOverScreen(mCurrentRound);
+	}
+	else
+	{
+		StartTurn();
+	}
 }
 
 bool ADRGameMode::IsPlayersTurn()
@@ -125,7 +133,8 @@ void ADRGameMode::StartTurn()
 {
 	if (mTurnQueue.Num() == 0)
 	{
-		StartRound();
+		EndRound();
+		return;
 	}
 	if (mTurnQueue.Num() == 0) return;
 
@@ -168,6 +177,13 @@ void ADRGameMode::StartRound()
 {
 	mOnNewRound.Broadcast();
 	FillTurnQueue();
+	StartTurn();
+}
+
+void ADRGameMode::EndRound()
+{
+	mCurrentRound++;
+	StartRound();
 }
 
 void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
