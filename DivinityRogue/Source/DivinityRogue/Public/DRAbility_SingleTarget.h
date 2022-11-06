@@ -17,8 +17,8 @@ class DIVINITYROGUE_API UDRAbility_SingleTarget : public UDRAbility
 protected:
 	virtual void OnLeftMouseDown() override;
 	virtual bool TrySetRandomTargets() override;
-	virtual bool CanCast() override;
 	virtual void ClearSelection() override;
+	virtual bool IsValidTarget(UDRAbilityTargetComponent* target) override;
 	UPROPERTY()
 	UDRAbilityTargetComponent* mTarget;
 private:

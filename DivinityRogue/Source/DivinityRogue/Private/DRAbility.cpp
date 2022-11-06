@@ -44,6 +44,11 @@ void UDRAbility::OnAbilityDeselected()
 	mPlayerController->mOnLeftMouseDown.RemoveDynamic(this, &UDRAbility::OnLeftMouseDown);
 }
 
+bool UDRAbility::IsValidTarget(UDRAbilityTargetComponent* target)
+{
+	return target != nullptr;
+}
+
 void UDRAbility::DeselectAbility()
 {
 	mGameMode->TrySelectAbility(-1);
@@ -75,7 +80,7 @@ bool UDRAbility::IsInRange(FVector targetLocation)
 	return distanceToTarget <= mAbilityInfo.mRange;
 }
 
-bool UDRAbility::IsValidTarget(UDRAbilityTargetComponent* targetSelectable)
+bool UDRAbility::IsTargetCorrectTeam(UDRAbilityTargetComponent* targetSelectable)
 {
 	ETeam ownerTeam = mOwner->FindComponentByClass<UDRAbilityTargetComponent>()->GetTeam();
 	ETeam targetTeam = targetSelectable->GetTeam();

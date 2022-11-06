@@ -6,11 +6,6 @@
 #include "DRCharacter.h"
 #include "DRGameMode.h"
 
-bool UDRAbility_NoTarget::CanCast()
-{
-	return true;
-}
-
 bool UDRAbility_NoTarget::TrySetRandomTargets()
 {
 	return true;

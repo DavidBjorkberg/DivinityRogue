@@ -14,7 +14,6 @@ class DIVINITYROGUE_API UDRAbility_NoTarget : public UDRAbility
 {
 	GENERATED_BODY()
 public:
-	virtual bool CanCast() override;
 	virtual bool TrySetRandomTargets() override;
 
 protected:

@@ -3,9 +3,7 @@
 
 #include "DRAbility_MultiTarget.h"
 
-#include "DREnemyCharacter.h"
 #include "DRGameplayStatics.h"
-#include "DRPlayerCharacter.h"
 #include "DRPlayerController.h"
 
 void UDRAbility_MultiTarget::OnLeftMouseDown()
@@ -13,19 +11,19 @@ void UDRAbility_MultiTarget::OnLeftMouseDown()
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
 		UDRAbilityTargetComponent* abilityTargetUnderCursor = mPlayerController->GetAbilityTargetUnderCursor();
-		if (abilityTargetUnderCursor == nullptr || !IsValidTarget(abilityTargetUnderCursor) || !IsInRange(
-			abilityTargetUnderCursor))
+		if (IsValidTarget(abilityTargetUnderCursor))
+		{
+			mTargets.Add(abilityTargetUnderCursor);
+			if (mTargets.Num() == mNumberOfTargets)
+			{
+				mGameMode->GetCharacterInPlay()->UseAbility(this);
+				DeselectAbility();
+			}
+		}
+		else
 		{
 			DeselectAbility();
 			mGameMode->SetGameplayState(EGameplayState::PlanningPath);
-			return;
-		}
-
-		mTargets.Add(abilityTargetUnderCursor);
-		if (mTargets.Num() == mNumberOfTargets)
-		{
-			mGameMode->GetCharacterInPlay()->UseAbility(this);
-			DeselectAbility();
 		}
 	}
 }
@@ -54,15 +52,16 @@ bool UDRAbility_MultiTarget::TrySetRandomTargets()
 		}
 	}
 
-	return CanCast();
-}
-
-bool UDRAbility_MultiTarget::CanCast()
-{
-	return mTargets.Num() > 0 && CanAffordCast();
+	return mTargets.Num() == mNumberOfTargets;
 }
 
 void UDRAbility_MultiTarget::ClearSelection()
 {
 	mTargets.Empty();
+}
+
+bool UDRAbility_MultiTarget::IsValidTarget(UDRAbilityTargetComponent* target)
+{
+	return target != nullptr && IsTargetCorrectTeam(target) && IsInRange(
+		target);
 }

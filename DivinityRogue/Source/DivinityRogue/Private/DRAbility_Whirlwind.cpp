@@ -15,7 +15,7 @@ void UDRAbility_Whirlwind::Use()
 	
 	for (UDRAbilityTargetComponent* AbilityTargetInRange : abilityTargetsInRange)
 	{
-		if (IsValidTarget(AbilityTargetInRange))
+		if (IsTargetCorrectTeam(AbilityTargetInRange))
 		{
 			AbilityTargetInRange->TakeDamage(mDamage, mOwner);
 		}

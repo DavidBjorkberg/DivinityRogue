@@ -48,7 +48,7 @@ void ADRGameMode::SetGameplayState(EGameplayState newState)
 void ADRGameMode::TrySelectAbility(int index)
 {
 	TArray<UDRAbility*> abilities = mCharacterInPlay->GetAbilityComponent()->GetAbilities();
-	if (index >= 0 && !abilities[index]->IsOnCooldown())
+	if (index >= 0 && !abilities[index]->IsOnCooldown() && abilities[index]->CanAffordCast())
 	{
 		mSelectedAbility = abilities[index];
 		SetGameplayState(EGameplayState::SelectingTarget);

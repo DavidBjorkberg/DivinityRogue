@@ -13,7 +13,7 @@ void UDRAbility_SingleTarget::OnLeftMouseDown()
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
 		UDRAbilityTargetComponent* abilityTargetUnderCursor = mPlayerController->GetAbilityTargetUnderCursor();
-		if (abilityTargetUnderCursor != nullptr && IsValidTarget(abilityTargetUnderCursor) && IsInRange(abilityTargetUnderCursor))
+		if (IsValidTarget(abilityTargetUnderCursor))
 		{
 			mTarget = abilityTargetUnderCursor;
 			mGameMode->GetCharacterInPlay()->UseAbility(this);
@@ -41,22 +41,20 @@ bool UDRAbility_SingleTarget::TrySetRandomTargets()
 			allEnemyTargets.Add(abilityTarget);
 		}
 	}
-
-
-	UDRGameplayStatics::SortComponentListByDistance(mOwner,allEnemyTargets);
-	if (IsInRange(allEnemyTargets[0]))
+	UDRGameplayStatics::SortComponentListByDistance(mOwner, allEnemyTargets);
+	if (IsValidTarget(allEnemyTargets[0]))
 	{
 		mTarget = allEnemyTargets[0];
 	}
-	return CanCast();
-}
-
-bool UDRAbility_SingleTarget::CanCast()
-{
-	return mTarget != nullptr && CanAffordCast();
+	return mTarget != nullptr;
 }
 
 void UDRAbility_SingleTarget::ClearSelection()
 {
 	mTarget = nullptr;
+}
+
+bool UDRAbility_SingleTarget::IsValidTarget(UDRAbilityTargetComponent* target)
+{
+	return target != nullptr && IsTargetCorrectTeam(target) && IsInRange(target);
 }

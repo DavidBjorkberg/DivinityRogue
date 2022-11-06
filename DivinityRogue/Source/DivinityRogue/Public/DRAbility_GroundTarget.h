@@ -25,11 +25,11 @@ public:
 protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual bool TrySetRandomTargets() override;
-	virtual bool CanCast() override;
 	virtual void ClearSelection() override;
 	virtual void OnAbilitySelected() override;
 	virtual void OnAbilityDeselected() override;
 	virtual bool IsOnValidArea();
+	virtual bool IsValidTarget(UDRAbilityTargetComponent* target) override;
 	void SetDecalMaterial(UMaterialInterface* newMaterial);
 	UPROPERTY(EditDefaultsOnly)
 	float mRadius;

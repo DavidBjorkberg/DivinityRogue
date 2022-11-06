@@ -45,7 +45,6 @@ public:
 	UDRAbility();
 	virtual void PostInitProperties() override;
 	virtual void Use();
-	virtual bool CanCast()PURE_VIRTUAL(UDRAbility::CanCast, return true;)
 	virtual bool TrySetRandomTargets() PURE_VIRTUAL(UDRAbility::SetRandomTargets, return true;)
 
 	UFUNCTION(BlueprintCallable)
@@ -54,7 +53,7 @@ public:
 	float GetRange() const { return mAbilityInfo.mRange; }
 	void SetOwner(ADRCharacter* owner) { mOwner = owner; }
 	bool IsInRange(UDRAbilityTargetComponent* target);
-	virtual bool IsValidTarget(UDRAbilityTargetComponent* selectableComp);
+	virtual bool IsTargetCorrectTeam(UDRAbilityTargetComponent* selectableComp);
 	bool CanAffordCast();
 	bool IsOnCooldown() const { return mRemainingCooldown > 0; }
 	FAbilityInfo GetAbilityInfo() const { return mAbilityInfo; }
@@ -65,6 +64,7 @@ protected:
 	virtual void ClearSelection() PURE_VIRTUAL(UDRAbility::ClearSelection, ;)
 	virtual void OnAbilitySelected();
 	virtual void OnAbilityDeselected();
+	virtual bool IsValidTarget(UDRAbilityTargetComponent* target);
 	void DeselectAbility();
 	bool IsInRange(FVector targetLocation);
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

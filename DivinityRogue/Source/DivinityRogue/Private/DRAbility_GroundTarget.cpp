@@ -42,11 +42,6 @@ bool UDRAbility_GroundTarget::TrySetRandomTargets()
 	return false;
 }
 
-bool UDRAbility_GroundTarget::CanCast()
-{
-	return mTargetLocation != FVector::ZeroVector && CanAffordCast();
-}
-
 void UDRAbility_GroundTarget::ClearSelection()
 {
 	mTargetLocation = FVector::ZeroVector;
@@ -71,6 +66,11 @@ bool UDRAbility_GroundTarget::IsOnValidArea()
 	FHitResult groundUnderCursorHitResult;
 	UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, groundUnderCursorHitResult, false);
 	return IsInRange(groundUnderCursorHitResult.Location);
+}
+
+bool UDRAbility_GroundTarget::IsValidTarget(UDRAbilityTargetComponent* target)
+{
+	return target != nullptr && IsTargetCorrectTeam(target);
 }
 
 void UDRAbility_GroundTarget::SetDecalMaterial(UMaterialInterface* newMaterial)
