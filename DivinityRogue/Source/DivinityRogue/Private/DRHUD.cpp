@@ -96,14 +96,7 @@ void ADRHUD::DrawFloatingDamageTexts()
 		{
 			mFloatingDamageTexts[i]->Destroy();
 			mFloatingDamageTexts.RemoveAt(i);
-			continue;
 		}
-	//	FVector2d screenPos;
-		//UDRGameplayStatics::ProjectWorldToScreen(GetOwningPlayerController(),
-		//                                         mFloatingDamageTexts[i]->GetActorLocation(), screenPos);
-		//DrawText(FString::FromInt(mFloatingDamageTexts[i]->GetDamage()), FLinearColor::Red, screenPos.X, screenPos.Y,
-		//         nullptr,
-		//         1.5);
 	}
 }
 

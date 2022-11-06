@@ -27,7 +27,7 @@ private:
 	FVector2D mCurrentLocation;
 	UPROPERTY()
 	USceneComponent* mRoot;
-	float mTotalLifeTime = 500;
+	float mTotalLifeTime = 5;
 	float mRemainingLifeTime;
 	float mSpeed = 80;
 	FVector2D mDirection;
