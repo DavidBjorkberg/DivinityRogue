@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "DRScreenUI.h"
 #include "DRAbilityTargetComponent.h"
+#include "DRGameOverUI.h"
 #include "DRPlayerController.h"
+#include "DivinityRogue/DRFloatingDamageText.h"
 #include "GameFramework/HUD.h"
 
 #include "DRHUD.generated.h"
@@ -24,17 +26,24 @@ public:
 	void ShowHoverPanel(UDRAbilityTargetComponent* selectableComp);
 	void HideHoverPanel();
 	void ShowGameOverScreen(int nrOfRoundsSurvived);
+	void SpawnFloatingDamageText(AActor* damagedActor, int damage);
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDRScreenUI> mScreenUIClass;
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> mGameOverUIClass;
+	TSubclassOf<UDRGameOverUI> mGameOverUIClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ADRFloatingDamageText> mFloatingDamageTextClass;
 private:
 	void DrawAbilityRangeCircle();
 	void DrawAbilityCostText();
+	void DrawFloatingDamageTexts();
 	UFUNCTION()
 	void OnMouseHoverStateChanged(EMouseHoverState newState);
+
 	UPROPERTY()
+	TArray<ADRFloatingDamageText*> mFloatingDamageTexts;
+ 	UPROPERTY()
 	UDRScreenUI* mScreenUI;
 	UPROPERTY()
 	ADRGameMode* mGameMode;

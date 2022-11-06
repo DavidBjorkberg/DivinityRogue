@@ -4,6 +4,8 @@
 #include "DRNexus.h"
 
 #include "DRGameMode.h"
+#include "DRGameplayStatics.h"
+#include "DRHUD.h"
 
 // Sets default values
 ADRNexus::ADRNexus()
@@ -23,6 +25,7 @@ ADRNexus::ADRNexus()
 float ADRNexus::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
+	UDRGameplayStatics::GetHUD(GetWorld())->SpawnFloatingDamageText(this,DamageAmount);
 	mHealthComponent->ModifyHealth(-DamageAmount);
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }

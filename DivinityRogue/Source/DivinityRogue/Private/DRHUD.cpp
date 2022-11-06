@@ -5,12 +5,12 @@
 
 #include "DRCharacter.h"
 #include "DRGameplayStatics.h"
-#include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "DRAbility.h"
 #include "DRGameMode.h"
 #include "DRGameOverUI.h"
 #include "DRPlayerController.h"
+#include "DivinityRogue/DRFloatingDamageText.h"
 
 void ADRHUD::BeginPlay()
 {
@@ -20,12 +20,12 @@ void ADRHUD::BeginPlay()
 		this, &ADRHUD::OnMouseHoverStateChanged);
 	mScreenUI = CreateWidget<UDRScreenUI>(GetGameInstance(), mScreenUIClass);
 	mScreenUI->AddToViewport(9999);
-
 }
 
 void ADRHUD::DrawHUD()
 {
 	Super::DrawHUD();
+	DrawFloatingDamageTexts();
 	if (!mGameMode->IsPlayersTurn()) return;
 
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
@@ -37,6 +37,7 @@ void ADRHUD::DrawHUD()
 		DrawAbilityCostText();
 	}
 }
+
 void ADRHUD::ShowHoverPanel(UDRAbilityTargetComponent* selectableComp)
 {
 	mScreenUI->ShowHoverPanel(selectableComp);
@@ -50,18 +51,31 @@ void ADRHUD::HideHoverPanel()
 void ADRHUD::ShowGameOverScreen(int nrOfRoundsSurvived)
 {
 	mScreenUI->SetVisibility(ESlateVisibility::Collapsed);
-	UDRGameOverUI* gameOverUI = CreateWidget<UDRGameOverUI>(GetWorld(),mGameOverUIClass);
+	UDRGameOverUI* gameOverUI = CreateWidget<UDRGameOverUI>(GetWorld(), mGameOverUIClass);
 	gameOverUI->SetValues(nrOfRoundsSurvived);
 	gameOverUI->AddToViewport();
+}
+
+void ADRHUD::SpawnFloatingDamageText(AActor* damagedActor, int damage)
+{
+	APlayerController* pc = GetWorld()->GetFirstPlayerController();
+	FVector2d screenLocation;
+	pc->ProjectWorldLocationToScreen(damagedActor->GetActorLocation(), screenLocation);
+	ADRFloatingDamageText* damageText = GetWorld()->SpawnActor<ADRFloatingDamageText>(mFloatingDamageTextClass);
+	damageText->SetActorLocation(damagedActor->GetActorLocation());
+	damageText->Initialize(damage);
+	mFloatingDamageTexts.Add(damageText);
+	//damageText->Start(damage,screenLocation);
+	//damageText->AddToViewport();
 }
 
 void ADRHUD::DrawAbilityRangeCircle()
 {
 	const ADRCharacter* characterUsingAbility = mGameMode->GetCharacterInPlay();
 	DrawCircle(GetWorld(), characterUsingAbility->GetActorLocation() + FVector::UpVector * 0.1f,
-			   FVector::RightVector,
-			   FVector::ForwardVector,
-			   FColor::Orange, mGameMode->GetSelectedAbility()->GetRange(), 3000, false, -1, 0, 10);
+	           FVector::RightVector,
+	           FVector::ForwardVector,
+	           FColor::Orange, mGameMode->GetSelectedAbility()->GetRange(), 3000, false, -1, 0, 10);
 }
 
 void ADRHUD::DrawAbilityCostText()
@@ -71,12 +85,31 @@ void ADRHUD::DrawAbilityCostText()
 	float y;
 	GetWorld()->GetFirstPlayerController()->GetMousePosition(x, y);
 	DrawText(TEXT("Cost: " + FString::FromInt(energyCost + mAttackCost)), FLinearColor::Black, x + 30, y, nullptr,
-			 1.5);
+	         1.5);
+}
+
+void ADRHUD::DrawFloatingDamageTexts()
+{
+	for (int i = mFloatingDamageTexts.Num() - 1; i >= 0; i--)
+	{
+		if (mFloatingDamageTexts[i]->ShouldBeDestroyed())
+		{
+			mFloatingDamageTexts[i]->Destroy();
+			mFloatingDamageTexts.RemoveAt(i);
+			continue;
+		}
+	//	FVector2d screenPos;
+		//UDRGameplayStatics::ProjectWorldToScreen(GetOwningPlayerController(),
+		//                                         mFloatingDamageTexts[i]->GetActorLocation(), screenPos);
+		//DrawText(FString::FromInt(mFloatingDamageTexts[i]->GetDamage()), FLinearColor::Red, screenPos.X, screenPos.Y,
+		//         nullptr,
+		//         1.5);
+	}
 }
 
 void ADRHUD::OnMouseHoverStateChanged(EMouseHoverState newState)
 {
-	if(newState == EMouseHoverState::EnemyCharacter ||
+	if (newState == EMouseHoverState::EnemyCharacter ||
 		newState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
 	{
 		UDRAbility_BasicAttack* basicAttack = mGameMode->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();

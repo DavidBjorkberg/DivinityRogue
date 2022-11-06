@@ -107,7 +107,7 @@ void ADRGameMode::EndTurn()
 {
 	if (IsGameOver())
 	{
-		Cast<ADRHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->ShowGameOverScreen(mCurrentRound);
+		GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->ShowGameOverScreen(mCurrentRound);
 	}
 	else
 	{

@@ -5,7 +5,7 @@
 
 void UDRAbilityTargetHoverPopup::Show(UDRAbilityTargetComponent* target)
 {
-	if (!mTarget)
+	if (mTarget)
 	{
 		Hide();
 	}

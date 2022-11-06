@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRCharacter.h"
+#include "DRHUD.h"
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -23,6 +24,19 @@ public:
 	static bool GetGroundHitResultUnderCursor(const UObject* worldContextObject, FHitResult& outHitResult,
 	                                          bool onlyWalkable);
 
+	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
+	static ADRHUD* GetHUD(const UObject* WorldContextObject)
+	{
+		UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+		return World->GetFirstPlayerController()->GetHUD<ADRHUD>();
+	}
+	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
+	static ADRGameMode* GetDRGameMode(const UObject* WorldContextObject)
+	{
+		UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+		return World->GetAuthGameMode<ADRGameMode>();
+	}
+
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
 	static void SortActorListByDistance(AActor* thisActor, TArray<T*>& actorList)
@@ -32,6 +46,7 @@ public:
 			return A.GetDistanceTo(thisActor) < B.GetDistanceTo(thisActor);
 		});
 	}
+
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
 	static void SortComponentListByDistance(AActor* thisActor, TArray<T*>& actorList)
@@ -41,6 +56,7 @@ public:
 			return A.GetOwner()->GetDistanceTo(thisActor) < B.GetOwner()->GetDistanceTo(thisActor);
 		});
 	}
+
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
 	static bool GetClosestDRCharacterInList(AActor* thisActor, TArray<T*> actorList, T*& outClosestPawn,
@@ -77,6 +93,7 @@ public:
 		float distanceToActor = FVector::Dist2D(location, closestPoint);
 		return distanceToActor;
 	}
+
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
 	static void FindAllActors(const UObject* WorldContextObject, TArray<T*>& outActors)
