@@ -56,14 +56,15 @@ void ADRHUD::ShowGameOverScreen(int nrOfRoundsSurvived)
 	gameOverUI->AddToViewport();
 }
 
-void ADRHUD::SpawnFloatingDamageText(AActor* damagedActor, int damage)
+void ADRHUD::SpawnFloatingDamageText(AActor* damagedActor, int damage, bool isHeal)
 {
 	APlayerController* pc = GetWorld()->GetFirstPlayerController();
 	FVector2d screenLocation;
 	pc->ProjectWorldLocationToScreen(damagedActor->GetActorLocation(), screenLocation);
 	ADRFloatingDamageText* damageText = GetWorld()->SpawnActor<ADRFloatingDamageText>(mFloatingDamageTextClass);
 	damageText->SetActorLocation(damagedActor->GetActorLocation());
-	damageText->Initialize(damage);
+	FColor color = isHeal ? FColor::Green : FColor::Red;
+	damageText->Initialize(damage, color);
 	mFloatingDamageTexts.Add(damageText);
 	//damageText->Start(damage,screenLocation);
 	//damageText->AddToViewport();

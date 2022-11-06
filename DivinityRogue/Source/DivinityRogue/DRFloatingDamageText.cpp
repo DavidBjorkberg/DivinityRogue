@@ -18,22 +18,25 @@ ADRFloatingDamageText::ADRFloatingDamageText()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void ADRFloatingDamageText::Initialize(int damage)
+void ADRFloatingDamageText::Initialize(int damage, FColor color)
 {
+	mRemainingLifeTime = mTotalLifeTime;
+	mCurrentLocation = FVector2d(0,0);
+	
 	float randomX = FMath::RandRange(-0.25f, 0.25f);
 	mDirection = FVector2D(randomX,-1);
 	mDirection.Normalize();
-	mRemainingLifeTime = mTotalLifeTime;
+	
 	mTextWidgetComponent->SetWidgetClass(mFloatingDamageTextClass);
-	mCurrentLocation = FVector2d(0,0);
-	Cast<UDRFloatingDamageTextWidget>(mTextWidgetComponent->GetWidget())->mDamageText->SetText(FText::FromString(FString::FromInt(damage)));
+	mFloatingDamageTextWidget = Cast<UDRFloatingDamageTextWidget>(mTextWidgetComponent->GetWidget());
+	mFloatingDamageTextWidget->mDamageText->SetText(FText::FromString(FString::FromInt(damage)));
+	mFloatingDamageTextWidget->mDamageText->SetColorAndOpacity(color);
 }
 
 void ADRFloatingDamageText::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	mRemainingLifeTime -= DeltaTime;
-	// AddActorLocalOffset(mDirection * DeltaTime * mSpeed);
 	mCurrentLocation += mDirection * DeltaTime * mSpeed;
-	UWidgetLayoutLibrary::SlotAsCanvasSlot(Cast<UDRFloatingDamageTextWidget>(mTextWidgetComponent->GetWidget())->mDamageText)->SetPosition(mCurrentLocation);
+	UWidgetLayoutLibrary::SlotAsCanvasSlot(mFloatingDamageTextWidget->mDamageText)->SetPosition(mCurrentLocation);
 }

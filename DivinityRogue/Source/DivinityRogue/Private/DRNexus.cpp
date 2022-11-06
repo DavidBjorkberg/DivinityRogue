@@ -25,7 +25,6 @@ ADRNexus::ADRNexus()
 float ADRNexus::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
-	UDRGameplayStatics::GetHUD(GetWorld())->SpawnFloatingDamageText(this,DamageAmount);
 	mHealthComponent->ModifyHealth(-DamageAmount);
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }

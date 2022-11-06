@@ -26,7 +26,7 @@ public:
 	void ShowHoverPanel(UDRAbilityTargetComponent* selectableComp);
 	void HideHoverPanel();
 	void ShowGameOverScreen(int nrOfRoundsSurvived);
-	void SpawnFloatingDamageText(AActor* damagedActor, int damage);
+	void SpawnFloatingDamageText(AActor* damagedActor, int damage, bool isHeal);
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDRScreenUI> mScreenUIClass;

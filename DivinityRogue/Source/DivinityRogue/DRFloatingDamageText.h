@@ -15,7 +15,7 @@ class DIVINITYROGUE_API ADRFloatingDamageText : public AActor
 
 public:
 	ADRFloatingDamageText();
-	void Initialize(int damage);
+	void Initialize(int damage, FColor color);
 	bool ShouldBeDestroyed() const { return mRemainingLifeTime <= 0; }
 protected:
 	virtual void Tick(float DeltaTime) override;
@@ -24,6 +24,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDRFloatingDamageTextWidget> mFloatingDamageTextClass;
 private:
+	UPROPERTY()
+	UDRFloatingDamageTextWidget* mFloatingDamageTextWidget;
 	FVector2D mCurrentLocation;
 	UPROPERTY()
 	USceneComponent* mRoot;
