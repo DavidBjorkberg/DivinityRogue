@@ -23,7 +23,6 @@ void UDRStatsComponent::BeginPlay()
 
 void UDRStatsComponent::ApplyBaseStats()
 {
-	mStats.mName = mBaseStats.mName;
 	mStats.mSpeed = mBaseStats.mSpeed;
 	mStats.mMaxActionPoints = mBaseStats.mMaxActionPoints;
 	mStats.mStartActionPoints = mBaseStats.mStartActionPoints;

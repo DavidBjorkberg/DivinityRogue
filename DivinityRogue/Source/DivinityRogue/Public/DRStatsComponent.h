@@ -22,16 +22,12 @@ struct FCharacterBaseStats
 	int mMovementSpeed = 6;
 	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
 	int mMovement = 2;
-	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	FString mName;
 };
 
 USTRUCT(BlueprintType)
 struct FCharacterStats
 {
 	GENERATED_BODY()
-	UPROPERTY(BlueprintReadOnly, DisplayName="Name")
-	FString mName;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Speed")
 	int mSpeed;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Movement Speed")
