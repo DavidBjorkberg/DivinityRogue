@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
 #include "Components/BoxComponent.h"
 #include "DRAbilityTargetComponent.generated.h"
 

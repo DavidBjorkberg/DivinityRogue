@@ -8,5 +8,5 @@
 void UDRAbility_Leap::Use()
 {
 	Super::Use();
-	mOwner->SetActorLocation(mTargetLocation);
+	mOwner->FindComponentByClass<UDRAbilityTargetComponent>()->TeleportTo(mTargetLocation);
 }

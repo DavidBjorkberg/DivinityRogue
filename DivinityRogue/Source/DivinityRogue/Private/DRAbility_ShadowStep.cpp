@@ -11,6 +11,6 @@ void UDRAbility_ShadowStep::Use()
 	FVector targetLocation = mTarget->GetOwner()->GetActorLocation();
 	FVector targetRotation = mTarget->GetOwner()->GetActorRotation().Vector();
 	FVector behindTargetLocation = targetLocation - (targetRotation * 150);
-	mTarget->TeleportTo(behindTargetLocation);
+	mOwner->FindComponentByClass<UDRAbilityTargetComponent>()->TeleportTo(behindTargetLocation);
 	mTarget->TakeDamage(mDamage, mOwner);
 }

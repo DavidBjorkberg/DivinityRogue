@@ -13,7 +13,6 @@
 				"AIModule",
 				"CoreUObject",
 				"UMG",
-				"UMGEditor"
 			]
 		}
 	],

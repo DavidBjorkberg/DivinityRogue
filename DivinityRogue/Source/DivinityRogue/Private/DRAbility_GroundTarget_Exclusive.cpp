@@ -9,9 +9,10 @@ void UDRAbility_GroundTarget_Exclusive::OnLeftMouseDown()
 {
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
-		FHitResult groundUnderCursorHitResult;
 		if (IsOnValidArea())
 		{
+			FHitResult groundUnderCursorHitResult;
+			UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, groundUnderCursorHitResult, true);
 			mTargetLocation = groundUnderCursorHitResult.Location;
 			mGameMode->GetCharacterInPlay()->UseAbility(this);
 		}
@@ -26,7 +27,7 @@ void UDRAbility_GroundTarget_Exclusive::OnLeftMouseDown()
 bool UDRAbility_GroundTarget_Exclusive::IsOnValidArea()
 {
 	FHitResult groundUnderCursorHitResult;
-	return UDRGameplayStatics::GetGroundHitResultUnderCursor(GetWorld(), groundUnderCursorHitResult, true) &&
+	return UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, groundUnderCursorHitResult, true) &&
 		IsInRange(groundUnderCursorHitResult.Location) &&
 		UDRGameplayStatics::GetAllAbilityTargetsInRadius(mWorld, groundUnderCursorHitResult.Location, mRadius).Num() ==
 		0;

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DRScreenUI.h"
+#include "DRAbilityTargetComponent.h"
 #include "NavigationPath.h"
 #include "GameFramework/GameModeBase.h"
 #include "DRGameMode.generated.h"
@@ -38,6 +38,7 @@ public:
 	ADRGameMode();
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+	UFUNCTION(BlueprintCallable)
 	void EndTurn();
 	UFUNCTION(BlueprintCallable)
 	bool IsPlayersTurn();
