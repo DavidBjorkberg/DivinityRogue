@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{CFD3E7C3-4D2F-3304-7374-C191C2C9AED9}",
+	"EngineAssociation": "{C0B7DC5F-45F0-D8CD-C34D-119B4F2C507B}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -12,7 +12,7 @@
 				"Engine",
 				"AIModule",
 				"CoreUObject",
-				"UMG",
+				"UMG"
 			]
 		}
 	],

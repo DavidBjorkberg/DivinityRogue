@@ -29,6 +29,8 @@ void UDRMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UDRMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
 {
+	Super::RequestDirectMove(MoveVelocity, bForceMaxSpeed);
+	return;
 	if (MoveVelocity.SizeSquared() < KINDA_SMALL_NUMBER)
 	{
 		return;
@@ -52,7 +54,7 @@ int UDRMovementComponent::GetEnergyCostToMouse()
 {
 	const float characterMovement = mOwner->GetStatsComponent()->GetStats().mMovement;
 	float pathLength = mGameMode->GetPathToMouse()->GetPathLength();
-	pathLength -= mGameMode->GetCharacterInPlay()->GetMovementComp()->mDistanceLeftUntilEnergyCost;
+	pathLength -= mDistanceLeftUntilEnergyCost;
 	int energyCost = FMath::CeilToInt(pathLength / characterMovement);
 	return energyCost;
 }

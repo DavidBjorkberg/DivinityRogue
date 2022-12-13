@@ -17,8 +17,9 @@ UDRCharacterAnimationComponent::UDRCharacterAnimationComponent()
 void UDRCharacterAnimationComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	USkeletalMeshComponent* ownerMeshComp = Cast<ADRCharacter>(GetOwner())->GetSkeletalMeshComp();
-	mAttackAnimation = Cast<UDRCharacterAnimInstance>(ownerMeshComp->GetAnimInstance())->mAttackAnimation;
+	USkeletalMeshComponent* ownerMeshComp = Cast<ADRCharacter>(GetOwner())->GetMesh();
+	auto animInstance = ownerMeshComp->GetAnimInstance();
+	mAttackAnimation = Cast<UDRCharacterAnimInstance>(animInstance)->mAttackAnimation;
 	PlayIdleAnimation();
 }
 

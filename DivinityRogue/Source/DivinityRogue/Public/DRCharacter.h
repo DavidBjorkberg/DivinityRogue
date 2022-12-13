@@ -9,9 +9,8 @@
 #include "DRHealthComponent.h"
 #include "DRMovementComponent.h"
 #include "DRStatsComponent.h"
-#include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
 #include "DRCharacter.generated.h"
 
 class UDRAbility;
@@ -27,7 +26,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPreUsedAbility, UDRAbility*, abilit
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnStart);
 
 UCLASS()
-class DIVINITYROGUE_API ADRCharacter : public APawn
+class DIVINITYROGUE_API ADRCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -45,9 +44,6 @@ public:
 	void UseAbility(UDRAbility* ability);
 	UFUNCTION()
 	void OnTurnStart();
-	//Getters
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	USkeletalMeshComponent* GetSkeletalMeshComp() const { return mSkeletalMeshComponent; }
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRCharacterAnimationComponent* GetAnimationComponent() const { return mAnimationComponent; }
@@ -77,8 +73,6 @@ protected:
 	USceneComponent* mRoot;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRMovementComponent* mMovementComponent;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USkeletalMeshComponent* mSkeletalMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRCharacterAnimationComponent* mAnimationComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

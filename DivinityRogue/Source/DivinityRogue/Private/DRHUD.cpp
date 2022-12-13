@@ -81,12 +81,12 @@ void ADRHUD::DrawAbilityRangeCircle()
 
 void ADRHUD::DrawAbilityCostText()
 {
-	int energyCost = mGameMode->GetCharacterInPlay()->GetMovementComp()->GetEnergyCostToMouse();
-	float x;
-	float y;
-	GetWorld()->GetFirstPlayerController()->GetMousePosition(x, y);
-	DrawText(TEXT("Cost: " + FString::FromInt(energyCost + mAttackCost)), FLinearColor::Black, x + 30, y, nullptr,
-	         1.5);
+	//int energyCost = mGameMode->GetCharacterInPlay()->GetMovementComp()->GetEnergyCostToMouse();
+	//float x;
+	//float y;
+	//GetWorld()->GetFirstPlayerController()->GetMousePosition(x, y);
+	//DrawText(TEXT("Cost: " + FString::FromInt(energyCost + mAttackCost)), FLinearColor::Black, x + 30, y, nullptr,
+	 //        1.5);
 }
 
 void ADRHUD::DrawFloatingDamageTexts()

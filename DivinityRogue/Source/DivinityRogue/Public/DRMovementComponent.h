@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "DRGameMode.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "DRMovementComponent.generated.h"
 
 class ADRCharacter;
 UCLASS()
-class DIVINITYROGUE_API UDRMovementComponent : public UPawnMovementComponent
+class DIVINITYROGUE_API UDRMovementComponent : public UCharacterMovementComponent
 {
 	GENERATED_BODY()
 public:

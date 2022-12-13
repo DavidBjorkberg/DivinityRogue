@@ -7,32 +7,31 @@
 #include "DRGameMode.h"
 #include "DRGameplayStatics.h"
 #include "DRHUD.h"
-#include "Components/WidgetComponent.h"
+#include "Components/CapsuleComponent.h"
 
 ADRCharacter::ADRCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	mRoot = CreateDefaultSubobject<USceneComponent>("Root");
-	SetRootComponent(mRoot);
-	mMovementComponent = CreateDefaultSubobject<UDRMovementComponent>("MovementComponent");
-	mSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMeshComponent");
+	//mRoot = CreateDefaultSubobject<USceneComponent>("Root");
+	//SetRootComponent(mRoot);
+	//mMovementComponent = CreateDefaultSubobject<UDRMovementComponent>("MovementComponent");
 	mAnimationComponent = CreateDefaultSubobject<UDRCharacterAnimationComponent>("DRAnimationComponent");
 	mStatsComponent = CreateDefaultSubobject<UDRStatsComponent>("DRStatsComponent");
 	mAbilityComponent = CreateDefaultSubobject<UDRAbilityComponent>("DRAbilityComponent");
 	mAbilityTargetComponent = CreateDefaultSubobject<UDRAbilityTargetComponent>("DRAbilityTargetComponent");
-	mAbilityTargetComponent->SetupAttachment(mRoot);
-	mAbilityTargetComponent->SetHighlightMesh(mSkeletalMeshComponent);
+	mAbilityTargetComponent->SetupAttachment(GetCapsuleComponent());
 	mHealthComponent = CreateDefaultSubobject<UDRHealthComponent>("DRHealthComponent");
 	mHealthComponent->mOnDied.AddDynamic(this, &ADRCharacter::Died);
-	mSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	mSkeletalMeshComponent->SetupAttachment(mRoot);
-	mSkeletalMeshComponent->SetReceivesDecals(false);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetReceivesDecals(false);
 }
 
 void ADRCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	mAbilityTargetComponent->SetHighlightMesh(GetMesh());
+	Cast<UCharacterMovementComponent>(GetMovementComponent())->GravityScale = 0;
 	mController = Cast<ADRAIController>(GetController());
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mOnTurnStart.AddDynamic(this, &ADRCharacter::OnTurnStart);
