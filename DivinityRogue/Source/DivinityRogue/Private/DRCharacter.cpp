@@ -32,6 +32,7 @@ void ADRCharacter::BeginPlay()
 	Super::BeginPlay();
 	mAbilityTargetComponent->SetHighlightMesh(GetMesh());
 	Cast<UCharacterMovementComponent>(GetMovementComponent())->GravityScale = 0;
+	Cast<UCharacterMovementComponent>(GetMovementComponent())->SetUpdatedComponent(GetMesh());
 	mController = Cast<ADRAIController>(GetController());
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mOnTurnStart.AddDynamic(this, &ADRCharacter::OnTurnStart);
