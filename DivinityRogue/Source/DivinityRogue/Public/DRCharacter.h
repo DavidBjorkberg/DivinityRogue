@@ -31,8 +31,9 @@ class DIVINITYROGUE_API ADRCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	ADRCharacter();
+	ADRCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
 	void Heal(int healAmount);
@@ -55,8 +56,7 @@ public:
 	UDRAbilityComponent* GetAbilityComponent() const { return mAbilityComponent; }
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	UDRMovementComponent* GetMovementComp() const { return mMovementComponent; }
-
+	UDRMovementComponent* GetDRMovementComponent();
 	//Getters - End
 
 	UPROPERTY(BlueprintAssignable)
@@ -70,10 +70,6 @@ public:
 protected:
 	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USceneComponent* mRoot;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UDRMovementComponent* mMovementComponent;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRCharacterAnimationComponent* mAnimationComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRStatsComponent* mStatsComponent;
@@ -83,7 +79,6 @@ protected:
 	UDRAbilityComponent* mAbilityComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRAbilityTargetComponent* mAbilityTargetComponent;
-
 	//Components - End
 
 

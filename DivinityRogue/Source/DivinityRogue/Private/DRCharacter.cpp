@@ -9,7 +9,8 @@
 #include "DRHUD.h"
 #include "Components/CapsuleComponent.h"
 
-ADRCharacter::ADRCharacter()
+ADRCharacter::ADRCharacter(const FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UDRMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -32,10 +33,14 @@ void ADRCharacter::BeginPlay()
 	Super::BeginPlay();
 	mAbilityTargetComponent->SetHighlightMesh(GetMesh());
 	Cast<UCharacterMovementComponent>(GetMovementComponent())->GravityScale = 0;
-	Cast<UCharacterMovementComponent>(GetMovementComponent())->SetUpdatedComponent(GetMesh());
 	mController = Cast<ADRAIController>(GetController());
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mOnTurnStart.AddDynamic(this, &ADRCharacter::OnTurnStart);
+}
+
+void ADRCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
 }
 
 
@@ -101,3 +106,7 @@ void ADRCharacter::OnTurnStart()
 	mStatsComponent->ModifyEnergy(mStatsComponent->GetStats().mActionPointsPerTurn);
 }
 
+UDRMovementComponent* ADRCharacter::GetDRMovementComponent()
+{
+	return Cast<UDRMovementComponent>(GetMovementComponent());
+}

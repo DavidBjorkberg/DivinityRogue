@@ -30,7 +30,6 @@ void UDRMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 void UDRMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
 {
 	Super::RequestDirectMove(MoveVelocity, bForceMaxSpeed);
-	return;
 	if (MoveVelocity.SizeSquared() < KINDA_SMALL_NUMBER)
 	{
 		return;
