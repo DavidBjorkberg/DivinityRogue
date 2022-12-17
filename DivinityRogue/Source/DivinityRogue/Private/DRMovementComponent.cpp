@@ -27,28 +27,6 @@ void UDRMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	}
 }
 
-void UDRMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
-{
-	Super::RequestDirectMove(MoveVelocity, bForceMaxSpeed);
-	if (MoveVelocity.SizeSquared() < KINDA_SMALL_NUMBER)
-	{
-		return;
-	}
-	SetDesiredRotation(MoveVelocity.GetSafeNormal2D().Rotation());
-	FVector moveVec = MoveVelocity.GetSafeNormal() * mOwner->GetStatsComponent()->GetStats().mMovementSpeed;
-	mDistanceLeftUntilEnergyCost -= moveVec.Length();
-
-	if (mDistanceLeftUntilEnergyCost <= 0)
-	{
-		mOwner->FindComponentByClass<UDRStatsComponent>()->ModifyEnergy(-1);
-		mOwner->EndTurnIfOutOfActionPoints();
-		mDistanceLeftUntilEnergyCost = mOwner->GetStatsComponent()->GetStats().mMovement;
-	}
-	FHitResult result;
-	SafeMoveUpdatedComponent(moveVec, GetOwner()->GetActorRotation(), false,
-	                         result);
-}
-
 int UDRMovementComponent::GetEnergyCostToMouse()
 {
 	const float characterMovement = mOwner->GetStatsComponent()->GetStats().mMovement;
@@ -56,6 +34,23 @@ int UDRMovementComponent::GetEnergyCostToMouse()
 	pathLength -= mDistanceLeftUntilEnergyCost;
 	int energyCost = FMath::CeilToInt(pathLength / characterMovement);
 	return energyCost;
+}
+
+void UDRMovementComponent::OnMovementUpdated(float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity)
+{
+	if(OldVelocity.Size() > 0)
+	{
+		SetDesiredRotation(OldVelocity.GetSafeNormal2D().Rotation());
+		FVector moveVec = OldVelocity * DeltaSeconds;
+		mDistanceLeftUntilEnergyCost -= moveVec.Length();
+		if (mDistanceLeftUntilEnergyCost <= 0)
+		{
+			mOwner->FindComponentByClass<UDRStatsComponent>()->ModifyEnergy(-1);
+			mOwner->EndTurnIfOutOfActionPoints();
+			mDistanceLeftUntilEnergyCost = mOwner->GetStatsComponent()->GetStats().mMovement;
+		}
+
+	}
 }
 
 void UDRMovementComponent::OnTurnStart()

@@ -17,7 +17,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
-	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
 	void SetDesiredRotation(FRotator desiredRotation) { mDesiredRotation = desiredRotation; };
 	int GetEnergyCostToMouse();
 	float mDistanceLeftUntilEnergyCost;
@@ -25,7 +24,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	int mRotationRate = 4;
 private:
-
+	UFUNCTION()
+	virtual void OnMovementUpdated(float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity) override;
 	UFUNCTION()
 	void OnTurnStart();
 	UPROPERTY()
