@@ -10,7 +10,7 @@
 #include "DRGameMode.h"
 #include "DRGameOverUI.h"
 #include "DRPlayerController.h"
-#include "DivinityRogue/DRFloatingDamageText.h"
+#include "DRFloatingDamageText.h"
 
 void ADRHUD::BeginPlay()
 {

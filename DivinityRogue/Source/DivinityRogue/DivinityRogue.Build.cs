@@ -6,6 +6,16 @@ public class DivinityRogue : ModuleRules
 {
 	public DivinityRogue(ReadOnlyTargetRules Target) : base(Target)
 	{
+		PublicIncludePaths.AddRange(
+			new string[]
+			{
+				"DivinityRogue",
+				"DivinityRogue/Abilities",
+				"DivinityRogue/Components",
+				"DivinityRogue/UI",
+			});
+
+
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "NavigationSystem", "AIModule","UMG","SlateCore"});

@@ -7,7 +7,7 @@
 #include "DRAbilityTargetComponent.h"
 #include "DRGameOverUI.h"
 #include "DRPlayerController.h"
-#include "DivinityRogue/DRFloatingDamageText.h"
+#include "DRFloatingDamageText.h"
 #include "GameFramework/HUD.h"
 
 #include "DRHUD.generated.h"
