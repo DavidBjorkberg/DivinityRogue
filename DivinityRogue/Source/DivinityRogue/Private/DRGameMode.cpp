@@ -192,7 +192,7 @@ void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 	mTurnQueue.Remove(deadUnit);
 	if (GetAllPlayerAbilityTargets().Num() == 0 || GetAllEnemyUnits().Num() == 0)
 	{
-		UDRGameplayStatics::OpenLevel(GetWorld(), FName(*GetWorld()->GetName()), false);
+		GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->ShowNextMapSelect();
 	}
 }
 

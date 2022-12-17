@@ -56,6 +56,12 @@ void ADRHUD::ShowGameOverScreen(int nrOfRoundsSurvived)
 	gameOverUI->AddToViewport();
 }
 
+void ADRHUD::ShowNextMapSelect()
+{
+	UUserWidget* nextMapSelect = CreateWidget<UUserWidget>(GetWorld(),mNextMapSelectClass);
+	nextMapSelect->AddToViewport();
+}
+
 void ADRHUD::SpawnFloatingDamageText(AActor* damagedActor, int damage, bool isHeal)
 {
 	APlayerController* pc = GetWorld()->GetFirstPlayerController();

@@ -26,6 +26,7 @@ public:
 	void ShowHoverPanel(UDRAbilityTargetComponent* selectableComp);
 	void HideHoverPanel();
 	void ShowGameOverScreen(int nrOfRoundsSurvived);
+	void ShowNextMapSelect();
 	void SpawnFloatingDamageText(AActor* damagedActor, int damage, bool isHeal);
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -34,6 +35,8 @@ protected:
 	TSubclassOf<UDRGameOverUI> mGameOverUIClass;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ADRFloatingDamageText> mFloatingDamageTextClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> mNextMapSelectClass;
 private:
 	void DrawAbilityRangeCircle();
 	void DrawAbilityCostText();

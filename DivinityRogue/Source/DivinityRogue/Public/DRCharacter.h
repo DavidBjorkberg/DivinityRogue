@@ -70,7 +70,7 @@ public:
 protected:
 	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UDRCharacterAnimationComponent* mAnimationComponent;
+	UDRCharacterAnimationComponent*  mAnimationComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRStatsComponent* mStatsComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
