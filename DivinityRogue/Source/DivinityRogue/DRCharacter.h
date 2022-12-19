@@ -56,6 +56,9 @@ public:
 	UDRAbilityComponent* GetAbilityComponent() const { return mAbilityComponent; }
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UDRHealthComponent* GetHealthComponent() const { return mHealthComponent; }
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRMovementComponent* GetDRMovementComponent();
 	//Getters - End
 
@@ -70,7 +73,7 @@ public:
 protected:
 	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UDRCharacterAnimationComponent*  mAnimationComponent;
+	UDRCharacterAnimationComponent* mAnimationComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRStatsComponent* mStatsComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

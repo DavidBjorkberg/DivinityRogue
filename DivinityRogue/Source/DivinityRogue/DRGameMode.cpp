@@ -10,6 +10,7 @@
 #include "DRHUD.h"
 #include "DRPlayerCharacter.h"
 #include "DRPlayerController.h"
+#include "DRSaveGameManager.h"
 #include "NavigationSystem.h"
 
 ADRGameMode::ADRGameMode()
@@ -25,8 +26,14 @@ void ADRGameMode::BeginPlay()
 	for (ADRCharacter* character : mALlCharacters)
 	{
 		character->mOnUnitDied.AddDynamic(this, &ADRGameMode::OnUnitDied);
+		if(ADRPlayerCharacter* playerChar = Cast<ADRPlayerCharacter>(character))
+		{
+			GetGameInstance<UDRGameInstance>()->mPlayerCharacters.Add(playerChar);
+		}
 	}
 	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
+	UDRSaveGameManager::Save(GetWorld());
+	UDRSaveGameManager::Load(GetWorld());
 }
 
 void ADRGameMode::Tick(float DeltaSeconds)
