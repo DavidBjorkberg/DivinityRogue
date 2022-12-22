@@ -1,5 +1,7 @@
 ﻿#include "DRStatsComponent.h"
 
+#include "DRCharacter.h"
+
 
 UDRStatsComponent::UDRStatsComponent()
 {
@@ -12,22 +14,13 @@ void UDRStatsComponent::ModifyEnergy(int difference)
 	mOnEnergyChange.Broadcast(mStats.mCurrentActionPoints);
 }
 
-
-// Called when the game starts
-void UDRStatsComponent::BeginPlay()
+void UDRStatsComponent::ApplyStats(UDRCharacterTemplate* charTemplate)
 {
-	Super::BeginPlay();
-	ApplyBaseStats();
-}
-
-
-void UDRStatsComponent::ApplyBaseStats()
-{
-	mStats.mSpeed = mBaseStats.mSpeed;
-	mStats.mMaxActionPoints = mBaseStats.mMaxActionPoints;
-	mStats.mStartActionPoints = mBaseStats.mStartActionPoints;
-	mStats.mCurrentActionPoints = mBaseStats.mStartActionPoints;
-	mStats.mActionPointsPerTurn = mBaseStats.mActionPointsPerTurn;
-	mStats.mMovement = mBaseStats.mMovement;
-	mStats.mMovementSpeed = mBaseStats.mMovementSpeed;
+	mStats.mSpeed = charTemplate->Speed;
+	mStats.mMaxActionPoints = charTemplate->MaxActionPoints;
+	mStats.mStartActionPoints = charTemplate->StartActionPoints;
+	mStats.mCurrentActionPoints = charTemplate->StartActionPoints;
+	mStats.mActionPointsPerTurn = charTemplate->ActionPointsPerTurn;
+	mStats.mMovement = charTemplate->Movement;
+	mStats.mMovementSpeed = charTemplate->MovementSpeed;
 }

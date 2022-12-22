@@ -17,10 +17,15 @@ UDRCharacterAnimationComponent::UDRCharacterAnimationComponent()
 void UDRCharacterAnimationComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	PlayIdleAnimation();
+}
+
+void UDRCharacterAnimationComponent::SetAnimInstance(TSubclassOf<UDRCharacterAnimInstance> animInstanceClass)
+{
 	USkeletalMeshComponent* ownerMeshComp = Cast<ADRCharacter>(GetOwner())->GetMesh();
+	ownerMeshComp->SetAnimInstanceClass(animInstanceClass);
 	auto animInstance = ownerMeshComp->GetAnimInstance();
 	mAttackAnimation = Cast<UDRCharacterAnimInstance>(animInstance)->mAttackAnimation;
-	PlayIdleAnimation();
 }
 
 void UDRCharacterAnimationComponent::PlayAttackAnimation(UDRAbility* ability)

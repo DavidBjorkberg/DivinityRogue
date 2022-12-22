@@ -13,22 +13,15 @@ UDRAbilityComponent::UDRAbilityComponent()
 }
 
 
-void UDRAbilityComponent::BeginPlay()
+void UDRAbilityComponent::ApplyStats(UDRCharacterTemplate* charTemplate)
 {
-	Super::BeginPlay();
-	SpawnStarterAbilities();
-}
-
-void UDRAbilityComponent::SpawnStarterAbilities()
-{
-	mAbilities.Empty();
-	for (TSubclassOf<UDRAbility> ability : mAbilityClasses)
+	for (TSubclassOf<UDRAbility> ability : charTemplate->AbilityClasses)
 	{
 		UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetWorld(), ability);
 		spawnedAbility->SetOwner(Cast<ADRCharacter>(GetOwner()));
 		mAbilities.Add(spawnedAbility);
 	}
-	UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetOwner(), mBasicAttackClass);
+	UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetOwner(), charTemplate->BasicAttackClass);
 	spawnedAbility->SetOwner(Cast<ADRCharacter>(GetOwner()));
 	mBasicAttack = Cast<UDRAbility_BasicAttack>(spawnedAbility);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DRCharacterTemplate.h"
 #include "Components/ActorComponent.h"
 #include "DRHealthComponent.generated.h"
 
@@ -19,6 +20,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	int GetCurrentHealth() const { return mCurrentHealth; }
 	void ModifyHealth(int difference);
+	void ApplyStats(UDRCharacterTemplate* charTemplate);
 	UPROPERTY(BlueprintAssignable)
 	FHealthChanged mOnHealthChanged;
 	UPROPERTY(BlueprintAssignable)
@@ -26,7 +28,6 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	int mMaxHealth;
-	virtual void BeginPlay() override;
 private:
 	int mCurrentHealth;
 };

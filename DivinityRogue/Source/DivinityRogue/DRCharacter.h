@@ -6,6 +6,7 @@
 #include "DRAbilityComponent.h"
 #include "DRAIController.h"
 #include "DRCharacterAnimationComponent.h"
+#include "DRCharacterTemplate.h"
 #include "DRHealthComponent.h"
 #include "DRMovementComponent.h"
 #include "DRStatsComponent.h"
@@ -25,6 +26,30 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPreUsedAbility, UDRAbility*, abilit
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnStart);
 
+USTRUCT(BlueprintType)
+struct FCharacterTemplate
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnyWhere, Category = "Stats")
+	int MaxHealth;
+	UPROPERTY(EditAnywhere, Category = "Stats")
+	int Speed = 5;
+	UPROPERTY(EditAnyWhere, Category = "Stats")
+	int MaxActionPoints = 2;
+	UPROPERTY(EditAnyWhere, Category = "Stats")
+	int StartActionPoints = 2;
+	UPROPERTY(EditAnyWhere, Category = "Stats")
+	int ActionPointsPerTurn = 2;
+	UPROPERTY(EditAnyWhere, Category = "Stats")
+	int MovementSpeed = 6;
+	UPROPERTY(EditAnyWhere, Category = "Stats")
+	int Movement = 2;
+	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
+	TArray<TSubclassOf<UDRAbility>> AbilityClasses;
+	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
+	TSubclassOf<UDRAbility_BasicAttack> BasicAttackClass;
+};
+
 UCLASS()
 class DIVINITYROGUE_API ADRCharacter : public ACharacter
 {
@@ -36,6 +61,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
+	void Initialize(UDRCharacterTemplate* charTemplate);
 	void Heal(int healAmount);
 	void OrderMoveToLocation(FVector targetLoc);
 	void OrderMoveToActor(UDRAbilityTargetComponent* target);
@@ -45,7 +71,6 @@ public:
 	void UseAbility(UDRAbility* ability);
 	UFUNCTION()
 	void OnTurnStart();
-
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRCharacterAnimationComponent* GetAnimationComponent() const { return mAnimationComponent; }
 
@@ -70,6 +95,8 @@ public:
 	FUsedAbility mOnUsedAbility;
 	UPROPERTY(BlueprintAssignable)
 	FPreUsedAbility mOnPreUsedAbility;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UDRCharacterTemplate> mCharacterTemplateOverride;
 protected:
 	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -83,7 +110,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRAbilityTargetComponent* mAbilityTargetComponent;
 	//Components - End
-
 
 private:
 	UFUNCTION()

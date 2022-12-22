@@ -18,12 +18,13 @@ class DIVINITYROGUE_API UDRGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:
-	//Converts stored actors to structs which can persists between levels.
-	void CacheAllData();
-	void RefreshDataFromCache();
+	UFUNCTION(BlueprintCallable)
+	void InitializePlayerCharacters();
+	void InitializePlayerCharactersWithOverrides(TArray<ADRPlayerCharacter*> playerCharacters); 
 	UPROPERTY()
-	TArray<ADRCharacter*> mPlayerCharacters;
-	int exp;
+	TArray<UDRCharacterTemplate*> mPlayerCharacters;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<TSubclassOf<UDRCharacterTemplate>> mPlayerCharacterClasses;
 private:
 	TArray<FCharacterSave> mCachedPlayerCharacters;
 };

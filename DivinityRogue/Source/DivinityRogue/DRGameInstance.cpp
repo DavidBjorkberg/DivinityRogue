@@ -3,17 +3,22 @@
 
 #include "DRGameInstance.h"
 
-void UDRGameInstance::CacheAllData()
+#include "DRPlayerCharacter.h"
+
+void UDRGameInstance::InitializePlayerCharacters()
 {
-	for(ADRCharacter* playerCharacter : mPlayerCharacters)
+	for (int i = 0; i < mPlayerCharacterClasses.Num(); i++)
 	{
-		FCharacterSave characterSave;
-		characterSave.Health = playerCharacter->GetHealthComponent()->GetMaxHealth();
+		UDRCharacterTemplate* charTemplate = NewObject<UDRCharacterTemplate>(this, mPlayerCharacterClasses[i]);
+		mPlayerCharacters.Add(charTemplate);
 	}
 }
 
-void UDRGameInstance::RefreshDataFromCache()
+void UDRGameInstance::InitializePlayerCharactersWithOverrides(TArray<ADRPlayerCharacter*> playerCharacters)
 {
-	mPlayerCharacters.Empty();
-	
+	for (int i = 0; i < playerCharacters.Num(); i++)
+	{
+		UDRCharacterTemplate* charTemplate = NewObject<UDRCharacterTemplate>(this, playerCharacters[i]->mCharacterTemplateOverride);
+		mPlayerCharacters.Add(charTemplate);
+	}
 }

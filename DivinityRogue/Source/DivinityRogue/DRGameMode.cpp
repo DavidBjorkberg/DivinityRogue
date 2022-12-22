@@ -12,6 +12,7 @@
 #include "DRPlayerController.h"
 #include "DRSaveGameManager.h"
 #include "NavigationSystem.h"
+#include "GameFramework/PlayerStart.h"
 
 ADRGameMode::ADRGameMode()
 {
@@ -21,19 +22,18 @@ ADRGameMode::ADRGameMode()
 void ADRGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ADRGameMode::StartMatch);
-	UDRGameplayStatics::FindAllActors<ADRCharacter>(GetWorld(), mALlCharacters);
-	for (ADRCharacter* character : mALlCharacters)
+
+	SpawnPlayerCharacters();
+
+	TArray<ADRCharacter*> allCharacters;
+	UDRGameplayStatics::FindAllActors<ADRCharacter>(GetWorld(), allCharacters);
+	for (ADRCharacter* character : allCharacters)
 	{
 		character->mOnUnitDied.AddDynamic(this, &ADRGameMode::OnUnitDied);
-		if(ADRPlayerCharacter* playerChar = Cast<ADRPlayerCharacter>(character))
-		{
-			GetGameInstance<UDRGameInstance>()->mPlayerCharacters.Add(playerChar);
-		}
 	}
+
 	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
-	UDRSaveGameManager::Save(GetWorld());
-	UDRSaveGameManager::Load(GetWorld());
+	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ADRGameMode::StartMatch);
 }
 
 void ADRGameMode::Tick(float DeltaSeconds)
@@ -68,19 +68,6 @@ void ADRGameMode::TrySelectAbility(int index)
 	mOnSelectedAbilityChanged.Broadcast(mSelectedAbility);
 }
 
-TArray<ADREnemyCharacter*> ADRGameMode::GetAllEnemyUnits()
-{
-	TArray<ADREnemyCharacter*> returnList;
-	for (ADRCharacter* character : mALlCharacters)
-	{
-		if (ADREnemyCharacter* enemyUnit = Cast<ADREnemyCharacter>(character))
-		{
-			returnList.Add(enemyUnit);
-		}
-	}
-	return returnList;
-}
-
 TArray<UDRAbilityTargetComponent*> ADRGameMode::GetAllPlayerAbilityTargets()
 {
 	TArray<UDRAbilityTargetComponent*> allAbilityTargets;
@@ -105,6 +92,30 @@ UNavigationPath* ADRGameMode::GetPathToMouse()
 	return mPathToMouse;
 }
 
+void ADRGameMode::SpawnPlayerCharacters()
+{
+	UDRGameInstance* GI = GetGameInstance<UDRGameInstance>();
+	if (GI->mPlayerCharacters.Num() == 0)
+	{
+		TArray<ADRPlayerCharacter*> playerCharacters;
+		UDRGameplayStatics::FindAllActors<ADRPlayerCharacter>(GetWorld(), playerCharacters);
+		GI->InitializePlayerCharactersWithOverrides(playerCharacters);
+		for (int i = playerCharacters.Num() - 1; i >= 0; i--)
+		{
+			playerCharacters[i]->Destroy();
+		}
+	}
+
+	TArray<APlayerStart*> playerSpawnpoints;
+	UDRGameplayStatics::FindAllActors<APlayerStart>(GetWorld(), playerSpawnpoints);
+	for (int i = 0; i < GI->mPlayerCharacters.Num(); i++)
+	{
+		ADRCharacter* spawnedChar = GetWorld()->SpawnActor<ADRPlayerCharacter>(mPlayerCharacterClass);
+		spawnedChar->SetActorLocation(playerSpawnpoints[i]->GetActorLocation());
+		spawnedChar->Initialize(GI->mPlayerCharacters[i]);
+	}
+}
+
 void ADRGameMode::StartMatch()
 {
 	StartRound();
@@ -125,15 +136,6 @@ void ADRGameMode::EndTurn()
 bool ADRGameMode::IsPlayersTurn()
 {
 	return Cast<ADRPlayerCharacter>(mCharacterInPlay) != nullptr;
-}
-
-void ADRGameMode::SpawnCharacter(TSubclassOf<ADRCharacter> charToSpawn, FVector spawnPos)
-{
-	ADRCharacter* spawnedChar = GetWorld()->SpawnActor<ADRCharacter>(charToSpawn);
-	check(spawnedChar)
-	spawnedChar->SetActorLocation(spawnPos);
-	spawnedChar->mOnUnitDied.AddDynamic(this, &ADRGameMode::OnUnitDied);
-	mALlCharacters.Add(spawnedChar);
 }
 
 void ADRGameMode::StartTurn()
@@ -195,9 +197,17 @@ void ADRGameMode::EndRound()
 
 void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 {
-	mALlCharacters.Remove(deadUnit);
 	mTurnQueue.Remove(deadUnit);
-	if (GetAllPlayerAbilityTargets().Num() == 0 || GetAllEnemyUnits().Num() == 0)
+	TArray<ADREnemyCharacter*> allEnemyCharacters;
+	TArray<ADRPlayerCharacter*> allPlayerCharacters;
+	UDRGameplayStatics::FindAllActors<ADREnemyCharacter>(GetWorld(), allEnemyCharacters);
+	UDRGameplayStatics::FindAllActors<ADRPlayerCharacter>(GetWorld(), allPlayerCharacters);
+
+	if (allPlayerCharacters.Num() == 0)
+	{
+		SetGameOver(true);
+	}
+	else if(allEnemyCharacters.Num() == 0)
 	{
 		GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->ShowNextMapSelect();
 	}

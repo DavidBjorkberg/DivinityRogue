@@ -10,8 +10,11 @@ ADREnemyCharacter::ADREnemyCharacter()
 
 void ADREnemyCharacter::BeginPlay()
 {
-	Super::BeginPlay();
+	UDRCharacterTemplate* charTemplate = NewObject<UDRCharacterTemplate>(this, mCharacterTemplateOverride);
+	Initialize(charTemplate);
 	FindComponentByClass<UDRAbilityTargetComponent>()->SetTeam(ETeam::ENEMY);
+	Super::BeginPlay();
+	
 }
 
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DRCharacterAnimInstance.h"
 #include "Components/ActorComponent.h"
 #include "DRCharacterAnimationComponent.generated.h"
 
@@ -22,15 +23,16 @@ class DIVINITYROGUE_API UDRCharacterAnimationComponent : public UActorComponent
 
 public:
 	UDRCharacterAnimationComponent();
-virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
 	bool IsInAnimState(EAnimState state) { return state == mCurrentAnimState; }
 
+	void SetAnimInstance(TSubclassOf<UDRCharacterAnimInstance> animInstanceClass);
 	void PlayAttackAnimation(UDRAbility* ability);
 	void PlayIdleAnimation();
 	void PlayRunAnimation();
 private:
-	void SetAnimState(EAnimState newState) {mCurrentAnimState = newState; }
+	void SetAnimState(EAnimState newState) { mCurrentAnimState = newState; }
 	UPROPERTY()
 	UAnimSequenceBase* mAttackAnimation;
 	EAnimState mCurrentAnimState;

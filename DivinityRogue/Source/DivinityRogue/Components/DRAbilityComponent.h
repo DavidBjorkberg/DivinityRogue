@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "DRAbility.h"
 #include "DRAbility_BasicAttack.h"
+#include "DRCharacterTemplate.h"
 #include "Components/ActorComponent.h"
 #include "DRAbilityComponent.generated.h"
 
@@ -17,22 +18,14 @@ class DIVINITYROGUE_API UDRAbilityComponent : public UActorComponent
 public:
 	UDRAbilityComponent();
 
-public:
+	void ApplyStats(UDRCharacterTemplate* charTemplate);
 	UFUNCTION(BlueprintPure)
 	TArray<UDRAbility*> GetAbilities() const { return mAbilities; }
 
 	UDRAbility_BasicAttack* GetBasicAttack() const { return mBasicAttack; }
 protected:
-	virtual void BeginPlay() override;
-	UPROPERTY(BlueprintReadOnly, DisplayName="Abilities")
+	UPROPERTY(VisibleAnywhere)
 	TArray<UDRAbility*> mAbilities;
-	UPROPERTY(BlueprintReadOnly, DisplayName="Basic Attack")
+	UPROPERTY(VisibleAnywhere)
 	UDRAbility_BasicAttack* mBasicAttack;
-
-	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
-	TArray<TSubclassOf<UDRAbility>> mAbilityClasses;
-	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
-	TSubclassOf<UDRAbility_BasicAttack> mBasicAttackClass;
-private:
-	void SpawnStarterAbilities();
 };

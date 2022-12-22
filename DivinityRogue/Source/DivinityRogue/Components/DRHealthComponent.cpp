@@ -22,9 +22,8 @@ void UDRHealthComponent::ModifyHealth(int difference)
 	}
 }
 
-// Called when the game starts
-void UDRHealthComponent::BeginPlay()
+void UDRHealthComponent::ApplyStats(UDRCharacterTemplate* charTemplate)
 {
-	Super::BeginPlay();
+	mMaxHealth = charTemplate->MaxHealth;
 	mCurrentHealth = mMaxHealth;
 }

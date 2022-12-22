@@ -42,8 +42,6 @@ public:
 	void EndTurn();
 	UFUNCTION(BlueprintCallable)
 	bool IsPlayersTurn();
-	UFUNCTION(BlueprintCallable)
-	void SpawnCharacter(TSubclassOf<ADRCharacter> charToSpawn, FVector spawnPos);
 	//Set
 	void SetGameplayState(EGameplayState newState);
 	UFUNCTION(BlueprintCallable)
@@ -59,7 +57,6 @@ public:
 
 	UDRAbility* GetSelectedAbility() const { return mSelectedAbility; }
 	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; }
-	TArray<ADREnemyCharacter*> GetAllEnemyUnits();
 	TArray<UDRAbilityTargetComponent*> GetAllPlayerAbilityTargets();
 	UFUNCTION(BlueprintCallable)
 	UNavigationPath* GetPathToMouse();
@@ -75,11 +72,14 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FSelectedAbilityChanged mOnSelectedAbilityChanged;
 protected:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ADRPlayerCharacter> mPlayerCharacterClass;
 	UPROPERTY(BlueprintReadOnly)
 	ADRCharacter* mCharacterInPlay;
 	UPROPERTY()
 	TArray<ADRCharacter*> mTurnQueue;
 private:
+	void SpawnPlayerCharacters();
 	UFUNCTION()
 	void StartMatch();
 	void StartTurn();
@@ -91,8 +91,6 @@ private:
 	void FindPathToMouse();
 	UPROPERTY()
 	UNavigationPath* mPathToMouse;
-	UPROPERTY()
-	TArray<ADRCharacter*> mALlCharacters;
 	UPROPERTY()
 	UDRAbility* mSelectedAbility;
 	UPROPERTY()

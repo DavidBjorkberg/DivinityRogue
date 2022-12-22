@@ -3,26 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DRCharacterTemplate.h"
 #include "Components/ActorComponent.h"
 #include "DRStatsComponent.generated.h"
-
-USTRUCT(BlueprintType)
-struct FCharacterBaseStats
-{
-	GENERATED_BODY()
-	UPROPERTY(EditAnywhere, Category = "DRCharacter")
-	int mSpeed = 5;
-	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	int mMaxActionPoints = 2;
-	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	int mStartActionPoints = 2;
-	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	int mActionPointsPerTurn = 2;
-	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	int mMovementSpeed = 6;
-	UPROPERTY(EditAnyWhere, Category = "DRCharacter")
-	int mMovement = 2;
-};
 
 USTRUCT(BlueprintType)
 struct FCharacterStats
@@ -53,16 +36,12 @@ class DIVINITYROGUE_API UDRStatsComponent : public UActorComponent
 public:
 	UDRStatsComponent();
 	void ModifyEnergy(int difference);
+	void ApplyStats(UDRCharacterTemplate* charTemplate);
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	FCharacterStats GetStats() const { return mStats; }
 	UPROPERTY(BlueprintAssignable)
 	FEnergyChange mOnEnergyChange;
 protected:
-	virtual void BeginPlay() override;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FCharacterBaseStats mBaseStats;
 	UPROPERTY(BlueprintReadOnly)
 	FCharacterStats mStats;
-private:
-	void ApplyBaseStats();
 };

@@ -13,10 +13,6 @@ ADRCharacter::ADRCharacter(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UDRMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	//mRoot = CreateDefaultSubobject<USceneComponent>("Root");
-	//SetRootComponent(mRoot);
-	//mMovementComponent = CreateDefaultSubobject<UDRMovementComponent>("MovementComponent");
 	mAnimationComponent = CreateDefaultSubobject<UDRCharacterAnimationComponent>("DRAnimationComponent");
 	mStatsComponent = CreateDefaultSubobject<UDRStatsComponent>("DRStatsComponent");
 	mAbilityComponent = CreateDefaultSubobject<UDRAbilityComponent>("DRAbilityComponent");
@@ -32,7 +28,7 @@ void ADRCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	mAbilityTargetComponent->SetHighlightMesh(GetMesh());
-	Cast<UCharacterMovementComponent>(GetMovementComponent())->GravityScale = 0;
+	//Cast<UCharacterMovementComponent>(GetMovementComponent())->GravityScale = 0;
 	mController = Cast<ADRAIController>(GetController());
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mOnTurnStart.AddDynamic(this, &ADRCharacter::OnTurnStart);
@@ -73,6 +69,16 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
+void ADRCharacter::Initialize(UDRCharacterTemplate* charTemplate)
+{
+	GetMesh()->SetSkeletalMesh(charTemplate->Mesh);
+	GetMesh()->SetMaterial(0,charTemplate->MeshMaterial);
+	mStatsComponent->ApplyStats(charTemplate);
+	mHealthComponent->ApplyStats(charTemplate);
+	mAbilityComponent->ApplyStats(charTemplate);
+	mAnimationComponent->SetAnimInstance(charTemplate->AnimInstance);
+}
+
 void ADRCharacter::Heal(int healAmount)
 {
 	mHealthComponent->ModifyHealth(healAmount);
@@ -80,8 +86,8 @@ void ADRCharacter::Heal(int healAmount)
 
 void ADRCharacter::Died()
 {
-	mOnUnitDied.Broadcast(this);
 	Destroy();
+	mOnUnitDied.Broadcast(this);
 }
 
 
