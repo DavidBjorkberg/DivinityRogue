@@ -14,6 +14,8 @@ class DIVINITYROGUE_API UDRCharacterTemplate : public UObject
 {
 	GENERATED_BODY()
 public:
+	UPROPERTY(EditDefaultsOnly)
+	FText Name;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 	int MaxHealth = 40;
 	int CurrentHealth;

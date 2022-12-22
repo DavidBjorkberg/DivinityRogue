@@ -11,6 +11,7 @@ ADREnemyCharacter::ADREnemyCharacter()
 void ADREnemyCharacter::BeginPlay()
 {
 	UDRCharacterTemplate* charTemplate = NewObject<UDRCharacterTemplate>(this, mCharacterTemplateOverride);
+	charTemplate->CurrentHealth = charTemplate->MaxHealth;
 	Initialize(charTemplate);
 	FindComponentByClass<UDRAbilityTargetComponent>()->SetTeam(ETeam::ENEMY);
 	Super::BeginPlay();

@@ -77,6 +77,7 @@ void ADRCharacter::Initialize(UDRCharacterTemplate* charTemplate)
 	mHealthComponent->ApplyTemplate(charTemplate);
 	mAbilityComponent->ApplyTemplate(charTemplate);
 	mAnimationComponent->SetAnimInstance(charTemplate->AnimInstance);
+	mAbilityTargetComponent->SetName(charTemplate->Name);
 }
 
 void ADRCharacter::Heal(int healAmount)
