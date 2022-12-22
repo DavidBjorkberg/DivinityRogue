@@ -18,7 +18,7 @@ class DIVINITYROGUE_API UDRAbilityComponent : public UActorComponent
 public:
 	UDRAbilityComponent();
 
-	void ApplyStats(UDRCharacterTemplate* charTemplate);
+	void ApplyTemplate(UDRCharacterTemplate* charTemplate);
 	UFUNCTION(BlueprintPure)
 	TArray<UDRAbility*> GetAbilities() const { return mAbilities; }
 

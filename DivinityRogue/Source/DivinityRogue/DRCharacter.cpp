@@ -73,9 +73,9 @@ void ADRCharacter::Initialize(UDRCharacterTemplate* charTemplate)
 {
 	GetMesh()->SetSkeletalMesh(charTemplate->Mesh);
 	GetMesh()->SetMaterial(0,charTemplate->MeshMaterial);
-	mStatsComponent->ApplyStats(charTemplate);
-	mHealthComponent->ApplyStats(charTemplate);
-	mAbilityComponent->ApplyStats(charTemplate);
+	mStatsComponent->ApplyTemplate(charTemplate);
+	mHealthComponent->ApplyTemplate(charTemplate);
+	mAbilityComponent->ApplyTemplate(charTemplate);
 	mAnimationComponent->SetAnimInstance(charTemplate->AnimInstance);
 }
 

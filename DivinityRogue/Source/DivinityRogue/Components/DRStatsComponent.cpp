@@ -14,7 +14,7 @@ void UDRStatsComponent::ModifyEnergy(int difference)
 	mOnEnergyChange.Broadcast(mStats.mCurrentActionPoints);
 }
 
-void UDRStatsComponent::ApplyStats(UDRCharacterTemplate* charTemplate)
+void UDRStatsComponent::ApplyTemplate(UDRCharacterTemplate* charTemplate)
 {
 	mStats.mSpeed = charTemplate->Speed;
 	mStats.mMaxActionPoints = charTemplate->MaxActionPoints;

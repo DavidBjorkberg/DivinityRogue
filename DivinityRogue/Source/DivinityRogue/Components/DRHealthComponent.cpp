@@ -5,16 +5,12 @@
 
 #include "DRGameplayStatics.h"
 
-// Sets default values for this component's properties
-UDRHealthComponent::UDRHealthComponent()
-{
-}
-
 
 void UDRHealthComponent::ModifyHealth(int difference)
 {
 	UDRGameplayStatics::GetHUD(GetWorld())->SpawnFloatingDamageText(GetOwner(),FMath::Abs(difference), difference > 0);
 	mCurrentHealth = FMath::Clamp(mCurrentHealth + difference, 0, mMaxHealth);
+	mCharTemplate->CurrentHealth = mCurrentHealth;
 	mOnHealthChanged.Broadcast(mCurrentHealth);
 	if(mCurrentHealth == 0)
 	{
@@ -22,8 +18,9 @@ void UDRHealthComponent::ModifyHealth(int difference)
 	}
 }
 
-void UDRHealthComponent::ApplyStats(UDRCharacterTemplate* charTemplate)
+void UDRHealthComponent::ApplyTemplate(UDRCharacterTemplate* charTemplate)
 {
+	mCharTemplate = charTemplate;
 	mMaxHealth = charTemplate->MaxHealth;
-	mCurrentHealth = mMaxHealth;
+	mCurrentHealth = charTemplate->CurrentHealth;
 }

@@ -14,13 +14,12 @@ class DIVINITYROGUE_API UDRHealthComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	UDRHealthComponent();
 	UFUNCTION(BlueprintPure)
 	int GetMaxHealth() const { return mMaxHealth; }
 	UFUNCTION(BlueprintPure)
 	int GetCurrentHealth() const { return mCurrentHealth; }
 	void ModifyHealth(int difference);
-	void ApplyStats(UDRCharacterTemplate* charTemplate);
+	void ApplyTemplate(UDRCharacterTemplate* charTemplate);
 	UPROPERTY(BlueprintAssignable)
 	FHealthChanged mOnHealthChanged;
 	UPROPERTY(BlueprintAssignable)
@@ -29,5 +28,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	int mMaxHealth;
 private:
+	UPROPERTY()
+	UDRCharacterTemplate* mCharTemplate; 
 	int mCurrentHealth;
 };

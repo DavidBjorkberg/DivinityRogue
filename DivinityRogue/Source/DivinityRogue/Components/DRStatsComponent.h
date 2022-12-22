@@ -36,7 +36,7 @@ class DIVINITYROGUE_API UDRStatsComponent : public UActorComponent
 public:
 	UDRStatsComponent();
 	void ModifyEnergy(int difference);
-	void ApplyStats(UDRCharacterTemplate* charTemplate);
+	void ApplyTemplate(UDRCharacterTemplate* charTemplate);
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	FCharacterStats GetStats() const { return mStats; }
 	UPROPERTY(BlueprintAssignable)
@@ -44,4 +44,5 @@ public:
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	FCharacterStats mStats;
+
 };

@@ -95,15 +95,15 @@ UNavigationPath* ADRGameMode::GetPathToMouse()
 void ADRGameMode::SpawnPlayerCharacters()
 {
 	UDRGameInstance* GI = GetGameInstance<UDRGameInstance>();
+	TArray<ADRPlayerCharacter*> playerCharacters;
+	UDRGameplayStatics::FindAllActors<ADRPlayerCharacter>(GetWorld(), playerCharacters);
 	if (GI->mPlayerCharacters.Num() == 0)
 	{
-		TArray<ADRPlayerCharacter*> playerCharacters;
-		UDRGameplayStatics::FindAllActors<ADRPlayerCharacter>(GetWorld(), playerCharacters);
 		GI->InitializePlayerCharactersWithOverrides(playerCharacters);
-		for (int i = playerCharacters.Num() - 1; i >= 0; i--)
-		{
-			playerCharacters[i]->Destroy();
-		}
+	}
+	for (int i = playerCharacters.Num() - 1; i >= 0; i--)
+	{
+		playerCharacters[i]->Destroy();
 	}
 
 	TArray<APlayerStart*> playerSpawnpoints;
@@ -207,7 +207,7 @@ void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 	{
 		SetGameOver(true);
 	}
-	else if(allEnemyCharacters.Num() == 0)
+	else if (allEnemyCharacters.Num() == 0)
 	{
 		GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->ShowNextMapSelect();
 	}

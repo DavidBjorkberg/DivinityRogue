@@ -16,6 +16,7 @@ class DIVINITYROGUE_API UDRCharacterTemplate : public UObject
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 	int MaxHealth = 10;
+	int CurrentHealth;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 	int Speed = 5;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")

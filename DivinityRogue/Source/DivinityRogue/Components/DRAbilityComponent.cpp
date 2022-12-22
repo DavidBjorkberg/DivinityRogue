@@ -13,7 +13,7 @@ UDRAbilityComponent::UDRAbilityComponent()
 }
 
 
-void UDRAbilityComponent::ApplyStats(UDRCharacterTemplate* charTemplate)
+void UDRAbilityComponent::ApplyTemplate(UDRCharacterTemplate* charTemplate)
 {
 	for (TSubclassOf<UDRAbility> ability : charTemplate->AbilityClasses)
 	{
