@@ -15,20 +15,20 @@ class DIVINITYROGUE_API UDRCharacterTemplate : public UObject
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-	int MaxHealth = 10;
+	int MaxHealth = 40;
 	int CurrentHealth;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 	int Speed = 5;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-	int MaxActionPoints = 2;
+	int MaxActionPoints = 4;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-	int StartActionPoints = 2;
+	int StartActionPoints = 3;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 	int ActionPointsPerTurn = 2;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 	int MovementSpeed = 6;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-	int Movement = 2;
+	int Movement = 250;
 	UPROPERTY(EditDefaultsOnly)
 	TArray<TSubclassOf<UDRAbility>> AbilityClasses;
 	UPROPERTY(EditDefaultsOnly)
