@@ -37,7 +37,7 @@ void UDRAbilityTargetComponent::ModifyEnergy(int difference)
 
 void UDRAbilityTargetComponent::TeleportTo(FVector targetLocation)
 {
-	GetOwner()->SetActorLocation(targetLocation);
+	GetOwner()->SetActorLocation(targetLocation + FVector(0,0,GetOwner()->GetSimpleCollisionHalfHeight()));
 }
 
 void UDRAbilityTargetComponent::SetHighlightMesh(UPrimitiveComponent* mesh)
