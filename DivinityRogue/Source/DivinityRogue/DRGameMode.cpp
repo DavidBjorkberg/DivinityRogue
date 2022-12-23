@@ -33,16 +33,6 @@ void ADRGameMode::BeginPlay()
 		character->mOnUnitDied.AddDynamic(this, &ADRGameMode::OnUnitDied);
 	}
 
-	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
-}
-
-void ADRGameMode::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-	if (IsInGameplayState(EGameplayState::PlanningPath))
-	{
-		FindPathToMouse();
-	}
 }
 
 void ADRGameMode::SetGameplayState(EGameplayState newState)
@@ -83,14 +73,6 @@ TArray<UDRAbilityTargetComponent*> ADRGameMode::GetAllPlayerAbilityTargets()
 	return returnList;
 }
 
-UNavigationPath* ADRGameMode::GetPathToMouse()
-{
-	if (mPathToMouse == nullptr)
-	{
-		FindPathToMouse();
-	}
-	return mPathToMouse;
-}
 
 void ADRGameMode::SpawnPlayerCharacters()
 {
@@ -135,26 +117,3 @@ void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 	}
 }
 
-void ADRGameMode::FindPathToMouse()
-{
-	ADRCharacter* characterInPlay = mRoundSystem->GetCharacterInPlay();
-	if (characterInPlay == nullptr)
-	{
-		UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-		mPathToMouse = NewObject<UNavigationPath>(NavSys);
-		return;
-	}
-	FVector pathStart = characterInPlay->GetActorLocation();
-	FVector pathEnd;
-
-	if (mPlayerController->GetMouseHoverState() == EMouseHoverState::EnemyCharacterInBasicAttackRange)
-	{
-		pathEnd = mPlayerController->GetAbilityTargetUnderCursor()->GetOwner()->GetActorLocation();
-	}
-	else
-	{
-		pathEnd = UDRGameplayStatics::GetHitResultUnderCursor(GetWorld(), ECC_WorldStatic).Location;
-	}
-	mPathToMouse = UNavigationSystemV1::FindPathToLocationSynchronously(
-		GetWorld(), pathStart, pathEnd, characterInPlay);
-}

@@ -5,6 +5,7 @@
 
 #include "DRAIController.h"
 #include "DRCharacter.h"
+#include "DRPlayerController.h"
 
 void UDRMovementComponent::BeginPlay()
 {
@@ -12,6 +13,7 @@ void UDRMovementComponent::BeginPlay()
 	mOwner = Cast<ADRCharacter>(GetOwner());
 	mOwner->mOnTurnStart.AddDynamic(this, &UDRMovementComponent::OnTurnStart);
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
+	mPlayerController = GetWorld()->GetFirstPlayerController<ADRPlayerController>();
 }
 
 void UDRMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -30,7 +32,7 @@ void UDRMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 int UDRMovementComponent::GetEnergyCostToMouse()
 {
 	const float characterMovement = mOwner->GetStatsComponent()->GetStats().mMovement;
-	float pathLength = mGameMode->GetPathToMouse()->GetPathLength();
+	float pathLength = mPlayerController->GetPathToMouse()->GetPathLength();
 	pathLength -= mDistanceLeftUntilEnergyCost;
 	int energyCost = FMath::CeilToInt(pathLength / characterMovement);
 	return energyCost;
@@ -38,7 +40,7 @@ int UDRMovementComponent::GetEnergyCostToMouse()
 
 void UDRMovementComponent::OnMovementUpdated(float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity)
 {
-	if(OldVelocity.Size() > 0)
+	if (OldVelocity.Size() > 0)
 	{
 		SetDesiredRotation(OldVelocity.GetSafeNormal2D().Rotation());
 		FVector moveVec = OldVelocity * DeltaSeconds;
@@ -49,7 +51,6 @@ void UDRMovementComponent::OnMovementUpdated(float DeltaSeconds, const FVector& 
 			mOwner->EndTurnIfOutOfActionPoints();
 			mDistanceLeftUntilEnergyCost = mOwner->GetStatsComponent()->GetStats().mMovement;
 		}
-
 	}
 }
 

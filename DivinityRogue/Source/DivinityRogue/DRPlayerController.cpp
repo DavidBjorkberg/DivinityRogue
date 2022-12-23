@@ -41,6 +41,29 @@ void ADRPlayerController::BeginPlay()
 	SetInputMode(FInputModeGameAndUI());
 }
 
+UNavigationPath* ADRPlayerController::GetPathToMouse()
+{
+	ADRCharacter* characterInPlay = mRoundSystem->GetCharacterInPlay();
+	if (characterInPlay == nullptr)
+	{
+		UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+		return NewObject<UNavigationPath>(NavSys);
+	}
+	FVector pathStart = characterInPlay->GetActorLocation();
+	FVector pathEnd;
+
+	if (GetMouseHoverState() == EMouseHoverState::EnemyCharacterInBasicAttackRange)
+	{
+		pathEnd = GetAbilityTargetUnderCursor()->GetOwner()->GetActorLocation();
+	}
+	else
+	{
+		pathEnd = UDRGameplayStatics::GetHitResultUnderCursor(GetWorld(), ECC_WorldStatic).Location;
+	}
+	return UNavigationSystemV1::FindPathToLocationSynchronously(
+		GetWorld(), pathStart, pathEnd, characterInPlay);
+}
+
 void ADRPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();

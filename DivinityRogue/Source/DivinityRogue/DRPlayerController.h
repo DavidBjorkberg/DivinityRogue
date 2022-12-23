@@ -38,6 +38,8 @@ public:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintPure)
 	UDRAbilityTargetComponent* GetAbilityTargetUnderCursor() const { return mSelectableUnderCursor; }
+	UFUNCTION(BlueprintCallable)
+	UNavigationPath* GetPathToMouse();
 
 	UFUNCTION(BlueprintPure)
 	EMouseHoverState GetMouseHoverState() const { return mMouseHoverState; }
@@ -66,6 +68,7 @@ private:
 	void UpdateCursor();
 	void UpdateMouseHoverState(UDRAbilityTargetComponent* abilityTargetUnderCursor);
 	void UpdateCharacterUnderCursor();
+	
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 	UPROPERTY()

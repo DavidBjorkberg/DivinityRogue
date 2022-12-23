@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "DRGameMode.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/PawnMovementComponent.h"
 #include "DRMovementComponent.generated.h"
 
 class ADRCharacter;
@@ -32,6 +31,8 @@ private:
 	ADRCharacter* mOwner;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
+	UPROPERTY()
+	ADRPlayerController* mPlayerController;
 	FRotator mDesiredRotation;
 	int mMovementSpeed;
 };
