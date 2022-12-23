@@ -19,9 +19,10 @@ void UDRAbility::PostInitProperties()
 
 	mWorld = GetWorld();
 	mGameMode = mWorld->GetAuthGameMode<ADRGameMode>();
+	mRoundSystem = mWorld->GetSubsystem<UDRRoundSystem>();
 	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
 	mGameMode->mOnSelectedAbilityChanged.AddDynamic(this, &UDRAbility::OnSelectedAbilityChanged);
-	mGameMode->mOnNewRound.AddDynamic(this, &UDRAbility::OnNewRound);
+	mRoundSystem->mOnNewRound.AddDynamic(this, &UDRAbility::OnNewRound);
 }
 
 void UDRAbility::Use()

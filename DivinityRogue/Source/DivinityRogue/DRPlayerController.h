@@ -69,6 +69,8 @@ private:
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 	UPROPERTY()
+	UDRRoundSystem* mRoundSystem;
+	UPROPERTY()
 	ADRHUD* mHUD;
 	UPROPERTY()
 	ADRMovementSpline* mMovementSpline;

@@ -16,7 +16,7 @@ void UDRAbility_MultiTarget::OnLeftMouseDown()
 			mTargets.Add(abilityTargetUnderCursor);
 			if (mTargets.Num() == mNumberOfTargets)
 			{
-				mGameMode->GetCharacterInPlay()->UseAbility(this);
+				mRoundSystem->GetCharacterInPlay()->UseAbility(this);
 				DeselectAbility();
 			}
 		}

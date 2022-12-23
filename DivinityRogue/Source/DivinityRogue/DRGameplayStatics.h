@@ -36,6 +36,12 @@ public:
 		UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 		return World->GetAuthGameMode<ADRGameMode>();
 	}
+	UFUNCTION(BlueprintPure, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
+	static UDRRoundSystem* GetRoundSystem(const UObject* WorldContextObject)
+	{
+		UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+		return World->GetSubsystem<UDRRoundSystem>();
+	}
 
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")

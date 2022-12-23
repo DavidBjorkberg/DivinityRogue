@@ -19,7 +19,7 @@ void UDRAbility_NoTarget::OnLeftMouseDown()
 {
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
-		mGameMode->GetCharacterInPlay()->UseAbility(this);
+		mRoundSystem->GetCharacterInPlay()->UseAbility(this);
 		DeselectAbility();
 	}
 }

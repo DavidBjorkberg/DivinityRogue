@@ -23,6 +23,7 @@ void ADRGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
 	SpawnPlayerCharacters();
 
 	TArray<ADRCharacter*> allCharacters;
@@ -33,7 +34,6 @@ void ADRGameMode::BeginPlay()
 	}
 
 	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
-	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ADRGameMode::StartMatch);
 }
 
 void ADRGameMode::Tick(float DeltaSeconds)
@@ -54,7 +54,7 @@ void ADRGameMode::SetGameplayState(EGameplayState newState)
 
 void ADRGameMode::TrySelectAbility(int index)
 {
-	TArray<UDRAbility*> abilities = mCharacterInPlay->GetAbilityComponent()->GetAbilities();
+	TArray<UDRAbility*> abilities = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->GetAbilities();
 	if (index >= 0 && !abilities[index]->IsOnCooldown() && abilities[index]->CanAffordCast())
 	{
 		mSelectedAbility = abilities[index];
@@ -116,88 +116,10 @@ void ADRGameMode::SpawnPlayerCharacters()
 	}
 }
 
-void ADRGameMode::StartMatch()
-{
-	StartRound();
-}
-
-void ADRGameMode::EndTurn()
-{
-	if (IsGameOver())
-	{
-		GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->ShowGameOverScreen(mCurrentRound);
-	}
-	else
-	{
-		StartTurn();
-	}
-}
-
-bool ADRGameMode::IsPlayersTurn()
-{
-	return Cast<ADRPlayerCharacter>(mCharacterInPlay) != nullptr;
-}
-
-void ADRGameMode::StartTurn()
-{
-	if (mTurnQueue.Num() == 0)
-	{
-		EndRound();
-		return;
-	}
-	if (mTurnQueue.Num() == 0) return;
-
-	ADRCharacter* previousCharacter = mCharacterInPlay;
-	mCharacterInPlay = mTurnQueue[0];
-	mTurnQueue.RemoveAt(0);
-
-	mOnNewTurn.Broadcast(previousCharacter, mCharacterInPlay);
-	mCharacterInPlay->mOnTurnStart.Broadcast();
-	SetGameplayState(EGameplayState::PlanningPath);
-
-	if (ADREnemyAIController* enemyController = Cast<ADREnemyAIController>(mCharacterInPlay->GetController()))
-	{
-		mPlayerController->DisableInput(mPlayerController);
-		enemyController->StartRequestAction();
-	}
-	else
-	{
-		mPlayerController->EnableInput(mPlayerController);
-	}
-}
-
-void ADRGameMode::FillTurnQueue()
-{
-	TArray<AActor*> allActors;
-	UDRGameplayStatics::GetAllActorsOfClass(GetWorld(), ADRCharacter::StaticClass(), allActors);
-	TArray<ADRCharacter*> allCharacters;
-	for (AActor* actor : allActors)
-	{
-		allCharacters.Add(Cast<ADRCharacter>(actor));
-	}
-	mTurnQueue = allCharacters;
-	mTurnQueue.Sort([](const ADRCharacter& a, const ADRCharacter& b)
-	{
-		return a.GetStatsComponent()->GetStats().mSpeed > b.GetStatsComponent()->GetStats().mSpeed;
-	});
-}
-
-void ADRGameMode::StartRound()
-{
-	mOnNewRound.Broadcast();
-	FillTurnQueue();
-	StartTurn();
-}
-
-void ADRGameMode::EndRound()
-{
-	mCurrentRound++;
-	StartRound();
-}
 
 void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 {
-	mTurnQueue.Remove(deadUnit);
+	mRoundSystem->RemoveFromTurnQueue(deadUnit);
 	TArray<ADREnemyCharacter*> allEnemyCharacters;
 	TArray<ADRPlayerCharacter*> allPlayerCharacters;
 	UDRGameplayStatics::FindAllActors<ADREnemyCharacter>(GetWorld(), allEnemyCharacters);
@@ -215,13 +137,14 @@ void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 
 void ADRGameMode::FindPathToMouse()
 {
-	if (mCharacterInPlay == nullptr)
+	ADRCharacter* characterInPlay = mRoundSystem->GetCharacterInPlay();
+	if (characterInPlay == nullptr)
 	{
 		UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
 		mPathToMouse = NewObject<UNavigationPath>(NavSys);
 		return;
 	}
-	FVector pathStart = mCharacterInPlay->GetActorLocation();
+	FVector pathStart = characterInPlay->GetActorLocation();
 	FVector pathEnd;
 
 	if (mPlayerController->GetMouseHoverState() == EMouseHoverState::EnemyCharacterInBasicAttackRange)
@@ -233,5 +156,5 @@ void ADRGameMode::FindPathToMouse()
 		pathEnd = UDRGameplayStatics::GetHitResultUnderCursor(GetWorld(), ECC_WorldStatic).Location;
 	}
 	mPathToMouse = UNavigationSystemV1::FindPathToLocationSynchronously(
-		GetWorld(), pathStart, pathEnd, mCharacterInPlay);
+		GetWorld(), pathStart, pathEnd, characterInPlay);
 }

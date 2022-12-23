@@ -14,7 +14,7 @@ void UDRAbility_GroundTarget_Exclusive::OnLeftMouseDown()
 			FHitResult groundUnderCursorHitResult;
 			UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, groundUnderCursorHitResult, true);
 			mTargetLocation = groundUnderCursorHitResult.Location;
-			mGameMode->GetCharacterInPlay()->UseAbility(this);
+			mRoundSystem->GetCharacterInPlay()->UseAbility(this);
 		}
 		else
 		{

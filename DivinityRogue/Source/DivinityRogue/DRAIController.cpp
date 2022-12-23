@@ -15,6 +15,7 @@ void ADRAIController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 	mOwner = Cast<ADRCharacter>(InPawn);
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
+	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
 }
 
 void ADRAIController::OnFinishedAttack()

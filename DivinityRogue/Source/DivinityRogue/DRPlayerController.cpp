@@ -19,7 +19,7 @@ void ADRPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mGameMode->IsPlayersTurn())
+	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mRoundSystem->IsPlayersTurn())
 	{
 		mMovementSpline->DrawMovementSpline();
 	}
@@ -32,10 +32,11 @@ void ADRPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
+	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
 	mHUD = Cast<ADRHUD>(GetHUD());
 	mMovementSpline = GetWorld()->SpawnActor<ADRMovementSpline>(mMovementSplineBP);
 	mGameMode->mOnGameplayStateChanged.AddDynamic(this, &ADRPlayerController::OnGameplayStateChanged);
-	mGameMode->mOnNewTurn.AddDynamic(this, &ADRPlayerController::OnNewTurn);
+	mRoundSystem->mOnNewTurn.AddDynamic(this, &ADRPlayerController::OnNewTurn);
 	mOnCharacterUnderCursorChanged.AddDynamic(this, &ADRPlayerController::OnSelectableUnderCursorChanged);
 	SetInputMode(FInputModeGameAndUI());
 }
@@ -55,12 +56,12 @@ void ADRPlayerController::SetupInputComponent()
 
 void ADRPlayerController::OnLeftMouseClick()
 {
-	if (!mGameMode->IsPlayersTurn()) return;
+	if (!mRoundSystem->IsPlayersTurn()) return;
 	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath))
 	{
 		if (mSelectableUnderCursor != nullptr)
 		{
-			ADRCharacter* characterInPlay = mGameMode->GetCharacterInPlay();
+			ADRCharacter* characterInPlay = mRoundSystem->GetCharacterInPlay();
 
 			if (mMouseHoverState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
 			{
@@ -77,7 +78,7 @@ void ADRPlayerController::OnLeftMouseClick()
 				GetWorld(), ECollisionChannel::ECC_WorldStatic);
 			if (hitResult.bBlockingHit)
 			{
-				mGameMode->GetCharacterInPlay()->OrderMoveToLocation(hitResult.Location);
+				mRoundSystem->GetCharacterInPlay()->OrderMoveToLocation(hitResult.Location);
 			}
 		}
 	}
@@ -142,9 +143,9 @@ void ADRPlayerController::UpdateMouseHoverState(UDRAbilityTargetComponent* abili
 		ETeam targetTeam = abilityTargetUnderCursor->GetTeam();
 		if (targetTeam == ETeam::ENEMY)
 		{
-			UDRAbility_BasicAttack* BasicAttack = mGameMode->GetCharacterInPlay()->GetAbilityComponent()->
+			UDRAbility_BasicAttack* BasicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->
 			                                                 GetBasicAttack();
-			if (mGameMode->IsPlayersTurn() && BasicAttack->IsInRange(abilityTargetUnderCursor))
+			if (mRoundSystem->IsPlayersTurn() && BasicAttack->IsInRange(abilityTargetUnderCursor))
 			{
 				mMouseHoverState = EMouseHoverState::EnemyCharacterInBasicAttackRange;
 			}

@@ -16,6 +16,7 @@ void ADRHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
+	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
 	Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController())->mOnMouseHoverStateChanged.AddDynamic(
 		this, &ADRHUD::OnMouseHoverStateChanged);
 	mScreenUI = CreateWidget<UDRScreenUI>(GetGameInstance(), mScreenUIClass);
@@ -26,7 +27,7 @@ void ADRHUD::DrawHUD()
 {
 	Super::DrawHUD();
 	DrawFloatingDamageTexts();
-	if (!mGameMode->IsPlayersTurn()) return;
+	if (!mRoundSystem->IsPlayersTurn()) return;
 
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
@@ -48,11 +49,11 @@ void ADRHUD::HideHoverPanel()
 	mScreenUI->HideHoverCharacterPanel();
 }
 
-void ADRHUD::ShowGameOverScreen(int nrOfRoundsSurvived)
+void ADRHUD::ShowGameOverScreen()
 {
 	mScreenUI->SetVisibility(ESlateVisibility::Collapsed);
 	UDRGameOverUI* gameOverUI = CreateWidget<UDRGameOverUI>(GetWorld(), mGameOverUIClass);
-	gameOverUI->SetValues(nrOfRoundsSurvived);
+	gameOverUI->SetValues(0);
 	gameOverUI->AddToViewport();
 }
 
@@ -78,7 +79,7 @@ void ADRHUD::SpawnFloatingDamageText(AActor* damagedActor, int damage, bool isHe
 
 void ADRHUD::DrawAbilityRangeCircle()
 {
-	const ADRCharacter* characterUsingAbility = mGameMode->GetCharacterInPlay();
+	const ADRCharacter* characterUsingAbility = mRoundSystem->GetCharacterInPlay();
 	DrawCircle(GetWorld(), characterUsingAbility->GetActorLocation() + FVector::UpVector * 0.1f,
 	           FVector::RightVector,
 	           FVector::ForwardVector,
@@ -87,7 +88,7 @@ void ADRHUD::DrawAbilityRangeCircle()
 
 void ADRHUD::DrawAbilityCostText()
 {
-	int energyCost = mGameMode->GetCharacterInPlay()->GetDRMovementComponent()->GetEnergyCostToMouse();
+	int energyCost = mRoundSystem->GetCharacterInPlay()->GetDRMovementComponent()->GetEnergyCostToMouse();
 	float x;
 	float y;
 	GetWorld()->GetFirstPlayerController()->GetMousePosition(x, y);
@@ -112,7 +113,7 @@ void ADRHUD::OnMouseHoverStateChanged(EMouseHoverState newState)
 	if (newState == EMouseHoverState::EnemyCharacter ||
 		newState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
 	{
-		UDRAbility_BasicAttack* basicAttack = mGameMode->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
+		UDRAbility_BasicAttack* basicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
 		mAttackCost = basicAttack->GetAbilityInfo().mActionPointCost;
 	}
 	else

@@ -25,7 +25,7 @@ public:
 	virtual void DrawHUD() override;
 	void ShowHoverPanel(UDRAbilityTargetComponent* selectableComp);
 	void HideHoverPanel();
-	void ShowGameOverScreen(int nrOfRoundsSurvived);
+	void ShowGameOverScreen();
 	void ShowNextMapSelect();
 	void SpawnFloatingDamageText(AActor* damagedActor, int damage, bool isHeal);
 protected:
@@ -48,6 +48,8 @@ private:
 	TArray<ADRFloatingDamageText*> mFloatingDamageTexts;
  	UPROPERTY()
 	UDRScreenUI* mScreenUI;
+	UPROPERTY()
+	UDRRoundSystem* mRoundSystem;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 	int mAttackCost;

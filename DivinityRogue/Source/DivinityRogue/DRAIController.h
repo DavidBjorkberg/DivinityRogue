@@ -11,9 +11,9 @@ class ADRCharacter;
 UENUM(BlueprintType)
 enum class EAIState : uint8
 {
-	IDLE UMETA(DisplayName = IDLE),
-	ATTACK UMETA(DisplayName = ATTACK),
-	MOVE UMETA(DisplayName = MOVE),
+	IDLE,
+	ATTACK,
+	MOVE,
 };
 UCLASS()
 class DIVINITYROGUE_API ADRAIController : public AAIController
@@ -32,6 +32,8 @@ protected:
 	ADRCharacter* mOwner;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
+	UPROPERTY()
+	UDRRoundSystem* mRoundSystem;
 private:
 	TFunction<void()> mOnMoveCompleted;
 

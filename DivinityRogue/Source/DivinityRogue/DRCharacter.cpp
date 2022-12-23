@@ -31,6 +31,7 @@ void ADRCharacter::BeginPlay()
 	//Cast<UCharacterMovementComponent>(GetMovementComponent())->GravityScale = 0;
 	mController = Cast<ADRAIController>(GetController());
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
+	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
 	mOnTurnStart.AddDynamic(this, &ADRCharacter::OnTurnStart);
 }
 
@@ -98,7 +99,7 @@ void ADRCharacter::EndTurnIfOutOfActionPoints()
 	{
 		mAnimationComponent->PlayIdleAnimation();
 		mController->StopMovement();
-		mGameMode->EndTurn();
+		mRoundSystem->EndTurn();
 	}
 }
 

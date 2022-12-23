@@ -26,7 +26,7 @@ void ADREnemyAIController::RequestAction()
 
 	if(mGameMode->IsGameOver())
 	{
-		mGameMode->EndTurn();
+		mRoundSystem->EndTurn();
 		return;
 	}
 	
@@ -35,7 +35,7 @@ void ADREnemyAIController::RequestAction()
 	if (TryUseAbility()) return;
 	if (TryBasicAttack(allPlayerUnits[0])) return;
 	if (TryMoveTo(allPlayerUnits[0])) return;
-	mGameMode->EndTurn();
+	mRoundSystem->EndTurn();
 }
 
 bool ADREnemyAIController::TryUseAbility()

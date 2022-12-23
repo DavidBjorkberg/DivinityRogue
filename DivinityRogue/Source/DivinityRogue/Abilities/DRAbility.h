@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DRRoundSystem.h"
 #include "DRAbility.generated.h"
 
 class UDRAbilityTargetComponent;
@@ -75,6 +76,8 @@ protected:
 	ADRGameMode* mGameMode;
 	UPROPERTY()
 	UWorld* mWorld;
+	UPROPERTY()
+	UDRRoundSystem* mRoundSystem;
 	UPROPERTY()
 	ADRPlayerController* mPlayerController;
 	UPROPERTY()

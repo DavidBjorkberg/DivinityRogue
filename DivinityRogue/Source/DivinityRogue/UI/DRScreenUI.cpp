@@ -18,6 +18,6 @@ void UDRScreenUI::NativeConstruct()
 
 void UDRScreenUI::OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState)
 {
-	ADRGameMode* gameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
-	mEndTurnButton->SetIsEnabled(newState == EGameplayState::PlanningPath && gameMode->IsPlayersTurn());
+	UDRRoundSystem* roundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
+	mEndTurnButton->SetIsEnabled(newState == EGameplayState::PlanningPath && roundSystem->IsPlayersTurn());
 }

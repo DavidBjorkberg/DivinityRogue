@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRAbilityTargetComponent.h"
+#include "DRRoundSystem.h"
 #include "NavigationPath.h"
 #include "GameFramework/GameModeBase.h"
 #include "DRGameMode.generated.h"
@@ -24,11 +25,10 @@ enum class EGameplayState : uint8
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameplayStateChange, EGameplayState, oldState, EGameplayState, newState);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNewturn, ADRCharacter*, previousCharacter, ADRCharacter*, newCharacter);
+
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSelectedAbilityChanged, UDRAbility*, ability);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNewRound);
 
 UCLASS()
 class DIVINITYROGUE_API ADRGameMode : public AGameModeBase
@@ -38,10 +38,6 @@ public:
 	ADRGameMode();
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-	UFUNCTION(BlueprintCallable)
-	void EndTurn();
-	UFUNCTION(BlueprintCallable)
-	bool IsPlayersTurn();
 	//Set
 	void SetGameplayState(EGameplayState newState);
 	UFUNCTION(BlueprintCallable)
@@ -56,7 +52,6 @@ public:
 	void SetGameOver(bool gameOver) { mGameOver = gameOver; }
 
 	UDRAbility* GetSelectedAbility() const { return mSelectedAbility; }
-	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; }
 	TArray<UDRAbilityTargetComponent*> GetAllPlayerAbilityTargets();
 	UFUNCTION(BlueprintCallable)
 	UNavigationPath* GetPathToMouse();
@@ -65,30 +60,19 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FGameplayStateChange mOnGameplayStateChanged;
-	UPROPERTY(BlueprintAssignable)
-	FNewturn mOnNewTurn;
-	UPROPERTY(BlueprintAssignable)
-	FNewRound mOnNewRound;
+
 	UPROPERTY(BlueprintAssignable)
 	FSelectedAbilityChanged mOnSelectedAbilityChanged;
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ADRPlayerCharacter> mPlayerCharacterClass;
-	UPROPERTY(BlueprintReadOnly)
-	ADRCharacter* mCharacterInPlay;
-	UPROPERTY()
-	TArray<ADRCharacter*> mTurnQueue;
 private:
 	void SpawnPlayerCharacters();
 	UFUNCTION()
-	void StartMatch();
-	void StartTurn();
-	void FillTurnQueue();
-	void StartRound();
-	void EndRound();
-	UFUNCTION()
 	void OnUnitDied(ADRCharacter* deadUnit);
 	void FindPathToMouse();
+	UPROPERTY()
+	UDRRoundSystem* mRoundSystem;
 	UPROPERTY()
 	UNavigationPath* mPathToMouse;
 	UPROPERTY()
@@ -97,5 +81,4 @@ private:
 	ADRPlayerController* mPlayerController;
 	EGameplayState mCurrentGameplayState;
 	bool mGameOver;
-	int mCurrentRound;
 };

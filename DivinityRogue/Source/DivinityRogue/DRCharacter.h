@@ -118,4 +118,6 @@ private:
 	ADRAIController* mController;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
+	UPROPERTY()
+	UDRRoundSystem* mRoundSystem;
 };

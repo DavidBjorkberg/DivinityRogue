@@ -16,7 +16,7 @@ void UDRAbility_SingleTarget::OnLeftMouseDown()
 		if (IsValidTarget(abilityTargetUnderCursor))
 		{
 			mTarget = abilityTargetUnderCursor;
-			mGameMode->GetCharacterInPlay()->UseAbility(this);
+			mRoundSystem->GetCharacterInPlay()->UseAbility(this);
 		}
 		else
 		{

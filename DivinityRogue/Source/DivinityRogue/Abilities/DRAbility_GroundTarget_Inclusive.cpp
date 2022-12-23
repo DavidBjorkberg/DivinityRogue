@@ -23,7 +23,7 @@ void UDRAbility_GroundTarget_Inclusive::OnLeftMouseDown()
 					mTargets.RemoveAt(i);
 				}
 			}
-			mGameMode->GetCharacterInPlay()->UseAbility(this);
+			mRoundSystem->GetCharacterInPlay()->UseAbility(this);
 		}
 		else
 		{
