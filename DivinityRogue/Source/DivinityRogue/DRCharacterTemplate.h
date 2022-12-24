@@ -14,32 +14,32 @@ class DIVINITYROGUE_API UDRCharacterTemplate : public UObject
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite)
 	FText Name;
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+	UPROPERTY(BlueprintReadWrite, Category = "Stats")
 	int MaxHealth = 40;
 	int CurrentHealth;
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+	UPROPERTY(BlueprintReadWrite, Category = "Stats")
 	int Speed = 5;
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+	UPROPERTY(BlueprintReadWrite, Category = "Stats")
 	int MaxActionPoints = 4;
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+	UPROPERTY(BlueprintReadWrite, Category = "Stats")
 	int StartActionPoints = 3;
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+	UPROPERTY(BlueprintReadWrite, Category = "Stats")
 	int ActionPointsPerTurn = 2;
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+	UPROPERTY(BlueprintReadWrite, Category = "Stats")
 	int MovementSpeed = 6;
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+	UPROPERTY(BlueprintReadWrite, Category = "Stats")
 	int Movement = 250;
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite)
 	TArray<TSubclassOf<UDRAbility>> AbilityClasses;
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite)
 	TSubclassOf<UDRAbility_BasicAttack> BasicAttackClass;
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite)
 	USkeletalMesh* Mesh;
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite)
 	UMaterialInterface* MeshMaterial;
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite)
 	TSubclassOf<UDRCharacterAnimInstance> AnimInstance;
 	
 };

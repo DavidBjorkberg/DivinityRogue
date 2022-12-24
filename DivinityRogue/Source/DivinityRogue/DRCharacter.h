@@ -26,30 +26,6 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPreUsedAbility, UDRAbility*, abilit
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnStart);
 
-USTRUCT(BlueprintType)
-struct FCharacterTemplate
-{
-	GENERATED_BODY()
-	UPROPERTY(EditAnyWhere, Category = "Stats")
-	int MaxHealth;
-	UPROPERTY(EditAnywhere, Category = "Stats")
-	int Speed = 5;
-	UPROPERTY(EditAnyWhere, Category = "Stats")
-	int MaxActionPoints = 2;
-	UPROPERTY(EditAnyWhere, Category = "Stats")
-	int StartActionPoints = 2;
-	UPROPERTY(EditAnyWhere, Category = "Stats")
-	int ActionPointsPerTurn = 2;
-	UPROPERTY(EditAnyWhere, Category = "Stats")
-	int MovementSpeed = 6;
-	UPROPERTY(EditAnyWhere, Category = "Stats")
-	int Movement = 2;
-	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
-	TArray<TSubclassOf<UDRAbility>> AbilityClasses;
-	UPROPERTY(EditDefaultsOnly, Category = "DRCharacter")
-	TSubclassOf<UDRAbility_BasicAttack> BasicAttackClass;
-};
-
 UCLASS()
 class DIVINITYROGUE_API ADRCharacter : public ACharacter
 {
@@ -97,6 +73,8 @@ public:
 	FPreUsedAbility mOnPreUsedAbility;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UDRCharacterTemplate> mCharacterTemplateOverride;
+	UPROPERTY(BlueprintReadOnly)
+	UDRCharacterTemplate* mCharacterTemplate;
 protected:
 	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

@@ -27,16 +27,22 @@ public:
 	void HideHoverPanel();
 	void ShowGameOverScreen();
 	void ShowNextMapSelect();
+	void ShowSelectRewardScreen();
+	UFUNCTION(BlueprintCallable)
+	void HideSelectRewardScreen();
 	void SpawnFloatingDamageText(AActor* damagedActor, int damage, bool isHeal);
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDRScreenUI> mScreenUIClass;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDRGameOverUI> mGameOverUIClass;
+	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ADRFloatingDamageText> mFloatingDamageTextClass;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> mNextMapSelectClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> mSelectRewardClass;
 private:
 	void DrawAbilityRangeCircle();
 	void DrawAbilityCostText();
@@ -52,6 +58,8 @@ private:
 	UDRRoundSystem* mRoundSystem;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
+	UPROPERTY()
+	UUserWidget* mSelectRewardUI;
 	int mAttackCost;
 	bool mIsTargeting;
 };

@@ -22,9 +22,9 @@ struct FAbilityInfo
 {
 	GENERATED_BODY()
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FString mName;
+	FText mName;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FString mDescription;
+	FText mDescription;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TargetType mTargetType;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

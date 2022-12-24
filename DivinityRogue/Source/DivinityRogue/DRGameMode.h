@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "DRAbilityTargetComponent.h"
 #include "DRRoundSystem.h"
-#include "NavigationPath.h"
 #include "GameFramework/GameModeBase.h"
 #include "DRGameMode.generated.h"
 
@@ -39,7 +38,7 @@ public:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintPure)
-	bool IsInGameplayState(EGameplayState state) { return state == mCurrentGameplayState; }
+	bool IsInGameplayState(EGameplayState state) const { return state == mCurrentGameplayState; }
 	void SetGameplayState(EGameplayState newState);
 
 	bool IsGameOver() const { return mGameOver; }

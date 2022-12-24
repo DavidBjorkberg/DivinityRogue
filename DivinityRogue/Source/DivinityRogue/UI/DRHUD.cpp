@@ -21,6 +21,7 @@ void ADRHUD::BeginPlay()
 		this, &ADRHUD::OnMouseHoverStateChanged);
 	mScreenUI = CreateWidget<UDRScreenUI>(GetGameInstance(), mScreenUIClass);
 	mScreenUI->AddToViewport(9999);
+	ShowSelectRewardScreen();
 }
 
 void ADRHUD::DrawHUD()
@@ -63,6 +64,17 @@ void ADRHUD::ShowNextMapSelect()
 	nextMapSelect->AddToViewport();
 }
 
+void ADRHUD::ShowSelectRewardScreen()
+{
+	mSelectRewardUI = CreateWidget<UUserWidget>(GetWorld(),mSelectRewardClass);
+	mSelectRewardUI->AddToViewport();
+}
+
+void ADRHUD::HideSelectRewardScreen()
+{
+	mSelectRewardUI->RemoveFromParent();
+}
+
 void ADRHUD::SpawnFloatingDamageText(AActor* damagedActor, int damage, bool isHeal)
 {
 	APlayerController* pc = GetWorld()->GetFirstPlayerController();
@@ -73,8 +85,6 @@ void ADRHUD::SpawnFloatingDamageText(AActor* damagedActor, int damage, bool isHe
 	FColor color = isHeal ? FColor::Green : FColor::Red;
 	damageText->Initialize(damage, color);
 	mFloatingDamageTexts.Add(damageText);
-	//damageText->Start(damage,screenLocation);
-	//damageText->AddToViewport();
 }
 
 void ADRHUD::DrawAbilityRangeCircle()

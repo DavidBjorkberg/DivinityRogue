@@ -72,6 +72,7 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 void ADRCharacter::Initialize(UDRCharacterTemplate* charTemplate)
 {
+	mCharacterTemplate = charTemplate;
 	GetMesh()->SetSkeletalMesh(charTemplate->Mesh);
 	GetMesh()->SetMaterial(0,charTemplate->MeshMaterial);
 	mStatsComponent->ApplyTemplate(charTemplate);

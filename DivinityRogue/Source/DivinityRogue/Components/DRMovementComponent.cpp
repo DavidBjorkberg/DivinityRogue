@@ -6,6 +6,7 @@
 #include "DRAIController.h"
 #include "DRCharacter.h"
 #include "DRPlayerController.h"
+#include "NavigationPath.h"
 
 void UDRMovementComponent::BeginPlay()
 {
