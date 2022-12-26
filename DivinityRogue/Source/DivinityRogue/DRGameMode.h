@@ -45,7 +45,7 @@ public:
 	void SetGameOver(bool gameOver) { mGameOver = gameOver; }
 
 	UFUNCTION(BlueprintCallable)
-	void TrySelectAbility(int index);
+	void TrySelectAbility(UDRAbility* ability);
 	UDRAbility* GetSelectedAbility() const { return mSelectedAbility; }
 
 	TArray<UDRAbilityTargetComponent*> GetAllPlayerAbilityTargets();

@@ -52,7 +52,7 @@ bool UDRAbility::IsValidTarget(UDRAbilityTargetComponent* target)
 
 void UDRAbility::DeselectAbility()
 {
-	mGameMode->TrySelectAbility(-1);
+	mGameMode->TrySelectAbility(nullptr);
 }
 
 UWorld* UDRAbility::GetWorld() const

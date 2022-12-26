@@ -42,12 +42,11 @@ void ADRGameMode::SetGameplayState(EGameplayState newState)
 	UE_LOG(LogTemp, Warning, TEXT("Changed to state: %s"), *UEnum::GetValueAsString( newState));
 }
 
-void ADRGameMode::TrySelectAbility(int index)
+void ADRGameMode::TrySelectAbility(UDRAbility* ability)
 {
-	TArray<UDRAbility*> abilities = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->GetAbilities();
-	if (index >= 0 && !abilities[index]->IsOnCooldown() && abilities[index]->CanAffordCast())
+	if (ability && !ability->IsOnCooldown() && ability->CanAffordCast())
 	{
-		mSelectedAbility = abilities[index];
+		mSelectedAbility = ability;
 		SetGameplayState(EGameplayState::SelectingTarget);
 	}
 	else
