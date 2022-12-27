@@ -38,7 +38,9 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	USkeletalMesh* Mesh;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TArray<UStaticMesh*> WeaponMeshes;
+	UStaticMesh* LeftWeapon;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UStaticMesh* RightWeapon;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<UDRCharacterAnimInstance> AnimInstance;
 	

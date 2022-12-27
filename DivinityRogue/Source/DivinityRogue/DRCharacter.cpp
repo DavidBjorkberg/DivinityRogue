@@ -75,14 +75,33 @@ void ADRCharacter::Initialize(UDRCharacterTemplate* charTemplate)
 {
 	mCharacterTemplate = charTemplate;
 	GetMesh()->SetSkeletalMesh(charTemplate->Mesh);
-	if (charTemplate->WeaponMeshes.Num() > 0)
+	if(charTemplate->LeftWeapon)
 	{
 		AStaticMeshActor* weaponMesh = GetWorld()->SpawnActor<AStaticMeshActor>();
 		weaponMesh->SetMobility(EComponentMobility::Movable);
-		weaponMesh->GetStaticMeshComponent()->SetStaticMesh(charTemplate->WeaponMeshes[0]);
+		weaponMesh->GetStaticMeshComponent()->SetStaticMesh(charTemplate->LeftWeapon);
 		weaponMesh->GetStaticMeshComponent()->SetSimulatePhysics(false);
 		weaponMesh->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		weaponMesh->GetStaticMeshComponent()->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("WeaponSocket"));
+		weaponMesh->GetStaticMeshComponent()->AttachToComponent(
+			GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("LeftWeaponShield"));
+		if(charTemplate->LeftWeapon->GetName().Contains("Bow"))
+		{
+			weaponMesh->GetStaticMeshComponent()->AddLocalRotation(FRotator(0,-90,0));
+		}
+	}
+	if(charTemplate->RightWeapon)
+	{
+		AStaticMeshActor* weaponMesh = GetWorld()->SpawnActor<AStaticMeshActor>();
+		weaponMesh->SetMobility(EComponentMobility::Movable);
+		weaponMesh->GetStaticMeshComponent()->SetStaticMesh(charTemplate->RightWeapon);
+		weaponMesh->GetStaticMeshComponent()->SetSimulatePhysics(false);
+		weaponMesh->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		weaponMesh->GetStaticMeshComponent()->AttachToComponent(
+			GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,  TEXT("RightWeaponShield"));
+		if(charTemplate->RightWeapon->GetName().Contains("Bow"))
+		{
+			weaponMesh->GetStaticMeshComponent()->AddLocalRotation(FRotator(0,-90,0));
+		}
 	}
 	mStatsComponent->ApplyTemplate(charTemplate);
 	mHealthComponent->ApplyTemplate(charTemplate);
@@ -100,7 +119,7 @@ void ADRCharacter::Died()
 {
 	TArray<AActor*> attachedActors;
 	GetAttachedActors(attachedActors);
-	for(AActor* attachedActor : attachedActors)
+	for (AActor* attachedActor : attachedActors)
 	{
 		attachedActor->Destroy();
 	}
