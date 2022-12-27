@@ -75,7 +75,7 @@ void ADRCharacter::Initialize(UDRCharacterTemplate* charTemplate)
 {
 	mCharacterTemplate = charTemplate;
 	GetMesh()->SetSkeletalMesh(charTemplate->Mesh);
-	if(charTemplate->LeftWeapon)
+	if (charTemplate->LeftWeapon)
 	{
 		AStaticMeshActor* weaponMesh = GetWorld()->SpawnActor<AStaticMeshActor>();
 		weaponMesh->SetMobility(EComponentMobility::Movable);
@@ -84,12 +84,12 @@ void ADRCharacter::Initialize(UDRCharacterTemplate* charTemplate)
 		weaponMesh->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		weaponMesh->GetStaticMeshComponent()->AttachToComponent(
 			GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("LeftWeaponShield"));
-		if(charTemplate->LeftWeapon->GetName().Contains("Bow"))
+		if (charTemplate->LeftWeapon->GetName().Contains("Bow"))
 		{
-			weaponMesh->GetStaticMeshComponent()->AddLocalRotation(FRotator(0,-90,0));
+			weaponMesh->GetStaticMeshComponent()->AddLocalRotation(FRotator(0, -90, 0));
 		}
 	}
-	if(charTemplate->RightWeapon)
+	if (charTemplate->RightWeapon)
 	{
 		AStaticMeshActor* weaponMesh = GetWorld()->SpawnActor<AStaticMeshActor>();
 		weaponMesh->SetMobility(EComponentMobility::Movable);
@@ -97,10 +97,10 @@ void ADRCharacter::Initialize(UDRCharacterTemplate* charTemplate)
 		weaponMesh->GetStaticMeshComponent()->SetSimulatePhysics(false);
 		weaponMesh->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		weaponMesh->GetStaticMeshComponent()->AttachToComponent(
-			GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,  TEXT("RightWeaponShield"));
-		if(charTemplate->RightWeapon->GetName().Contains("Bow"))
+			GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("RightWeaponShield"));
+		if (charTemplate->RightWeapon->GetName().Contains("Bow"))
 		{
-			weaponMesh->GetStaticMeshComponent()->AddLocalRotation(FRotator(0,-90,0));
+			weaponMesh->GetStaticMeshComponent()->AddLocalRotation(FRotator(0, -90, 0));
 		}
 	}
 	mStatsComponent->ApplyTemplate(charTemplate);
@@ -140,6 +140,11 @@ void ADRCharacter::EndTurnIfOutOfActionPoints()
 void ADRCharacter::UseAbility(UDRAbility* ability)
 {
 	mOnPreUsedAbility.Broadcast(ability);
+	if (ability->ShouldRotateUser())
+	{
+		FVector dirToTarget = (ability->GetTargetLocation() - GetActorLocation()).GetSafeNormal2D();
+		SetActorRotation(dirToTarget.Rotation());
+	}
 	mAnimationComponent->PlayAttackAnimation(ability);
 }
 

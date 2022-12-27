@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRAbility.h"
+#include "DRAbilityTargetComponent.h"
 #include "DRAbility_SingleTarget.generated.h"
 
 /**
@@ -19,6 +20,7 @@ protected:
 	virtual bool TrySetRandomTargets() override;
 	virtual void ClearSelection() override;
 	virtual bool IsValidTarget(UDRAbilityTargetComponent* target) override;
+	virtual FVector GetTargetLocation() { return mTarget->GetOwner()->GetActorLocation(); }
 	UPROPERTY()
 	UDRAbilityTargetComponent* mTarget;
 private:

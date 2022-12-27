@@ -15,7 +15,7 @@ class DIVINITYROGUE_API UDRAbility_NoTarget : public UDRAbility
 	GENERATED_BODY()
 public:
 	virtual bool TrySetRandomTargets() override;
-
+	virtual bool ShouldRotateUser() const override { return false; }
 protected:
 	virtual void ClearSelection() override;
 	virtual void OnLeftMouseDown() override;

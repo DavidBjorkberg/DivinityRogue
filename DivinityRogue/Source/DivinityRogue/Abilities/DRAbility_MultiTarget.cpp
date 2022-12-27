@@ -65,3 +65,14 @@ bool UDRAbility_MultiTarget::IsValidTarget(UDRAbilityTargetComponent* target)
 	return target != nullptr && IsTargetCorrectTeam(target) && IsInRange(
 		target);
 }
+
+FVector UDRAbility_MultiTarget::GetTargetLocation()
+{
+	FVector averageLocation = FVector::Zero();
+	for(int i = 0; i < mTargets.Num();i++)
+	{
+		averageLocation += mTargets[i]->GetOwner()->GetActorLocation();
+	}
+	averageLocation /= mTargets.Num();
+	return averageLocation;
+}

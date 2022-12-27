@@ -58,6 +58,9 @@ public:
 	bool CanAffordCast();
 	bool IsOnCooldown() const { return mRemainingCooldown > 0; }
 	FAbilityInfo GetAbilityInfo() const { return mAbilityInfo; }
+	//Used for rotating the user to the desired rotation
+	virtual FVector GetTargetLocation();
+	virtual bool ShouldRotateUser() const { return true; }
 protected:
 	virtual UWorld* GetWorld() const override;
 	UFUNCTION()

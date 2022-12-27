@@ -31,6 +31,7 @@ protected:
 	virtual bool IsOnValidArea();
 	virtual bool IsValidTarget(UDRAbilityTargetComponent* target) override;
 	void SetDecalMaterial(UMaterialInterface* newMaterial);
+	virtual FVector GetTargetLocation() { return mTargetLocation; }
 	UPROPERTY(EditDefaultsOnly)
 	float mRadius;
 	UPROPERTY()

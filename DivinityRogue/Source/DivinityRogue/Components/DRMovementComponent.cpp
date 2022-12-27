@@ -21,13 +21,7 @@ void UDRMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                          FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (!GetOwner()->GetActorRotation().Equals(mDesiredRotation, 10.0f))
-	{
-		FRotator deltaRotation = mDesiredRotation - GetOwner()->GetActorRotation();
-		deltaRotation.Roll = 0;
-		deltaRotation.Pitch = 0;
-		GetOwner()->AddActorWorldRotation(deltaRotation.GetNormalized() * mRotationRate * DeltaTime);
-	}
+
 }
 
 int UDRMovementComponent::GetEnergyCostToMouse()
@@ -51,6 +45,13 @@ void UDRMovementComponent::OnMovementUpdated(float DeltaSeconds, const FVector& 
 			mOwner->FindComponentByClass<UDRStatsComponent>()->ModifyEnergy(-1);
 			mOwner->EndTurnIfOutOfActionPoints();
 			mDistanceLeftUntilEnergyCost = mOwner->GetStatsComponent()->GetStats().mMovement;
+		}
+		if (!GetOwner()->GetActorRotation().Equals(mDesiredRotation, 10.0f))
+		{
+			FRotator deltaRotation = mDesiredRotation - GetOwner()->GetActorRotation();
+			deltaRotation.Roll = 0;
+			deltaRotation.Pitch = 0;
+			GetOwner()->AddActorWorldRotation(deltaRotation.GetNormalized() * mRotationRate * DeltaSeconds);
 		}
 	}
 }

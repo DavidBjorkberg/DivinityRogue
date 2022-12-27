@@ -55,6 +55,11 @@ void UDRAbility::DeselectAbility()
 	mGameMode->TrySelectAbility(nullptr);
 }
 
+FVector UDRAbility::GetTargetLocation()
+{
+	return FVector::Zero();
+}
+
 UWorld* UDRAbility::GetWorld() const
 {
 	// Return pointer to World from object owner, if we don’t work in editor

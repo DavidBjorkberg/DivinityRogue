@@ -18,6 +18,8 @@ protected:
 	virtual bool TrySetRandomTargets() override;
 	virtual void ClearSelection() override;
 	virtual bool IsValidTarget(UDRAbilityTargetComponent* target) override;
+	virtual FVector GetTargetLocation() override;
+
 	UPROPERTY()
 	TArray<UDRAbilityTargetComponent*> mTargets;
 	UPROPERTY(EditDefaultsOnly)
