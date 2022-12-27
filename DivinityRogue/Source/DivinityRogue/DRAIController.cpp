@@ -36,7 +36,7 @@ void ADRAIController::OrderMoveToActor(UDRAbilityTargetComponent* target)
 {
 	mOwner->GetAnimationComponent()->PlayRunAnimation();
 	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
-	MoveToActor(target->GetOwner(), 5, false);
+	MoveToActor(target->GetOwner(), 150, false);
 }
 
 void ADRAIController::OrderAttackMoveToActor(UDRAbilityTargetComponent* target)
