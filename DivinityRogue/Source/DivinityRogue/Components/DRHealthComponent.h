@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "DRCharacterTemplate.h"
 #include "Components/ActorComponent.h"
+#include "Sound/SoundCue.h"
 #include "DRHealthComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHealthChanged, int, health);
@@ -14,6 +15,7 @@ class DIVINITYROGUE_API UDRHealthComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	UDRHealthComponent();
 	UFUNCTION(BlueprintPure)
 	int GetMaxHealth() const { return mMaxHealth; }
 	UFUNCTION(BlueprintPure)
@@ -28,6 +30,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	int mMaxHealth;
 private:
+	UPROPERTY()
+	USoundCue* mTakeDamageSoundCue;
+	UPROPERTY()
+	USoundCue* mDeathSoundCue;
 	UPROPERTY()
 	UDRCharacterTemplate* mCharTemplate; 
 	int mCurrentHealth;
