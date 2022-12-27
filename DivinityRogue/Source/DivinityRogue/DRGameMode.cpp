@@ -112,7 +112,8 @@ void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 	}
 	else if (allEnemyCharacters.Num() == 0)
 	{
-		GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->ShowNextMapSelect();
+		GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->HideBattleUI();
+		GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->ShowSelectRewardScreen();
 	}
 }
 

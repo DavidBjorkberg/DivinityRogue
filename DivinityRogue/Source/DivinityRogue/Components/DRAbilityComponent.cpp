@@ -17,11 +17,16 @@ void UDRAbilityComponent::ApplyTemplate(UDRCharacterTemplate* charTemplate)
 {
 	for (TSubclassOf<UDRAbility> ability : charTemplate->AbilityClasses)
 	{
-		UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetWorld(), ability);
-		spawnedAbility->SetOwner(Cast<ADRCharacter>(GetOwner()));
-		mAbilities.Add(spawnedAbility);
+		AddAbility(ability);
 	}
 	UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetOwner(), charTemplate->BasicAttackClass);
 	spawnedAbility->SetOwner(Cast<ADRCharacter>(GetOwner()));
 	mBasicAttack = Cast<UDRAbility_BasicAttack>(spawnedAbility);
+}
+
+void UDRAbilityComponent::AddAbility(TSubclassOf<UDRAbility> newAbility)
+{
+	UDRAbility* spawnedAbility = NewObject<UDRAbility>(GetWorld(), newAbility);
+	spawnedAbility->SetOwner(Cast<ADRCharacter>(GetOwner()));
+	mAbilities.Add(spawnedAbility);
 }

@@ -16,7 +16,8 @@ bool UDRRoundSystem::ShouldCreateSubsystem(UObject* Outer) const
 		return false;
 
 	const UWorld* world = Outer->GetWorld();
-	return world && (world->WorldType == EWorldType::Type::PIE || world->WorldType == EWorldType::Type::Game);
+	return world && (world->WorldType == EWorldType::Type::PIE || world->WorldType == EWorldType::Type::Game)
+	&& world->GetName() != "MainMenu";
 }
 
 void UDRRoundSystem::OnWorldBeginPlay(UWorld& InWorld)

@@ -19,9 +19,7 @@ void ADRHUD::BeginPlay()
 	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
 	Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController())->mOnMouseHoverStateChanged.AddDynamic(
 		this, &ADRHUD::OnMouseHoverStateChanged);
-	mScreenUI = CreateWidget<UDRScreenUI>(GetGameInstance(), mScreenUIClass);
-	mScreenUI->AddToViewport(9999);
-	ShowSelectRewardScreen();
+	ShowBattleUI();
 }
 
 void ADRHUD::DrawHUD()
@@ -40,19 +38,30 @@ void ADRHUD::DrawHUD()
 	}
 }
 
+void ADRHUD::ShowBattleUI()
+{
+	mBattleUI = CreateWidget<UDRBattleUI>(GetGameInstance(), mScreenUIClass);
+	mBattleUI->AddToViewport();
+}
+
+void ADRHUD::HideBattleUI()
+{
+	mBattleUI->RemoveFromParent();
+}
+
 void ADRHUD::ShowHoverPanel(UDRAbilityTargetComponent* selectableComp)
 {
-	mScreenUI->ShowHoverPanel(selectableComp);
+	mBattleUI->ShowHoverPanel(selectableComp);
 }
 
 void ADRHUD::HideHoverPanel()
 {
-	mScreenUI->HideHoverCharacterPanel();
+	mBattleUI->HideHoverCharacterPanel();
 }
 
 void ADRHUD::ShowGameOverScreen()
 {
-	mScreenUI->SetVisibility(ESlateVisibility::Collapsed);
+	mBattleUI->SetVisibility(ESlateVisibility::Collapsed);
 	UDRGameOverUI* gameOverUI = CreateWidget<UDRGameOverUI>(GetWorld(), mGameOverUIClass);
 	gameOverUI->SetValues(0);
 	gameOverUI->AddToViewport();

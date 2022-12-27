@@ -5,19 +5,19 @@
 #include "CoreMinimal.h"
 #include "DRAbilityTargetComponent.h"
 #include "Components/Button.h"
-#include "DRScreenUI.generated.h"
+#include "DRBattleUI.generated.h"
 
- enum class EGameplayState : uint8;
+enum class EGameplayState : uint8;
 class ADRCharacter;
 /**
  * 
  */
 UCLASS()
-class DIVINITYROGUE_API UDRScreenUI : public UUserWidget
+class DIVINITYROGUE_API UDRBattleUI : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	UDRScreenUI(const FObjectInitializer& ObjectInitializer);
+	UDRBattleUI(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowHoverPanel(UDRAbilityTargetComponent* selectableComp);

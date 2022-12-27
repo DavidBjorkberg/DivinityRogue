@@ -45,6 +45,8 @@ public:
 	void BasicAttack(UDRAbilityTargetComponent* target);
 	void EndTurnIfOutOfActionPoints();
 	void UseAbility(UDRAbility* ability);
+	UFUNCTION(BlueprintCallable)
+	void AddAbility(TSubclassOf<UDRAbility> newAbility);
 	UFUNCTION()
 	void OnTurnStart();
 	UFUNCTION(BlueprintCallable, BlueprintPure)

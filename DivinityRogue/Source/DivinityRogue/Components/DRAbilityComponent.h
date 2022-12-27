@@ -19,9 +19,9 @@ public:
 	UDRAbilityComponent();
 
 	void ApplyTemplate(UDRCharacterTemplate* charTemplate);
+	void AddAbility(TSubclassOf<UDRAbility> newAbility);
 	UFUNCTION(BlueprintPure)
 	TArray<UDRAbility*> GetAbilities() const { return mAbilities; }
-
 	UDRAbility_BasicAttack* GetBasicAttack() const { return mBasicAttack; }
 protected:
 	UPROPERTY(VisibleAnywhere)

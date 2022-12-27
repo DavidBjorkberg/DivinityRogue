@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DRScreenUI.h"
+#include "DRBattleUI.h"
 #include "DRAbilityTargetComponent.h"
 #include "DRGameOverUI.h"
 #include "DRPlayerController.h"
@@ -23,9 +23,13 @@ class DIVINITYROGUE_API ADRHUD : public AHUD
 public:
 	virtual void BeginPlay() override;
 	virtual void DrawHUD() override;
+	void ShowBattleUI();
+	UFUNCTION(BlueprintCallable)
+	void HideBattleUI();
 	void ShowHoverPanel(UDRAbilityTargetComponent* selectableComp);
 	void HideHoverPanel();
 	void ShowGameOverScreen();
+	UFUNCTION(BlueprintCallable)
 	void ShowNextMapSelect();
 	void ShowSelectRewardScreen();
 	UFUNCTION(BlueprintCallable)
@@ -33,7 +37,7 @@ public:
 	void SpawnFloatingDamageText(AActor* damagedActor, int damage, bool isHeal);
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UDRScreenUI> mScreenUIClass;
+	TSubclassOf<UDRBattleUI> mScreenUIClass;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDRGameOverUI> mGameOverUIClass;
 	
@@ -49,11 +53,10 @@ private:
 	void DrawFloatingDamageTexts();
 	UFUNCTION()
 	void OnMouseHoverStateChanged(EMouseHoverState newState);
-
 	UPROPERTY()
 	TArray<ADRFloatingDamageText*> mFloatingDamageTexts;
  	UPROPERTY()
-	UDRScreenUI* mScreenUI;
+	UDRBattleUI* mBattleUI;
 	UPROPERTY()
 	UDRRoundSystem* mRoundSystem;
 	UPROPERTY()

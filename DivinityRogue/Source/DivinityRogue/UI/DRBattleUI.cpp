@@ -1,22 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "DRScreenUI.h"
+#include "DRBattleUI.h"
 #include "DRGameMode.h"
 
-UDRScreenUI::UDRScreenUI(const FObjectInitializer& ObjectInitializer)
+UDRBattleUI::UDRBattleUI(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 }
 
-void UDRScreenUI::NativeConstruct()
+void UDRBattleUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 	ADRGameMode* gameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
-	gameMode->mOnGameplayStateChanged.AddDynamic(this, &UDRScreenUI::OnGameplayStateChanged);
+	gameMode->mOnGameplayStateChanged.AddDynamic(this, &UDRBattleUI::OnGameplayStateChanged);
 }
 
-void UDRScreenUI::OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState)
+void UDRBattleUI::OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState)
 {
 	UDRRoundSystem* roundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
 	mEndTurnButton->SetIsEnabled(newState == EGameplayState::PlanningPath && roundSystem->IsPlayersTurn());

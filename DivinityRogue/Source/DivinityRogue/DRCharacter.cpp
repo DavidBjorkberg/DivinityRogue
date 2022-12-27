@@ -93,7 +93,6 @@ void ADRCharacter::Died()
 	mOnUnitDied.Broadcast(this);
 }
 
-
 void ADRCharacter::EndTurnIfOutOfActionPoints()
 {
 	if (mStatsComponent->GetStats().mCurrentActionPoints <= 0)
@@ -108,6 +107,12 @@ void ADRCharacter::UseAbility(UDRAbility* ability)
 {
 	mOnPreUsedAbility.Broadcast(ability);
 	mAnimationComponent->PlayAttackAnimation(ability);
+}
+
+void ADRCharacter::AddAbility(TSubclassOf<UDRAbility> newAbility)
+{
+	mCharacterTemplate->AbilityClasses.Add(newAbility);
+	mAbilityComponent->AddAbility(newAbility);
 }
 
 void ADRCharacter::OnTurnStart()
