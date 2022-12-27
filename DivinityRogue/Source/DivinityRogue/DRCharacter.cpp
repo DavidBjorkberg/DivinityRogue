@@ -8,6 +8,7 @@
 #include "DRGameplayStatics.h"
 #include "DRHUD.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/StaticMeshActor.h"
 
 ADRCharacter::ADRCharacter(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UDRMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -74,7 +75,15 @@ void ADRCharacter::Initialize(UDRCharacterTemplate* charTemplate)
 {
 	mCharacterTemplate = charTemplate;
 	GetMesh()->SetSkeletalMesh(charTemplate->Mesh);
-	GetMesh()->SetMaterial(0,charTemplate->MeshMaterial);
+	if (charTemplate->WeaponMeshes.Num() > 0)
+	{
+		AStaticMeshActor* weaponMesh = GetWorld()->SpawnActor<AStaticMeshActor>();
+		weaponMesh->SetMobility(EComponentMobility::Movable);
+		weaponMesh->GetStaticMeshComponent()->SetStaticMesh(charTemplate->WeaponMeshes[0]);
+		weaponMesh->GetStaticMeshComponent()->SetSimulatePhysics(false);
+		weaponMesh->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		weaponMesh->GetStaticMeshComponent()->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("WeaponSocket"));
+	}
 	mStatsComponent->ApplyTemplate(charTemplate);
 	mHealthComponent->ApplyTemplate(charTemplate);
 	mAbilityComponent->ApplyTemplate(charTemplate);
@@ -89,6 +98,12 @@ void ADRCharacter::Heal(int healAmount)
 
 void ADRCharacter::Died()
 {
+	TArray<AActor*> attachedActors;
+	GetAttachedActors(attachedActors);
+	for(AActor* attachedActor : attachedActors)
+	{
+		attachedActor->Destroy();
+	}
 	Destroy();
 	mOnUnitDied.Broadcast(this);
 }
