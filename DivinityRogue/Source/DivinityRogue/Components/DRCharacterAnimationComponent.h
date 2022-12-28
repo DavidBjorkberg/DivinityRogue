@@ -7,6 +7,7 @@
 #include "Components/ActorComponent.h"
 #include "DRCharacterAnimationComponent.generated.h"
 
+class ADRCharacter;
 class UDRAbility;
 UENUM()
 enum class EAnimState :uint8
@@ -31,9 +32,13 @@ public:
 	void PlayAttackAnimation(UDRAbility* ability);
 	void PlayIdleAnimation();
 	void PlayRunAnimation();
+	void PlayTakeDamageAnimation();
+	void PlayDeathAnimation();
 private:
 	void SetAnimState(EAnimState newState) { mCurrentAnimState = newState; }
-	UPROPERTY()
-	UAnimSequenceBase* mAttackAnimation;
 	EAnimState mCurrentAnimState;
+	UPROPERTY()
+	UDRCharacterAnimInstance* mAnimInstance;
+	UPROPERTY()
+	ADRCharacter* mOwner;
 };

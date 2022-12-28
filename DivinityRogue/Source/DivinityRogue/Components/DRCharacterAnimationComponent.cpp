@@ -22,17 +22,18 @@ void UDRCharacterAnimationComponent::BeginPlay()
 
 void UDRCharacterAnimationComponent::SetAnimInstance(TSubclassOf<UDRCharacterAnimInstance> animInstanceClass)
 {
-	USkeletalMeshComponent* ownerMeshComp = Cast<ADRCharacter>(GetOwner())->GetMesh();
+	mOwner = Cast<ADRCharacter>(GetOwner());
+	USkeletalMeshComponent* ownerMeshComp = mOwner->GetMesh();
 	ownerMeshComp->SetAnimInstanceClass(animInstanceClass);
 	auto animInstance = ownerMeshComp->GetAnimInstance();
-	mAttackAnimation = Cast<UDRCharacterAnimInstance>(animInstance)->mAttackAnimation;
+	mAnimInstance = Cast<UDRCharacterAnimInstance>(animInstance);
 }
 
 void UDRCharacterAnimationComponent::PlayAttackAnimation(UDRAbility* ability)
 {
 	GetWorld()->GetAuthGameMode<ADRGameMode>()->SetGameplayState(EGameplayState::PerformingAbility);
-	Cast<UDRUseAbilityNotify>(mAttackAnimation->Notifies[0].Notify)->SetParameters(ability);
-	SetAnimState(EAnimState::ATTACK);
+	Cast<UDRUseAbilityNotify>(mAnimInstance->mAttackAnimation->Notifies[0].Notify)->SetParameters(ability);
+	mOwner->PlayAnimMontage(mAnimInstance->mAttackAnimation);
 }
 
 void UDRCharacterAnimationComponent::PlayIdleAnimation()
@@ -43,4 +44,14 @@ void UDRCharacterAnimationComponent::PlayIdleAnimation()
 void UDRCharacterAnimationComponent::PlayRunAnimation()
 {
 	SetAnimState(EAnimState::MOVE);
+}
+
+void UDRCharacterAnimationComponent::PlayTakeDamageAnimation()
+{
+	mOwner->PlayAnimMontage(mAnimInstance->mTakeDamageAnimation);
+}
+
+void UDRCharacterAnimationComponent::PlayDeathAnimation()
+{
+	mOwner->PlayAnimMontage(mAnimInstance->mDeathAnimation);
 }

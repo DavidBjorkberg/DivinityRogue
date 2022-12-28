@@ -6,7 +6,6 @@
 void UDRUseAbilityNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	if(MeshComp->GetName().Contains("Debug") || MeshComp->GetName().Contains("Editor")) return;
-	check(mAbility != nullptr)
 	mAbility->Use();
 }
 

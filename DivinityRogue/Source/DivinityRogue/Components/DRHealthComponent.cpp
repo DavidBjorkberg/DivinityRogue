@@ -24,11 +24,13 @@ void UDRHealthComponent::ModifyHealth(int difference)
 	mOnHealthChanged.Broadcast(mCurrentHealth);
 	if (mCurrentHealth == 0)
 	{
+		Cast<ADRCharacter>(GetOwner())->GetAnimationComponent()->PlayDeathAnimation();
 		UDRGameplayStatics::PlaySoundAtLocation(GetWorld(),mDeathSoundCue,GetOwner()->GetActorLocation(),FRotator(0,0,0));
 		mOnDied.Broadcast();
 	}
 	else if(difference < 0)
 	{
+		Cast<ADRCharacter>(GetOwner())->GetAnimationComponent()->PlayTakeDamageAnimation();
 		UDRGameplayStatics::PlaySoundAtLocation(GetWorld(),mTakeDamageSoundCue,GetOwner()->GetActorLocation(),FRotator(0,0,0));
 	}
 }
