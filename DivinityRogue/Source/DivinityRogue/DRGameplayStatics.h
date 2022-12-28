@@ -141,4 +141,8 @@ public:
 		}
 		return abilityTargetsInRadius;
 	}
+	UFUNCTION(BlueprintPure, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
+	static void GetAllPlayerCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& playerList);
+	UFUNCTION(BlueprintPure, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
+	static void GetAllEnemyCharacters(const UObject* WorldContextObject,TArray<ADRCharacter*>& enemyList);
 };

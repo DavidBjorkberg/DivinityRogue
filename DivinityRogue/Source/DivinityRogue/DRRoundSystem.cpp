@@ -6,7 +6,6 @@
 #include "DREnemyAIController.h"
 #include "DRGameplayStatics.h"
 #include "DRHUD.h"
-#include "DRPlayerCharacter.h"
 
 bool UDRRoundSystem::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -46,7 +45,7 @@ void UDRRoundSystem::EndTurn()
 
 bool UDRRoundSystem::IsPlayersTurn()
 {
-	return Cast<ADRPlayerCharacter>(mCharacterInPlay) != nullptr;
+	return mCharacterInPlay && mCharacterInPlay->GetAbilityTargetComponent()->GetTeam() == ETeam::PLAYER;
 }
 
 void UDRRoundSystem::RemoveFromTurnQueue(ADRCharacter* character)
@@ -84,14 +83,8 @@ void UDRRoundSystem::StartTurn()
 
 void UDRRoundSystem::FillTurnQueue()
 {
-	TArray<AActor*> allActors;
-	UDRGameplayStatics::GetAllActorsOfClass(GetWorld(), ADRCharacter::StaticClass(), allActors);
-	TArray<ADRCharacter*> allCharacters;
-	for (AActor* actor : allActors)
-	{
-		allCharacters.Add(Cast<ADRCharacter>(actor));
-	}
-	mTurnQueue = allCharacters;
+	mTurnQueue.Empty();
+	UDRGameplayStatics::FindAllActors<ADRCharacter>(GetWorld(), mTurnQueue);
 	mTurnQueue.Sort([](const ADRCharacter& a, const ADRCharacter& b)
 	{
 		return a.GetStatsComponent()->GetStats().mSpeed > b.GetStatsComponent()->GetStats().mSpeed;

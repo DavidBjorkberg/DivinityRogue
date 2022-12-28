@@ -37,7 +37,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
-	void Initialize(UDRCharacterTemplate* charTemplate);
+	void Initialize(UDRCharacterTemplate* charTemplate, ETeam team);
 	void Heal(int healAmount);
 	void OrderMoveToLocation(FVector targetLoc);
 	void OrderMoveToActor(UDRAbilityTargetComponent* target);
@@ -60,7 +60,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRHealthComponent* GetHealthComponent() const { return mHealthComponent; }
-
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UDRAbilityTargetComponent* GetAbilityTargetComponent() const { return mAbilityTargetComponent; }
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRMovementComponent* GetDRMovementComponent();
 	//Getters - End

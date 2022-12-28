@@ -5,10 +5,8 @@
 
 #include "DRAbility.h"
 #include "DREnemyAIController.h"
-#include "DREnemyCharacter.h"
 #include "DRGameplayStatics.h"
 #include "DRHUD.h"
-#include "DRPlayerCharacter.h"
 #include "DRPlayerController.h"
 #include "DRSaveGameManager.h"
 #include "NavigationSystem.h"
@@ -24,7 +22,8 @@ void ADRGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
-	SpawnPlayerCharacters();
+	InitializePlayerCharacters();
+	InitializeEnemyCharacters();
 
 	TArray<ADRCharacter*> allCharacters;
 	UDRGameplayStatics::FindAllActors<ADRCharacter>(GetWorld(), allCharacters);
@@ -32,7 +31,6 @@ void ADRGameMode::BeginPlay()
 	{
 		character->mOnUnitDied.AddDynamic(this, &ADRGameMode::OnUnitDied);
 	}
-
 }
 
 void ADRGameMode::SetGameplayState(EGameplayState newState)
@@ -73,11 +71,11 @@ TArray<UDRAbilityTargetComponent*> ADRGameMode::GetAllPlayerAbilityTargets()
 }
 
 
-void ADRGameMode::SpawnPlayerCharacters()
+void ADRGameMode::InitializePlayerCharacters()
 {
 	UDRGameInstance* GI = GetGameInstance<UDRGameInstance>();
-	TArray<ADRPlayerCharacter*> playerCharacters;
-	UDRGameplayStatics::FindAllActors<ADRPlayerCharacter>(GetWorld(), playerCharacters);
+	TArray<ADRCharacter*> playerCharacters;
+	UDRGameplayStatics::GetAllPlayerCharacters(GetWorld(), playerCharacters);
 	if (GI->mPlayerCharacters.Num() == 0)
 	{
 		GI->InitializePlayerCharactersWithOverrides(playerCharacters);
@@ -91,9 +89,21 @@ void ADRGameMode::SpawnPlayerCharacters()
 	UDRGameplayStatics::FindAllActors<APlayerStart>(GetWorld(), playerSpawnpoints);
 	for (int i = 0; i < GI->mPlayerCharacters.Num(); i++)
 	{
-		ADRCharacter* spawnedChar = GetWorld()->SpawnActor<ADRPlayerCharacter>(mPlayerCharacterClass);
+		ADRCharacter* spawnedChar = GetWorld()->SpawnActor<ADRCharacter>(mPlayerCharacterClass);
 		spawnedChar->SetActorLocation(playerSpawnpoints[i]->GetActorLocation());
-		spawnedChar->Initialize(GI->mPlayerCharacters[i]);
+		spawnedChar->Initialize(GI->mPlayerCharacters[i], ETeam::PLAYER);
+	}
+}
+
+void ADRGameMode::InitializeEnemyCharacters()
+{
+	TArray<ADRCharacter*> enemyCharacters;
+	UDRGameplayStatics::GetAllEnemyCharacters(GetWorld(), enemyCharacters);
+	for (ADRCharacter* enemyChar : enemyCharacters)
+	{
+		UDRCharacterTemplate* charTemplate = NewObject<UDRCharacterTemplate>(enemyChar, enemyChar->mCharacterTemplateOverride);
+		charTemplate->CurrentHealth = charTemplate->MaxHealth;
+		enemyChar->Initialize(charTemplate,ETeam::ENEMY);
 	}
 }
 
@@ -101,10 +111,10 @@ void ADRGameMode::SpawnPlayerCharacters()
 void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 {
 	mRoundSystem->RemoveFromTurnQueue(deadUnit);
-	TArray<ADREnemyCharacter*> allEnemyCharacters;
-	TArray<ADRPlayerCharacter*> allPlayerCharacters;
-	UDRGameplayStatics::FindAllActors<ADREnemyCharacter>(GetWorld(), allEnemyCharacters);
-	UDRGameplayStatics::FindAllActors<ADRPlayerCharacter>(GetWorld(), allPlayerCharacters);
+	TArray<ADRCharacter*> allEnemyCharacters;
+	TArray<ADRCharacter*> allPlayerCharacters;
+	UDRGameplayStatics::GetAllPlayerCharacters(GetWorld(), allPlayerCharacters);
+	UDRGameplayStatics::GetAllEnemyCharacters(GetWorld(), allEnemyCharacters);
 
 	if (allPlayerCharacters.Num() == 0)
 	{
@@ -116,4 +126,3 @@ void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 		GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->ShowSelectRewardScreen();
 	}
 }
-

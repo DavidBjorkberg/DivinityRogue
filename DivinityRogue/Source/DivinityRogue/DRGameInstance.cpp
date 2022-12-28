@@ -3,7 +3,6 @@
 
 #include "DRGameInstance.h"
 
-#include "DRPlayerCharacter.h"
 
 void UDRGameInstance::InitializePlayerCharacters()
 {
@@ -15,7 +14,7 @@ void UDRGameInstance::InitializePlayerCharacters()
 	}
 }
 
-void UDRGameInstance::InitializePlayerCharactersWithOverrides(TArray<ADRPlayerCharacter*> playerCharacters)
+void UDRGameInstance::InitializePlayerCharactersWithOverrides(TArray<ADRCharacter*> playerCharacters)
 {
 	for (int i = 0; i < playerCharacters.Num(); i++)
 	{

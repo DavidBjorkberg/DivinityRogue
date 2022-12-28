@@ -34,3 +34,31 @@ bool UDRGameplayStatics::GetGroundHitResultUnderCursor(const UObject* worldConte
 	}
 	return true;
 }
+
+void UDRGameplayStatics::GetAllPlayerCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& playerList)
+{
+	playerList.Empty();
+	TArray<ADRCharacter*> allCharacters;
+	FindAllActors<ADRCharacter>(WorldContextObject->GetWorld(), allCharacters);
+	for(ADRCharacter* character : allCharacters)
+	{
+		if(character->GetAbilityTargetComponent()->GetTeam() == ETeam::PLAYER)
+		{
+			playerList.Add(character);
+		}
+	}
+}
+
+void UDRGameplayStatics::GetAllEnemyCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& enemyList)
+{
+	enemyList.Empty();
+	TArray<ADRCharacter*> allCharacters;
+	FindAllActors<ADRCharacter>(WorldContextObject->GetWorld(), allCharacters);
+	for(ADRCharacter* character : allCharacters)
+	{
+		if(character->GetAbilityTargetComponent()->GetTeam() == ETeam::ENEMY)
+		{
+			enemyList.Add(character);
+		}
+	}
+}

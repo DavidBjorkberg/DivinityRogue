@@ -57,9 +57,10 @@ public:
 	FSelectedAbilityChanged mOnSelectedAbilityChanged;
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<ADRPlayerCharacter> mPlayerCharacterClass;
+	TSubclassOf<ADRCharacter> mPlayerCharacterClass;
 private:
-	void SpawnPlayerCharacters();
+	void InitializePlayerCharacters();
+	void InitializeEnemyCharacters();
 	UFUNCTION()
 	void OnUnitDied(ADRCharacter* deadUnit);
 	UPROPERTY()

@@ -20,7 +20,7 @@ class DIVINITYROGUE_API UDRGameInstance : public UGameInstance
 public:
 	UFUNCTION(BlueprintCallable)
 	void InitializePlayerCharacters();
-	void InitializePlayerCharactersWithOverrides(TArray<ADRPlayerCharacter*> playerCharacters); 
+	void InitializePlayerCharactersWithOverrides(TArray<ADRCharacter*> playerCharacters); 
 	UPROPERTY()
 	TArray<UDRCharacterTemplate*> mPlayerCharacters;
 	UPROPERTY(BlueprintReadWrite)

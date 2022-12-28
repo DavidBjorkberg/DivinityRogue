@@ -71,9 +71,11 @@ float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
-void ADRCharacter::Initialize(UDRCharacterTemplate* charTemplate)
+void ADRCharacter::Initialize(UDRCharacterTemplate* charTemplate, ETeam team)
 {
 	mCharacterTemplate = charTemplate;
+	GetAbilityTargetComponent()->SetTeam(team);
+
 	GetMesh()->SetSkeletalMesh(charTemplate->Mesh);
 	if (charTemplate->LeftWeapon)
 	{

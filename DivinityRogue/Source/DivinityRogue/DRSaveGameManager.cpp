@@ -6,17 +6,16 @@
 #include "DRCharacter.h"
 #include "DRGameplayStatics.h"
 #include "DRJsonUtility.h"
-#include "DRPlayerCharacter.h"
 #include "JsonObjectConverter.h"
 
 void UDRSaveGameManager::Save(const UObject* WorldContextObject)
 {
 	UWorld* world = WorldContextObject->GetWorld();
-	TArray<AActor*> allPlayerUnits;
-	UDRGameplayStatics::GetAllActorsOfClass(world, ADRPlayerCharacter::StaticClass(), allPlayerUnits);
+	TArray<ADRCharacter*> playerUnits;
+	UDRGameplayStatics::GetAllPlayerCharacters(world, playerUnits);
 
 	FCharacterSave characterSave;
-	characterSave.Health = Cast<ADRCharacter>(allPlayerUnits[0])->GetHealthComponent()->GetMaxHealth();
+	characterSave.Health = playerUnits[0]->GetHealthComponent()->GetMaxHealth();
 
 	TSharedPtr<FJsonObject> jsonObj = FJsonObjectConverter::UStructToJsonObject<FCharacterSave>(characterSave);
 	UDRJsonUtility::WriteJson(FPaths::ProjectSavedDir() + TEXT("Savefile.txt"),jsonObj);

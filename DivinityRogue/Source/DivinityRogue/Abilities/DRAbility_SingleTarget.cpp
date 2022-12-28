@@ -3,9 +3,7 @@
 
 #include "DRAbility_SingleTarget.h"
 
-#include "DREnemyCharacter.h"
 #include "DRGameplayStatics.h"
-#include "DRPlayerCharacter.h"
 #include "DRPlayerController.h"
 
 void UDRAbility_SingleTarget::OnLeftMouseDown()

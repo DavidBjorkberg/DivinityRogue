@@ -38,8 +38,9 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	FText mName;
-private:
+	UPROPERTY(EditDefaultsOnly)
 	ETeam mTeam;
+private:
 	UPROPERTY()
 	UPrimitiveComponent* mHighlightMesh;
 };
