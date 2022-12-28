@@ -6,6 +6,7 @@
 #include "DRAbilityTargetComponent.h"
 #include "DRRoundSystem.h"
 #include "GameFramework/GameModeBase.h"
+#include "Sound/SoundCue.h"
 #include "DRGameMode.generated.h"
 
 class ADRPlayerController;
@@ -58,6 +59,8 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ADRCharacter> mPlayerCharacterClass;
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* mBackgroundMusicCue;
 private:
 	void InitializePlayerCharacters();
 	void InitializeEnemyCharacters();

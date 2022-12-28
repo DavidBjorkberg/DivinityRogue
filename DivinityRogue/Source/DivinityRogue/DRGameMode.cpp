@@ -21,6 +21,7 @@ void ADRGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UDRGameplayStatics::PlaySound2D(GetWorld(),mBackgroundMusicCue,0.02f);
 	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
 	InitializePlayerCharacters();
 	InitializeEnemyCharacters();
