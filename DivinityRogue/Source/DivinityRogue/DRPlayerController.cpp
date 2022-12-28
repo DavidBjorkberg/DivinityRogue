@@ -9,6 +9,7 @@
 #include "NavigationSystem.h"
 #include "DRCharacter.h"
 #include "DRAbilityTargetComponent.h"
+#include "NavigationPath.h"
 #include "GameFramework/InputSettings.h"
 
 ADRPlayerController::ADRPlayerController()
@@ -191,8 +192,7 @@ void ADRPlayerController::UpdateCharacterUnderCursor()
 	UDRAbilityTargetComponent* previousSelectable = mSelectableUnderCursor;
 	if (hitResult.bBlockingHit)
 	{
-		if (UDRAbilityTargetComponent* hitSelectable = hitResult.GetActor()->FindComponentByClass<
-			UDRAbilityTargetComponent>())
+		if (UDRAbilityTargetComponent* hitSelectable = Cast<UDRAbilityTargetComponent>(hitResult.Component))
 		{
 			mSelectableUnderCursor = hitSelectable;
 		}

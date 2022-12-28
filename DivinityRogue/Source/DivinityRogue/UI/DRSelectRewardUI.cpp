@@ -17,7 +17,7 @@ void UDRSelectRewardUI::GetRandomAbilities(TSubclassOf<UDRAbility>& ability1, TS
 	}
 	for (int i = 0; i < 3; i++)
 	{
-		int index = FMath::RandRange(0, allAbilities.Num());
+		int index = FMath::RandRange(0, allAbilities.Num()-1);
 		switch (i)
 		{
 		case 0:

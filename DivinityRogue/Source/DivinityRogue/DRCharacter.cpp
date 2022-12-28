@@ -119,13 +119,7 @@ void ADRCharacter::Heal(int healAmount)
 
 void ADRCharacter::Died()
 {
-	TArray<AActor*> attachedActors;
-	GetAttachedActors(attachedActors);
-	for (AActor* attachedActor : attachedActors)
-	{
-		attachedActor->Destroy();
-	}
-	Destroy();
+	GetAbilityTargetComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	mOnUnitDied.Broadcast(this);
 }
 

@@ -12,7 +12,7 @@ void UDRSaveGameManager::Save(const UObject* WorldContextObject)
 {
 	UWorld* world = WorldContextObject->GetWorld();
 	TArray<ADRCharacter*> playerUnits;
-	UDRGameplayStatics::GetAllPlayerCharacters(world, playerUnits);
+	UDRGameplayStatics::GetAllAlivePlayerCharacters(world, playerUnits);
 
 	FCharacterSave characterSave;
 	characterSave.Health = playerUnits[0]->GetHealthComponent()->GetMaxHealth();

@@ -35,6 +35,50 @@ bool UDRGameplayStatics::GetGroundHitResultUnderCursor(const UObject* worldConte
 	return true;
 }
 
+void UDRGameplayStatics::GetAllAlivePlayerCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& playerList)
+{
+	playerList.Empty();
+	TArray<ADRCharacter*> allCharacters;
+	FindAllActors<ADRCharacter>(WorldContextObject->GetWorld(), allCharacters);
+	for(ADRCharacter* character : allCharacters)
+	{
+		if(character->GetHealthComponent()->GetCurrentHealth() > 0 &&
+			character->GetAbilityTargetComponent()->GetTeam() == ETeam::PLAYER)
+		{
+			playerList.Add(character);
+		}
+	}
+}
+
+void UDRGameplayStatics::GetAllAliveEnemyCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& enemyList)
+{
+	enemyList.Empty();
+	TArray<ADRCharacter*> allCharacters;
+	FindAllActors<ADRCharacter>(WorldContextObject->GetWorld(), allCharacters);
+	for(ADRCharacter* character : allCharacters)
+	{
+		if(character->GetHealthComponent()->GetCurrentHealth() > 0 &&
+			character->GetAbilityTargetComponent()->GetTeam() == ETeam::ENEMY)
+		{
+			enemyList.Add(character);
+		}
+	}
+}
+
+void UDRGameplayStatics::GetAllAliveCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& characterList)
+{
+	characterList.Empty();
+	TArray<ADRCharacter*> allCharacters;
+	FindAllActors<ADRCharacter>(WorldContextObject->GetWorld(), allCharacters);
+	for(ADRCharacter* character : allCharacters)
+	{
+		if(character->GetHealthComponent()->GetCurrentHealth() > 0)
+		{
+			characterList.Add(character);
+		}
+	}
+}
+
 void UDRGameplayStatics::GetAllPlayerCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& playerList)
 {
 	playerList.Empty();

@@ -84,7 +84,7 @@ void UDRRoundSystem::StartTurn()
 void UDRRoundSystem::FillTurnQueue()
 {
 	mTurnQueue.Empty();
-	UDRGameplayStatics::FindAllActors<ADRCharacter>(GetWorld(), mTurnQueue);
+	UDRGameplayStatics::GetAllAliveCharacters(GetWorld(), mTurnQueue);
 	mTurnQueue.Sort([](const ADRCharacter& a, const ADRCharacter& b)
 	{
 		return a.GetStatsComponent()->GetStats().mSpeed > b.GetStatsComponent()->GetStats().mSpeed;

@@ -113,8 +113,8 @@ void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 	mRoundSystem->RemoveFromTurnQueue(deadUnit);
 	TArray<ADRCharacter*> allEnemyCharacters;
 	TArray<ADRCharacter*> allPlayerCharacters;
-	UDRGameplayStatics::GetAllPlayerCharacters(GetWorld(), allPlayerCharacters);
-	UDRGameplayStatics::GetAllEnemyCharacters(GetWorld(), allEnemyCharacters);
+	UDRGameplayStatics::GetAllAlivePlayerCharacters(GetWorld(), allPlayerCharacters);
+	UDRGameplayStatics::GetAllAliveEnemyCharacters(GetWorld(), allEnemyCharacters);
 
 	if (allPlayerCharacters.Num() == 0)
 	{
