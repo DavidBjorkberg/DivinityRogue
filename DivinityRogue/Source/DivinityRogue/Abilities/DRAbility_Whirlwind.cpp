@@ -20,4 +20,7 @@ void UDRAbility_Whirlwind::Use()
 			AbilityTargetInRange->TakeDamage(mDamage, mOwner);
 		}
 	}
+	FVector emitterLocation = mOwner->GetActorLocation() - FVector(0,0,mOwner->GetSimpleCollisionHalfHeight());
+	UDRGameplayStatics::PlaySoundAtLocation(GetWorld(), mOnUsedSound, mOwner->GetActorLocation());
+	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,emitterLocation);
 }

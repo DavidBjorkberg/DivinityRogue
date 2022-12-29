@@ -4,13 +4,15 @@
 #include "DRAbility_Charge.h"
 
 #include "DRCharacter.h"
+#include "DRGameplayStatics.h"
 
 void UDRAbility_Charge::Use()
 {
 	Super::Use();
 	FVector targetLocation = mTarget->GetOwner()->GetActorLocation();
 	FVector targetRotation = mTarget->GetOwner()->GetActorRotation().Vector();
-	FVector frontOfTargetLocation = targetLocation + (targetRotation * 150);
+	FVector frontOfTargetLocation = targetLocation + (targetRotation * 150) - FVector(0,0,mOwner->GetSimpleCollisionHalfHeight()) ;
 	mOwner->FindComponentByClass<UDRAbilityTargetComponent>()->TeleportTo(frontOfTargetLocation);
 	mTarget->TakeDamage(mDamage, mOwner);
+	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,frontOfTargetLocation);
 }
