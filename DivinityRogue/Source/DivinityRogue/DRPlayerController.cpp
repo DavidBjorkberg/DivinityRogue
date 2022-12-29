@@ -89,7 +89,7 @@ void ADRPlayerController::OnLeftMouseClick()
 
 			if (mMouseHoverState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
 			{
-				characterInPlay->BasicAttack(mSelectableUnderCursor);
+				characterInPlay->TryBasicAttack(mSelectableUnderCursor);
 			}
 			else
 			{

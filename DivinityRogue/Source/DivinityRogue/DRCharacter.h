@@ -42,7 +42,7 @@ public:
 	void OrderMoveToLocation(FVector targetLoc);
 	void OrderMoveToActor(UDRAbilityTargetComponent* target);
 	void OrderAttackMoveToActor(UDRAbilityTargetComponent* target);
-	void BasicAttack(UDRAbilityTargetComponent* target);
+	bool TryBasicAttack(UDRAbilityTargetComponent* target);
 	void EndTurnIfOutOfActionPoints();
 	void UseAbility(UDRAbility* ability);
 	UFUNCTION(BlueprintCallable)

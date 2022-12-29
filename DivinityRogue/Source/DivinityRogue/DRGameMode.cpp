@@ -21,7 +21,7 @@ void ADRGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UDRGameplayStatics::PlaySound2D(GetWorld(),mBackgroundMusicCue,0.02f);
+	UDRGameplayStatics::PlaySound2D(GetWorld(), mBackgroundMusicCue, 0.02f);
 	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
 	InitializePlayerCharacters();
 	InitializeEnemyCharacters();
@@ -102,9 +102,10 @@ void ADRGameMode::InitializeEnemyCharacters()
 	UDRGameplayStatics::GetAllEnemyCharacters(GetWorld(), enemyCharacters);
 	for (ADRCharacter* enemyChar : enemyCharacters)
 	{
-		UDRCharacterTemplate* charTemplate = NewObject<UDRCharacterTemplate>(enemyChar, enemyChar->mCharacterTemplateOverride);
+		UDRCharacterTemplate* charTemplate = NewObject<UDRCharacterTemplate>(
+			enemyChar, enemyChar->mCharacterTemplateOverride);
 		charTemplate->CurrentHealth = charTemplate->MaxHealth;
-		enemyChar->Initialize(charTemplate,ETeam::ENEMY);
+		enemyChar->Initialize(charTemplate, ETeam::ENEMY);
 	}
 }
 
@@ -117,13 +118,17 @@ void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 	UDRGameplayStatics::GetAllAlivePlayerCharacters(GetWorld(), allPlayerCharacters);
 	UDRGameplayStatics::GetAllAliveEnemyCharacters(GetWorld(), allEnemyCharacters);
 
-	if (allPlayerCharacters.Num() == 0)
+	FTimerHandle handle;
+	GetWorldTimerManager().SetTimer(handle, [this,allEnemyCharacters,allPlayerCharacters]
 	{
-		SetGameOver(true);
-	}
-	else if (allEnemyCharacters.Num() == 0)
-	{
-		GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->HideBattleUI();
-		GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->ShowSelectRewardScreen();
-	}
+		if (allPlayerCharacters.Num() == 0)
+		{
+			SetGameOver(true);
+		}
+		else if (allEnemyCharacters.Num() == 0)
+		{
+			GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->HideBattleUI();
+			GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->ShowSelectRewardScreen();
+		}
+	}, mGameOverDelay, false);
 }

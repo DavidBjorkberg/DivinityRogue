@@ -32,7 +32,7 @@ void ADREnemyAIController::RequestAction()
 	TArray<UDRAbilityTargetComponent*> allPlayerUnits = mGameMode->GetAllPlayerAbilityTargets();
 	UDRGameplayStatics::SortComponentListByDistance(mOwner,allPlayerUnits);
 	if (TryUseAbility()) return;
-	if (TryBasicAttack(allPlayerUnits[0])) return;
+	if (mOwner->TryBasicAttack(allPlayerUnits[0])) return;
 	if (TryMoveTo(allPlayerUnits[0])) return;
 	mRoundSystem->EndTurn();
 }
@@ -50,16 +50,6 @@ bool ADREnemyAIController::TryUseAbility()
 	return false;
 }
 
-bool ADREnemyAIController::TryBasicAttack(UDRAbilityTargetComponent* target)
-{
-	UDRAbility_BasicAttack* basicAttack = mOwner->GetAbilityComponent()->GetBasicAttack();
-	if (basicAttack->CanAffordCast() && basicAttack->IsInRange(target))
-	{
-		mOwner->BasicAttack(target);
-		return true;
-	}
-	return false;
-}
 
 bool ADREnemyAIController::TryMoveTo(UDRAbilityTargetComponent* target)
 {

@@ -15,7 +15,7 @@ class DIVINITYROGUE_API UDRAbility_BasicAttack : public UDRAbility_SingleTarget
 	GENERATED_BODY()
 public:
 	virtual void Use() override;
-	void SetTarget(UDRAbilityTargetComponent* target);
+	bool TrySetTarget(UDRAbilityTargetComponent* target);
 protected:
 	UPROPERTY(EditDefaultsOnly, Category= "DRAbility")
 	int mDamage;

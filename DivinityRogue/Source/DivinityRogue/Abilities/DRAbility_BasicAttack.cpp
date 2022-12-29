@@ -7,10 +7,15 @@
 void UDRAbility_BasicAttack::Use()
 {
 	Super::Use();
-	mTarget->TakeDamage(mDamage,mOwner);
+	mTarget->TakeDamage(mDamage, mOwner);
 }
 
-void UDRAbility_BasicAttack::SetTarget(UDRAbilityTargetComponent* target)
+bool UDRAbility_BasicAttack::TrySetTarget(UDRAbilityTargetComponent* target)
 {
-	mTarget = target;
+	if (target->GetTeam() != mOwner->GetAbilityTargetComponent()->GetTeam())
+	{
+		mTarget = target;
+		return true;
+	}
+	return false;
 }

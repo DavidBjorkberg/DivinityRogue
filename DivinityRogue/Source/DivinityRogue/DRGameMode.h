@@ -61,6 +61,8 @@ protected:
 	TSubclassOf<ADRCharacter> mPlayerCharacterClass;
 	UPROPERTY(EditDefaultsOnly)
 	USoundCue* mBackgroundMusicCue;
+	UPROPERTY(EditDefaultsOnly)
+	float mGameOverDelay;
 private:
 	void InitializePlayerCharacters();
 	void InitializeEnemyCharacters();

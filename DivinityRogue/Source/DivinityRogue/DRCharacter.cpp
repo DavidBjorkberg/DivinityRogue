@@ -57,11 +57,15 @@ void ADRCharacter::OrderAttackMoveToActor(UDRAbilityTargetComponent* target)
 	mController->OrderAttackMoveToActor(target);
 }
 
-void ADRCharacter::BasicAttack(UDRAbilityTargetComponent* target)
+bool ADRCharacter::TryBasicAttack(UDRAbilityTargetComponent* target)
 {
 	UDRAbility_BasicAttack* basicAttack = GetAbilityComponent()->GetBasicAttack();
-	basicAttack->SetTarget(target);
-	UseAbility(basicAttack);
+	if (basicAttack->CanAffordCast() && basicAttack->IsInRange(target) && basicAttack->TrySetTarget(target))
+	{
+		UseAbility(basicAttack);
+		return true;
+	}
+	return false;
 }
 
 float ADRCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,

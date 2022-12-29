@@ -44,7 +44,11 @@ void ADRAIController::OrderAttackMoveToActor(UDRAbilityTargetComponent* target)
 	OrderMoveToActor(target);
 	mOnMoveCompleted = [this,target]()
 	{
-		mOwner->BasicAttack(target);
+		if(!mOwner->TryBasicAttack(target))
+		{
+			mGameMode->SetGameplayState(EGameplayState::PlanningPath);
+			mOwner->GetAnimationComponent()->PlayIdleAnimation();
+		}
 	};
 }
 
