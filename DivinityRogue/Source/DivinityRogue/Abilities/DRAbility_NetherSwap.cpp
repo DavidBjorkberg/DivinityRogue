@@ -4,6 +4,7 @@
 #include "DRAbility_NetherSwap.h"
 
 #include "DRCharacter.h"
+#include "DRGameplayStatics.h"
 
 void UDRAbility_NetherSwap::Use()
 {
@@ -12,4 +13,8 @@ void UDRAbility_NetherSwap::Use()
 	FVector locationB = mTargets[1]->GetOwner()->GetActorLocation();
 	mTargets[0]->TeleportTo(locationB);
 	mTargets[1]->TeleportTo(locationA);
+	UDRGameplayStatics::PlaySoundAtLocation(GetWorld(), mOnUsedSound, locationA);
+	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,locationB);
+	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,locationA);
+
 }
