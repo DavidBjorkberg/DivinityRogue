@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRRoundSystem.h"
+#include "Sound/SoundCue.h"
 #include "DRAbility.generated.h"
 
 class UDRAbilityTargetComponent;
@@ -73,8 +74,15 @@ protected:
 	bool IsInRange(FVector targetLocation);
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FAbilityInfo mAbilityInfo;
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* mOnUsedSound;
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystem* mOnUsedParticleEffect;
 	UPROPERTY(BlueprintReadOnly)
 	int mRemainingCooldown;
+	bool mIsSelected;
+
+	
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 	UPROPERTY()
@@ -85,7 +93,6 @@ protected:
 	ADRPlayerController* mPlayerController;
 	UPROPERTY()
 	ADRCharacter* mOwner;
-	bool mIsSelected;
 private:
 	UFUNCTION()
 	void OnSelectedAbilityChanged(UDRAbility* ability);

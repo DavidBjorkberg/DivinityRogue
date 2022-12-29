@@ -15,7 +15,7 @@ void UDRAbility_GroundTarget::Tick(float DeltaTime)
 		FHitResult mouseGroundHitResult;
 		if (UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, mouseGroundHitResult, false))
 		{
-			mDecalActorInst->SetActorLocation(mouseGroundHitResult.Location);
+			mDecalActorInst->SetActorLocation(mouseGroundHitResult.Location + FVector(0, 0, 20));
 			mDecalActorInst->SetActorRotation((-mouseGroundHitResult.Normal).Rotation());
 		}
 		if (IsOnValidArea())
