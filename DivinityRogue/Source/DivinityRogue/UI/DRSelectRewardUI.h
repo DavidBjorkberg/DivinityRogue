@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "DRAbility.h"
 #include "Blueprint/UserWidget.h"
+#include "Engine/DataTable.h"
 #include "DRSelectRewardUI.generated.h"
 
 /**
@@ -17,4 +18,7 @@ class DIVINITYROGUE_API UDRSelectRewardUI : public UUserWidget
 public:
 	UFUNCTION(BlueprintCallable)
 	void GetRandomAbilities(TSubclassOf<UDRAbility>& ability1,TSubclassOf<UDRAbility>& ability2,TSubclassOf<UDRAbility>& ability3);
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	UDataTable* abilityDataTable;
 };

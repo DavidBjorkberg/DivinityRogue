@@ -3,31 +3,27 @@
 
 #include "DRSelectRewardUI.h"
 
+#include "DRGlobalDefinitions.h"
+
 void UDRSelectRewardUI::GetRandomAbilities(TSubclassOf<UDRAbility>& ability1, TSubclassOf<UDRAbility>& ability2,
                                            TSubclassOf<UDRAbility>& ability3)
 {
-	TArray<TSubclassOf<UDRAbility>> allAbilities;
-	//Find all asset classes and connect them to their target class
-	for (TObjectIterator<UClass> ClassIt; ClassIt; ++ClassIt)
-	{
-		if (ClassIt->IsChildOf(UDRAbility::StaticClass()) && !ClassIt->HasAnyClassFlags(CLASS_Abstract))
-		{
-			allAbilities.Add(*ClassIt);
-		}
-	}
+	TArray<FAbilityStruct*> allAbilities;
+	abilityDataTable->GetAllRows<FAbilityStruct>("AbilityDataTable",allAbilities);
+
 	for (int i = 0; i < 3; i++)
 	{
 		int index = FMath::RandRange(0, allAbilities.Num()-1);
 		switch (i)
 		{
 		case 0:
-			ability1 = allAbilities[index];
+			ability1 = allAbilities[index]->Ability;
 			break;
 		case 1:
-			ability2 = allAbilities[index];
+			ability2 = allAbilities[index]->Ability;
 			break;
 		case 2:
-			ability3 = allAbilities[index];
+			ability3 = allAbilities[index]->Ability;
 			break;
 		default:
 			break;
