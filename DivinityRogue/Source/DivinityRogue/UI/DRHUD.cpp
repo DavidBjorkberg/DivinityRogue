@@ -17,7 +17,8 @@ void ADRHUD::BeginPlay()
 	Super::BeginPlay();
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
-	Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController())->mOnMouseHoverStateChanged.AddDynamic(
+	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
+	mPlayerController->mOnMouseHoverStateChanged.AddDynamic(
 		this, &ADRHUD::OnMouseHoverStateChanged);
 	ShowBattleUI();
 }
@@ -32,7 +33,7 @@ void ADRHUD::DrawHUD()
 	{
 		DrawAbilityRangeCircle();
 	}
-	else if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath))
+	else if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mPlayerController->GetMouseHoverState() != EMouseHoverState::HoverUI)
 	{
 		DrawAbilityCostText();
 	}
@@ -86,9 +87,8 @@ void ADRHUD::HideSelectRewardScreen()
 
 void ADRHUD::SpawnFloatingDamageText(AActor* damagedActor, int damage, bool isHeal)
 {
-	APlayerController* pc = GetWorld()->GetFirstPlayerController();
 	FVector2d screenLocation;
-	pc->ProjectWorldLocationToScreen(damagedActor->GetActorLocation(), screenLocation);
+	mPlayerController->ProjectWorldLocationToScreen(damagedActor->GetActorLocation(), screenLocation);
 	ADRFloatingDamageText* damageText = GetWorld()->SpawnActor<ADRFloatingDamageText>(mFloatingDamageTextClass);
 	damageText->SetActorLocation(damagedActor->GetActorLocation());
 	FColor color = isHeal ? FColor::Green : FColor::Red;
@@ -110,7 +110,7 @@ void ADRHUD::DrawAbilityCostText()
 	int energyCost = mRoundSystem->GetCharacterInPlay()->GetDRMovementComponent()->GetEnergyCostToMouse();
 	float x;
 	float y;
-	GetWorld()->GetFirstPlayerController()->GetMousePosition(x, y);
+	mPlayerController->GetMousePosition(x, y);
 	DrawText(TEXT("Cost: " + FString::FromInt(energyCost + mAttackCost)), FLinearColor::Black, x + 30, y, nullptr,
 	         1.5);
 }

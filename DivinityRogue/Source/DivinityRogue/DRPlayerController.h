@@ -17,7 +17,8 @@ enum EMouseHoverState
 	NoCharacter,
 	AllyCharacter,
 	EnemyCharacter,
-	EnemyCharacterInBasicAttackRange
+	EnemyCharacterInBasicAttackRange,
+	HoverUI,
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterUnderCursorChanged,
@@ -38,11 +39,15 @@ public:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintPure)
 	UDRAbilityTargetComponent* GetAbilityTargetUnderCursor() const { return mSelectableUnderCursor; }
+
 	UFUNCTION(BlueprintCallable)
 	UNavigationPath* GetPathToMouse();
 
 	UFUNCTION(BlueprintPure)
 	EMouseHoverState GetMouseHoverState() const { return mMouseHoverState; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetMouseHoverState(EMouseHoverState newState) { mMouseHoverState = newState; }
 
 	FCharacterUnderCursorChanged mOnCharacterUnderCursorChanged;
 	FLeftMouseDown mOnLeftMouseDown;
@@ -68,7 +73,7 @@ private:
 	void UpdateCursor();
 	void UpdateMouseHoverState(UDRAbilityTargetComponent* abilityTargetUnderCursor);
 	void UpdateCharacterUnderCursor();
-	
+
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 	UPROPERTY()

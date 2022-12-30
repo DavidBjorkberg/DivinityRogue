@@ -38,6 +38,8 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	USkeletalMesh* Mesh;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UTexture2D* Icon;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UStaticMesh* LeftWeapon;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	UStaticMesh* RightWeapon;

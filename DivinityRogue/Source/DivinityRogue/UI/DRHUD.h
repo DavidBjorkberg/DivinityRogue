@@ -57,6 +57,8 @@ private:
 	TArray<ADRFloatingDamageText*> mFloatingDamageTexts;
  	UPROPERTY()
 	UDRBattleUI* mBattleUI;
+ 	UPROPERTY()
+	ADRPlayerController* mPlayerController;
 	UPROPERTY()
 	UDRRoundSystem* mRoundSystem;
 	UPROPERTY()

@@ -20,9 +20,15 @@ void ADRPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mRoundSystem->IsPlayersTurn())
+	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) &&
+		mRoundSystem->IsPlayersTurn() &&
+		GetMouseHoverState() != EMouseHoverState::HoverUI)
 	{
 		mMovementSpline->DrawMovementSpline();
+	}
+	else
+	{
+		mMovementSpline->ClearSpline();
 	}
 
 	UpdateCharacterUnderCursor();
@@ -96,7 +102,7 @@ void ADRPlayerController::OnLeftMouseClick()
 				characterInPlay->OrderAttackMoveToActor(mSelectableUnderCursor);
 			}
 		}
-		else
+		else if(GetMouseHoverState() != EMouseHoverState::HoverUI)
 		{
 			FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(
 				GetWorld(), ECollisionChannel::ECC_WorldStatic);
@@ -168,7 +174,7 @@ void ADRPlayerController::UpdateMouseHoverState(UDRAbilityTargetComponent* abili
 		if (targetTeam == ETeam::ENEMY)
 		{
 			UDRAbility_BasicAttack* BasicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->
-			                                                 GetBasicAttack();
+			                                                    GetBasicAttack();
 			if (mRoundSystem->IsPlayersTurn() && BasicAttack->IsInRange(abilityTargetUnderCursor))
 			{
 				mMouseHoverState = EMouseHoverState::EnemyCharacterInBasicAttackRange;

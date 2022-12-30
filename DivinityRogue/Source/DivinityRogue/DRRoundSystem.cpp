@@ -16,13 +16,14 @@ bool UDRRoundSystem::ShouldCreateSubsystem(UObject* Outer) const
 
 	const UWorld* world = Outer->GetWorld();
 	return world && (world->WorldType == EWorldType::Type::PIE || world->WorldType == EWorldType::Type::Game)
-	&& world->GetName() != "MainMenu";
+		&& world->GetName() != "MainMenu";
 }
 
 void UDRRoundSystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mPlayerController = GetWorld()->GetFirstPlayerController();
+	mTurnQueue = NewObject<UDRTurnQueue>(this);
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &UDRRoundSystem::StartMatch);
 }
 
@@ -50,21 +51,20 @@ bool UDRRoundSystem::IsPlayersTurn()
 
 void UDRRoundSystem::RemoveFromTurnQueue(ADRCharacter* character)
 {
-	mTurnQueue.Remove(character);
+	mTurnQueue->Remove(character);
 }
 
 void UDRRoundSystem::StartTurn()
 {
-	if (mTurnQueue.Num() == 0)
+	if (mTurnQueue->IsEmpty())
 	{
 		EndRound();
 		return;
 	}
-	if (mTurnQueue.Num() == 0) return;
+	if (mTurnQueue->IsEmpty()) return;
 
 	ADRCharacter* previousCharacter = mCharacterInPlay;
-	mCharacterInPlay = mTurnQueue[0];
-	mTurnQueue.RemoveAt(0);
+	mCharacterInPlay = mTurnQueue->GetAndRemoveNext();
 
 	mOnNewTurn.Broadcast(previousCharacter, mCharacterInPlay);
 	mCharacterInPlay->mOnTurnStart.Broadcast();
@@ -81,20 +81,10 @@ void UDRRoundSystem::StartTurn()
 	}
 }
 
-void UDRRoundSystem::FillTurnQueue()
-{
-	mTurnQueue.Empty();
-	UDRGameplayStatics::GetAllAliveCharacters(GetWorld(), mTurnQueue);
-	mTurnQueue.Sort([](const ADRCharacter& a, const ADRCharacter& b)
-	{
-		return a.GetStatsComponent()->GetStats().mSpeed > b.GetStatsComponent()->GetStats().mSpeed;
-	});
-}
-
 void UDRRoundSystem::StartRound()
 {
 	mOnNewRound.Broadcast();
-	FillTurnQueue();
+	mTurnQueue->FillQueueFromWorld();
 	StartTurn();
 }
 

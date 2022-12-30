@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DRTurnQueue.h"
 #include "DRRoundSystem.generated.h"
 
 class ADRGameMode;
@@ -25,6 +26,7 @@ public:
 	bool IsPlayersTurn();
 	ADRCharacter* GetCharacterInPlay() const { return mCharacterInPlay; }
 	void RemoveFromTurnQueue(ADRCharacter* character);
+	UDRTurnQueue* GetTurnQueue() const { return mTurnQueue; }
 
 	UPROPERTY(BlueprintAssignable)
 	FNewturn mOnNewTurn;
@@ -39,11 +41,10 @@ private:
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 	UPROPERTY()
-	TArray<ADRCharacter*> mTurnQueue;
+	UDRTurnQueue* mTurnQueue;
 	UFUNCTION()
 	void StartMatch();
 	void StartTurn();
-	void FillTurnQueue();
 	void StartRound();
 	void EndRound();
 };
