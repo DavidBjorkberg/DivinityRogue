@@ -15,8 +15,6 @@ class DIVINITYROGUE_API UDRTurnOrderUI : public UUserWidget
 	GENERATED_BODY()
 public:
 	virtual void NativeConstruct() override;
-	void FillTurnList(TArray<ADRCharacter*> allCharacters);
-
 protected:
 	UPROPERTY(meta = (BindWidget))
 	UHorizontalBox* mTurnList;

@@ -12,6 +12,7 @@ void UDRUnitInfo::Init(ADRCharacter* character)
 	}
 	mImage->SetBrushFromTexture(character->mCharacterTemplate->Icon);
 	character->GetHealthComponent()->mOnHealthChanged.AddDynamic(this, &UDRUnitInfo::OnHealthChange);
+	OnHealthChange(character->GetHealthComponent()->GetCurrentHealth());
 }
 
 void UDRUnitInfo::OnHealthChange(int newHealth)

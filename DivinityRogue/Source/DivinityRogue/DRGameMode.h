@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRAbilityTargetComponent.h"
+#include "DRCharacterTemplate.h"
 #include "DRRoundSystem.h"
 #include "GameFramework/GameModeBase.h"
 #include "Sound/SoundCue.h"
@@ -24,10 +25,8 @@ enum class EGameplayState : uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameplayStateChange, EGameplayState, oldState, EGameplayState, newState);
-
-
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSelectedAbilityChanged, UDRAbility*, ability);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterSpawned, ADRCharacter*, spawnedCharacter);
 
 
 UCLASS()
@@ -37,7 +36,6 @@ class DIVINITYROGUE_API ADRGameMode : public AGameModeBase
 public:
 	ADRGameMode();
 	virtual void BeginPlay() override;
-
 	UFUNCTION(BlueprintPure)
 	bool IsInGameplayState(EGameplayState state) const { return state == mCurrentGameplayState; }
 	void SetGameplayState(EGameplayState newState);
@@ -56,6 +54,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FSelectedAbilityChanged mOnSelectedAbilityChanged;
+	UPROPERTY(BlueprintAssignable)
+	FCharacterSpawned mOnCharacterSpawned;
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ADRCharacter> mPlayerCharacterClass;
@@ -66,6 +66,7 @@ protected:
 private:
 	void InitializePlayerCharacters();
 	void InitializeEnemyCharacters();
+	void SpawnCharacter(UDRCharacterTemplate* charTemplate, FVector location, ETeam team);
 	UFUNCTION()
 	void OnUnitDied(ADRCharacter* deadUnit);
 	UPROPERTY()

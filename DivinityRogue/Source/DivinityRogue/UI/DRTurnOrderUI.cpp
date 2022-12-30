@@ -14,14 +14,6 @@ void UDRTurnOrderUI::NativeConstruct()
 
 }
 
-void UDRTurnOrderUI::FillTurnList(TArray<ADRCharacter*> allCharacters)
-{
-	for(int i = 0; i  < allCharacters.Num(); i++)
-	{
-		AddUnit(allCharacters[i]);
-	}
-}
-
 void UDRTurnOrderUI::OnCharacterAdded(ADRCharacter* newCharacter,int index)
 {
 	AddUnit(newCharacter);

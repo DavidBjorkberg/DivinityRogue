@@ -71,7 +71,6 @@ TArray<UDRAbilityTargetComponent*> ADRGameMode::GetAllPlayerAbilityTargets()
 	return returnList;
 }
 
-
 void ADRGameMode::InitializePlayerCharacters()
 {
 	UDRGameInstance* GI = GetGameInstance<UDRGameInstance>();
@@ -90,9 +89,9 @@ void ADRGameMode::InitializePlayerCharacters()
 	UDRGameplayStatics::FindAllActors<APlayerStart>(GetWorld(), playerSpawnpoints);
 	for (int i = 0; i < GI->mPlayerCharacters.Num(); i++)
 	{
-		ADRCharacter* spawnedChar = GetWorld()->SpawnActor<ADRCharacter>(mPlayerCharacterClass);
-		spawnedChar->SetActorLocation(playerSpawnpoints[i]->GetActorLocation());
-		spawnedChar->Initialize(GI->mPlayerCharacters[i], ETeam::PLAYER);
+		UDRCharacterTemplate* charTemplate = GI->mPlayerCharacters[i];
+		FVector spawnLocation = playerSpawnpoints[i]->GetActorLocation();
+		SpawnCharacter(charTemplate,spawnLocation, ETeam::PLAYER);
 	}
 }
 
@@ -107,6 +106,14 @@ void ADRGameMode::InitializeEnemyCharacters()
 		charTemplate->CurrentHealth = charTemplate->MaxHealth;
 		enemyChar->Initialize(charTemplate, ETeam::ENEMY);
 	}
+}
+
+void ADRGameMode::SpawnCharacter(UDRCharacterTemplate* charTemplate, FVector location, ETeam team)
+{
+	ADRCharacter* spawnedChar = GetWorld()->SpawnActor<ADRCharacter>(mPlayerCharacterClass);
+	spawnedChar->SetActorLocation(location);
+	spawnedChar->Initialize(charTemplate, team);
+	mOnCharacterSpawned.Broadcast(spawnedChar);
 }
 
 
