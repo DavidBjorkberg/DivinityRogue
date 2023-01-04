@@ -20,10 +20,30 @@ protected:
 	UHorizontalBox* mTurnList;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDRUnitInfo> mUnitInfoClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> mSeparatorClass;
+
 private:
 	UFUNCTION()
 	void OnCharacterAdded(ADRCharacter* newCharacter, int index);
 	UFUNCTION()
 	void OnCharacterRemoved(int index);
+	UFUNCTION()
+	void OnQueueInitialized();
+	UFUNCTION()
+	void OnContinuedToNextCharacter();
 	void AddUnit(ADRCharacter* character);
+	void AddNextUnitToEnd();
+	void FadeFirstUnit();
+	UFUNCTION()
+	void OnFadeCompleted();
+	UFUNCTION()
+	void OnSlideCompleted();
+	UDRUnitInfo* GetUnitInfoAt(int index);
+
+	UPROPERTY()
+	UDRTurnQueue* mTurnQueue;
+	const int NumberOfTurnsToShow =10;
+	int mLastIndex;
+	int mCounter;
 };

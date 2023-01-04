@@ -116,7 +116,6 @@ void ADRGameMode::SpawnCharacter(UDRCharacterTemplate* charTemplate, FVector loc
 	mOnCharacterSpawned.Broadcast(spawnedChar);
 }
 
-
 void ADRGameMode::OnUnitDied(ADRCharacter* deadUnit)
 {
 	mRoundSystem->RemoveFromTurnQueue(deadUnit);

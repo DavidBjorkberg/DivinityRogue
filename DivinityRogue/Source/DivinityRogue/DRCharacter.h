@@ -26,6 +26,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPreUsedAbility, UDRAbility*, abilit
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnStart);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnEnd);
+
 UCLASS()
 class DIVINITYROGUE_API ADRCharacter : public ACharacter
 {
@@ -71,6 +73,8 @@ public:
 	FUnitDied mOnUnitDied;
 	UPROPERTY(BlueprintAssignable)
 	FTurnStart mOnTurnStart;
+	UPROPERTY(BlueprintAssignable)
+	FTurnEnd mOnTurnEnd;
 	UPROPERTY(BlueprintAssignable)
 	FUsedAbility mOnUsedAbility;
 	UPROPERTY(BlueprintAssignable)

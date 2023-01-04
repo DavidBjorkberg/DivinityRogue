@@ -12,7 +12,7 @@ struct FCharacterStats
 {
 	GENERATED_BODY()
 	UPROPERTY(BlueprintReadOnly, DisplayName="Speed")
-	int mSpeed;
+	int mInitiative;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Movement Speed")
 	int mMovementSpeed;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Movement")

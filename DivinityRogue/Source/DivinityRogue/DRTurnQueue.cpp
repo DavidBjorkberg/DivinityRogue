@@ -5,11 +5,16 @@
 
 #include "DRGameplayStatics.h"
 
-ADRCharacter* UDRTurnQueue::GetAndRemoveNext()
+ADRCharacter* UDRTurnQueue::GetNext()
 {
-	check(mQueue.Num() > 0);
-	ADRCharacter* nextCharacter = mQueue[0];
-	Remove(nextCharacter);
+	ADRCharacter* nextCharacter = mQueue[mCurrentQueueIndex];
+	mCurrentQueueIndex++;
+	if(mCurrentQueueIndex >= mQueue.Num())
+	{
+		mCurrentQueueIndex = 0;
+	}
+	mOnContinuedToNextCharacter.Broadcast();
+
 	return nextCharacter;
 }
 
@@ -26,6 +31,10 @@ void UDRTurnQueue::Remove(ADRCharacter* characterToRemove)
 		if (mQueue[i] == characterToRemove)
 		{
 			mQueue.RemoveAt(i);
+			if(mCurrentQueueIndex >= mQueue.Num())
+			{
+				mCurrentQueueIndex = 0;
+			}
 			mOnCharacterRemoved.Broadcast(i);
 			return;
 		}
@@ -39,10 +48,11 @@ void UDRTurnQueue::FillQueueFromWorld()
 	UDRGameplayStatics::GetAllAliveCharacters(GetWorld(), allAliveCharacters);
 	allAliveCharacters.Sort([](const ADRCharacter& a, const ADRCharacter& b)
 	{
-		return a.GetStatsComponent()->GetStats().mSpeed > b.GetStatsComponent()->GetStats().mSpeed;
+		return a.GetStatsComponent()->GetStats().mInitiative > b.GetStatsComponent()->GetStats().mInitiative;
 	});
 	for(int i = 0; i < allAliveCharacters.Num(); i++)
 	{
 		AddToEnd(allAliveCharacters[i]);
 	}
+	mOnQueueInitialized.Broadcast();
 }

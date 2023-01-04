@@ -16,7 +16,7 @@ void UDRStatsComponent::ModifyEnergy(int difference)
 
 void UDRStatsComponent::ApplyTemplate(UDRCharacterTemplate* charTemplate)
 {
-	mStats.mSpeed = charTemplate->Speed;
+	mStats.mInitiative = charTemplate->Speed;
 	mStats.mMaxActionPoints = charTemplate->MaxActionPoints;
 	mStats.mStartActionPoints = charTemplate->StartActionPoints;
 	mStats.mCurrentActionPoints = charTemplate->StartActionPoints;

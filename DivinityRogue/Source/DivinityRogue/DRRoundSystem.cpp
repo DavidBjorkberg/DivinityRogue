@@ -34,12 +34,16 @@ void UDRRoundSystem::StartMatch()
 
 void UDRRoundSystem::EndTurn()
 {
+	mCharacterInPlay->mOnTurnEnd.Broadcast();
+
 	if (mGameMode->IsGameOver())
 	{
 		GetWorld()->GetFirstPlayerController()->GetHUD<ADRHUD>()->ShowGameOverScreen();
 	}
 	else
 	{
+		FTimerHandle handle;
+		//GetWorld()->GetTimerManager().SetTimer(handle,this, &UDRRoundSystem::StartTurn,3);
 		StartTurn();
 	}
 }
@@ -64,7 +68,7 @@ void UDRRoundSystem::StartTurn()
 	if (mTurnQueue->IsEmpty()) return;
 
 	ADRCharacter* previousCharacter = mCharacterInPlay;
-	mCharacterInPlay = mTurnQueue->GetAndRemoveNext();
+	mCharacterInPlay = mTurnQueue->GetNext();
 
 	mOnNewTurn.Broadcast(previousCharacter, mCharacterInPlay);
 	mCharacterInPlay->mOnTurnStart.Broadcast();
