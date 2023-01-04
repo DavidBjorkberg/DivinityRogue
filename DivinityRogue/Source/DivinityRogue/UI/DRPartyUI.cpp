@@ -4,7 +4,7 @@
 #include "DRPartyUI.h"
 
 #include "DRGameplayStatics.h"
-#include "DRUnitInfo.h"
+#include "DRTurnOrderUnitInfo.h"
 
 void UDRPartyUI::NativeConstruct()
 {
@@ -20,7 +20,7 @@ void UDRPartyUI::NativeConstruct()
 
 void UDRPartyUI::AddCharacter(ADRCharacter* characterToAdd)
 {
-	UDRUnitInfo* newUnitInfo = CreateWidget<UDRUnitInfo>(this, mUnitInfoClass);
+	UDRPartyUnitInfo* newUnitInfo = CreateWidget<UDRPartyUnitInfo>(this, mUnitInfoClass);
 	newUnitInfo->Init(characterToAdd);
 	mUnitInfos->AddChild(newUnitInfo);
 }

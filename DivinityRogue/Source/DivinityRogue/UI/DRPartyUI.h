@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DRUnitInfo.h"
+#include "DRPartyUnitInfo.h"
+#include "DRTurnOrderUnitInfo.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/VerticalBox.h"
 #include "DRPartyUI.generated.h"
@@ -22,7 +23,7 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UVerticalBox* mUnitInfos;
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UDRUnitInfo> mUnitInfoClass;
+	TSubclassOf<UDRPartyUnitInfo> mUnitInfoClass;
 private:
 	UFUNCTION()
 	void AddCharacter(ADRCharacter* characterToAdd);

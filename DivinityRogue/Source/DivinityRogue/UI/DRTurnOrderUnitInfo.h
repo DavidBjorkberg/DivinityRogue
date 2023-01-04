@@ -10,13 +10,13 @@
 #include "Components/Image.h"
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
-#include "DRUnitInfo.generated.h"
+#include "DRTurnOrderUnitInfo.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DIVINITYROGUE_API UDRUnitInfo : public UUserWidget
+class DIVINITYROGUE_API UDRTurnOrderUnitInfo : public UUserWidget
 {
 	GENERATED_BODY()
 public:

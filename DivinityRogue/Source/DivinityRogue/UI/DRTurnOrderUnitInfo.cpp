@@ -1,12 +1,12 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "DRUnitInfo.h"
+#include "DRTurnOrderUnitInfo.h"
 
 #include "Animation/WidgetAnimation.h"
 #include "Components/HorizontalBoxSlot.h"
 
-void UDRUnitInfo::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+void UDRTurnOrderUnitInfo::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	if (mIsSliding)
@@ -21,7 +21,7 @@ void UDRUnitInfo::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	}
 }
 
-void UDRUnitInfo::Init(ADRCharacter* character)
+void UDRTurnOrderUnitInfo::Init(ADRCharacter* character)
 {
 	mCharacter = character;
 	if (character->GetAbilityTargetComponent()->GetTeam() == ETeam::ENEMY)
@@ -29,17 +29,17 @@ void UDRUnitInfo::Init(ADRCharacter* character)
 		mBorder->SetBrushColor(FLinearColor(1, 0, 0, 1));
 	}
 	mImage->SetBrushFromTexture(character->mCharacterTemplate->Icon);
-	character->GetHealthComponent()->mOnHealthChanged.AddDynamic(this, &UDRUnitInfo::OnHealthChange);
+	character->GetHealthComponent()->mOnHealthChanged.AddDynamic(this, &UDRTurnOrderUnitInfo::OnHealthChange);
 	OnHealthChange(character->GetHealthComponent()->GetCurrentHealth());
 }
 
-void UDRUnitInfo::OnHealthChange(int newHealth)
+void UDRTurnOrderUnitInfo::OnHealthChange(int newHealth)
 {
 	UDRHealthComponent* healthComp = mCharacter->GetHealthComponent();
 	mHealthbar->UpdateHealthbar(healthComp->GetMaxHealth(), newHealth);
 }
 
-void UDRUnitInfo::Highlight()
+void UDRTurnOrderUnitInfo::Highlight()
 {
 	ForceLayoutPrepass();
 	FVector2D defaultSize = GetDesiredSize();
@@ -48,14 +48,14 @@ void UDRUnitInfo::Highlight()
 	mNameText->SetText(mCharacter->mCharacterTemplate->Name);
 }
 
-void UDRUnitInfo::Unhighlight()
+void UDRTurnOrderUnitInfo::Unhighlight()
 {
 	mSizeBox->ClearWidthOverride();
 	mSizeBox->ClearHeightOverride();
 	mNameText->SetText(FText::FromString(""));
 }
 
-void UDRUnitInfo::StartSlide(float targetX)
+void UDRTurnOrderUnitInfo::StartSlide(float targetX)
 {
 	mTargetX = targetX;
 	mT = 0;

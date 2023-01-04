@@ -3,7 +3,7 @@
 
 #include "DRTurnOrderUI.h"
 
-#include "DRUnitInfo.h"
+#include "DRTurnOrderUnitInfo.h"
 #include "Animation/WidgetAnimation.h"
 #include "Components/HorizontalBoxSlot.h"
 
@@ -66,7 +66,7 @@ void UDRTurnOrderUI::OnContinuedToNextCharacter()
 
 void UDRTurnOrderUI::AddUnit(ADRCharacter* character)
 {
-	UDRUnitInfo* newUnitInfo = CreateWidget<UDRUnitInfo>(this, mUnitInfoClass);
+	UDRTurnOrderUnitInfo* newUnitInfo = CreateWidget<UDRTurnOrderUnitInfo>(this, mUnitInfoClass);
 	newUnitInfo->Init(character);
 	mTurnList->AddChild(newUnitInfo);
 	Cast<UHorizontalBoxSlot>(newUnitInfo->Slot)->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
@@ -106,7 +106,7 @@ void UDRTurnOrderUI::OnSlideCompleted()
 	GetUnitInfoAt(2)->Highlight();
 }
 
-UDRUnitInfo* UDRTurnOrderUI::GetUnitInfoAt(int index)
+UDRTurnOrderUnitInfo* UDRTurnOrderUI::GetUnitInfoAt(int index)
 {
-	return Cast<UDRUnitInfo>(mTurnList->GetChildAt(index));
+	return Cast<UDRTurnOrderUnitInfo>(mTurnList->GetChildAt(index));
 }

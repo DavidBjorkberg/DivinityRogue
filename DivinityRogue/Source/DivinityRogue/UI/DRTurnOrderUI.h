@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRCharacter.h"
-#include "DRUnitInfo.h"
+#include "DRTurnOrderUnitInfo.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/HorizontalBox.h"
 #include "DRTurnOrderUI.generated.h"
@@ -19,7 +19,7 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UHorizontalBox* mTurnList;
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UDRUnitInfo> mUnitInfoClass;
+	TSubclassOf<UDRTurnOrderUnitInfo> mUnitInfoClass;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> mSeparatorClass;
 
@@ -39,7 +39,7 @@ private:
 	void OnFadeCompleted();
 	UFUNCTION()
 	void OnSlideCompleted();
-	UDRUnitInfo* GetUnitInfoAt(int index);
+	UDRTurnOrderUnitInfo* GetUnitInfoAt(int index);
 
 	UPROPERTY()
 	UDRTurnQueue* mTurnQueue;
