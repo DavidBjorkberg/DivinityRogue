@@ -26,7 +26,7 @@ void UDRUnitInfo::Init(ADRCharacter* character)
 	mCharacter = character;
 	if (character->GetAbilityTargetComponent()->GetTeam() == ETeam::ENEMY)
 	{
-		mBorder->SetBrushTintColor(FSlateColor(FLinearColor(1, 0, 0, 1)));
+		mBorder->SetBrushColor(FLinearColor(1, 0, 0, 1));
 	}
 	mImage->SetBrushFromTexture(character->mCharacterTemplate->Icon);
 	character->GetHealthComponent()->mOnHealthChanged.AddDynamic(this, &UDRUnitInfo::OnHealthChange);

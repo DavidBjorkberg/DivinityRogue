@@ -42,8 +42,6 @@ void UDRRoundSystem::EndTurn()
 	}
 	else
 	{
-		FTimerHandle handle;
-		//GetWorld()->GetTimerManager().SetTimer(handle,this, &UDRRoundSystem::StartTurn,3);
 		StartTurn();
 	}
 }

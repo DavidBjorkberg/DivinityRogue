@@ -6,6 +6,7 @@
 #include "DRCharacter.h"
 #include "DRHealthBar.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Border.h"
 #include "Components/Image.h"
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
@@ -35,7 +36,7 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UImage* mImage;
 	UPROPERTY(meta=(BindWidget))
-	UImage* mBorder;
+	UBorder* mBorder;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* mNameText;
 	UPROPERTY(meta=(BindWidget))
