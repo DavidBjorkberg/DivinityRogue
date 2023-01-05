@@ -18,6 +18,7 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 	void SetDesiredRotation(FRotator desiredRotation) { mDesiredRotation = desiredRotation; };
 	int GetEnergyCostToMouse();
+	float GetPathLengthToMouse();
 	float mDistanceLeftUntilEnergyCost;
 protected:
 	UPROPERTY(EditDefaultsOnly)

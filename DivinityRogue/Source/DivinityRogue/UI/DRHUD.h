@@ -49,7 +49,8 @@ protected:
 	TSubclassOf<UUserWidget> mSelectRewardClass;
 private:
 	void DrawAbilityRangeCircle();
-	void DrawAbilityCostText();
+	void DrawActionCostText();
+	void DrawPathLengthText();
 	void DrawFloatingDamageTexts();
 	UFUNCTION()
 	void OnMouseHoverStateChanged(EMouseHoverState newState);

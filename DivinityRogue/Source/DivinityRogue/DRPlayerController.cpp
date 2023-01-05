@@ -106,7 +106,7 @@ void ADRPlayerController::OnLeftMouseClick()
 		{
 			FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(
 				GetWorld(), ECollisionChannel::ECC_WorldStatic);
-			if (hitResult.bBlockingHit)
+			if (hitResult.bBlockingHit && GetPathToMouse()->GetPathLength() > 0)
 			{
 				mRoundSystem->GetCharacterInPlay()->OrderMoveToLocation(hitResult.Location);
 			}

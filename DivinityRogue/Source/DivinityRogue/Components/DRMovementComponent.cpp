@@ -33,6 +33,11 @@ int UDRMovementComponent::GetEnergyCostToMouse()
 	return energyCost;
 }
 
+float UDRMovementComponent::GetPathLengthToMouse()
+{
+	return mPlayerController->GetPathToMouse()->GetPathLength();
+}
+
 void UDRMovementComponent::OnMovementUpdated(float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity)
 {
 	if (OldVelocity.Size() > 0)

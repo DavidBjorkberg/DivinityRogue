@@ -11,6 +11,7 @@
 #include "DRGameOverUI.h"
 #include "DRPlayerController.h"
 #include "DRFloatingDamageText.h"
+#include "Kismet/KismetTextLibrary.h"
 
 void ADRHUD::BeginPlay()
 {
@@ -33,9 +34,11 @@ void ADRHUD::DrawHUD()
 	{
 		DrawAbilityRangeCircle();
 	}
-	else if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mPlayerController->GetMouseHoverState() != EMouseHoverState::HoverUI)
+	else if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mPlayerController->GetMouseHoverState() !=
+		EMouseHoverState::HoverUI)
 	{
-		DrawAbilityCostText();
+		DrawActionCostText();
+		DrawPathLengthText();
 	}
 }
 
@@ -70,13 +73,13 @@ void ADRHUD::ShowGameOverScreen()
 
 void ADRHUD::ShowNextMapSelect()
 {
-	UUserWidget* nextMapSelect = CreateWidget<UUserWidget>(GetWorld(),mNextMapSelectClass);
+	UUserWidget* nextMapSelect = CreateWidget<UUserWidget>(GetWorld(), mNextMapSelectClass);
 	nextMapSelect->AddToViewport();
 }
 
 void ADRHUD::ShowSelectRewardScreen()
 {
-	mSelectRewardUI = CreateWidget<UUserWidget>(GetWorld(),mSelectRewardClass);
+	mSelectRewardUI = CreateWidget<UUserWidget>(GetWorld(), mSelectRewardClass);
 	mSelectRewardUI->AddToViewport();
 }
 
@@ -105,13 +108,38 @@ void ADRHUD::DrawAbilityRangeCircle()
 	           FColor::Orange, mGameMode->GetSelectedAbility()->GetRange(), 3000, false, -1, 0, 10);
 }
 
-void ADRHUD::DrawAbilityCostText()
+void ADRHUD::DrawActionCostText()
 {
 	int energyCost = mRoundSystem->GetCharacterInPlay()->GetDRMovementComponent()->GetEnergyCostToMouse();
 	float x;
 	float y;
+	int totalCost = energyCost + mAttackCost;
+	int currentEnergy = mRoundSystem->GetCharacterInPlay()->GetStatsComponent()->GetStats().mCurrentActionPoints;
+	bool canAfford = currentEnergy >= totalCost;
 	mPlayerController->GetMousePosition(x, y);
-	DrawText(TEXT("Cost: " + FString::FromInt(energyCost + mAttackCost)), FLinearColor::Black, x + 30, y, nullptr,
+	DrawText(TEXT("Cost: " + FString::FromInt(totalCost)),
+	         canAfford ? FLinearColor::Black : FLinearColor::Red, x + 30,
+	         y,
+	         nullptr,
+	         1.5);
+}
+
+void ADRHUD::DrawPathLengthText()
+{
+	float pathLength = mRoundSystem->GetCharacterInPlay()->GetDRMovementComponent()->GetPathLengthToMouse();
+	float x;
+	float y;
+	mPlayerController->GetMousePosition(x, y);
+
+	float pathLengthInMeters = pathLength / 100.0f;
+	FString pathLengthText = FString::SanitizeFloat(pathLengthInMeters);
+	int index;
+	pathLengthText.FindChar('.', index);
+	pathLengthText.RemoveAt(index + 2,pathLengthText.Len());
+	DrawText(pathLengthText + "m",
+	         FLinearColor::Black, x + 30,
+	         y + 20,
+	         nullptr,
 	         1.5);
 }
 
@@ -132,7 +160,8 @@ void ADRHUD::OnMouseHoverStateChanged(EMouseHoverState newState)
 	if (newState == EMouseHoverState::EnemyCharacter ||
 		newState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
 	{
-		UDRAbility_BasicAttack* basicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
+		UDRAbility_BasicAttack* basicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->
+		                                                    GetBasicAttack();
 		mAttackCost = basicAttack->GetAbilityInfo().mActionPointCost;
 	}
 	else
