@@ -105,7 +105,7 @@ bool UDRAbility::IsTargetCorrectTeam(UDRAbilityTargetComponent* targetSelectable
 
 bool UDRAbility::CanAffordCast()
 {
-	return mOwner->GetStatsComponent()->GetStats().mCurrentActionPoints >= mAbilityInfo.mActionPointCost;;
+	return mOwner->GetStatsComponent()->GetStats().mCurrentEnergy >= mAbilityInfo.mActionPointCost;;
 }
 
 void UDRAbility::OnSelectedAbilityChanged(UDRAbility* ability)

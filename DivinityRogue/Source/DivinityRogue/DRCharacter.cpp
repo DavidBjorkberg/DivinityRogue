@@ -129,7 +129,7 @@ void ADRCharacter::Died()
 
 void ADRCharacter::EndTurnIfOutOfActionPoints()
 {
-	if (mStatsComponent->GetStats().mCurrentActionPoints <= 0)
+	if (mStatsComponent->GetStats().mCurrentEnergy <= 0)
 	{
 		mAnimationComponent->PlayIdleAnimation();
 		mController->StopMovement();
@@ -156,7 +156,7 @@ void ADRCharacter::AddAbility(TSubclassOf<UDRAbility> newAbility)
 
 void ADRCharacter::OnTurnStart()
 {
-	mStatsComponent->ModifyEnergy(mStatsComponent->GetStats().mActionPointsPerTurn);
+	mStatsComponent->ModifyEnergy(mStatsComponent->GetStats().mEnergyPerTurn);
 }
 
 UDRMovementComponent* ADRCharacter::GetDRMovementComponent()

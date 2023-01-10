@@ -21,7 +21,6 @@ void UDRMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                          FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 }
 
 int UDRMovementComponent::GetEnergyCostToMouse()
@@ -40,13 +39,14 @@ float UDRMovementComponent::GetPathLengthToMouse()
 
 void UDRMovementComponent::OnMovementUpdated(float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity)
 {
-	if (OldVelocity.Size() > 0)
+	if (OldVelocity.Size2D() > 0)
 	{
 		SetDesiredRotation(OldVelocity.GetSafeNormal2D().Rotation());
 		FVector moveVec = OldVelocity * DeltaSeconds;
 		mDistanceLeftUntilEnergyCost -= moveVec.Length();
 		if (mDistanceLeftUntilEnergyCost <= 0)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Spent energy"));
 			mOwner->FindComponentByClass<UDRStatsComponent>()->ModifyEnergy(-1);
 			mOwner->EndTurnIfOutOfActionPoints();
 			mDistanceLeftUntilEnergyCost = mOwner->GetStatsComponent()->GetStats().mMovement;

@@ -66,7 +66,7 @@ protected:
 private:
 	void InitializePlayerCharacters();
 	void InitializeEnemyCharacters();
-	void SpawnCharacter(UDRCharacterTemplate* charTemplate, FVector location, ETeam team);
+	void SpawnCharacter(UDRCharacterTemplate* charTemplate, FVector location,FRotator rotation, ETeam team);
 	UFUNCTION()
 	void OnUnitDied(ADRCharacter* deadUnit);
 	UPROPERTY()

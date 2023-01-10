@@ -30,7 +30,7 @@ void UDRAbilityTargetComponent::ModifyEnergy(int difference)
 {
 	if (UDRStatsComponent* statsComp = GetOwner()->FindComponentByClass<UDRStatsComponent>())
 	{
-		check(statsComp->GetStats().mCurrentActionPoints + difference >= 0);
+		check(statsComp->GetStats().mCurrentEnergy + difference >= 0);
 		statsComp->ModifyEnergy(difference);
 	}
 }

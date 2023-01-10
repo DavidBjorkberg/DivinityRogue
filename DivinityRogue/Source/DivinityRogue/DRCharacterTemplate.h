@@ -17,20 +17,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText Name;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Stats")
-	int MaxHealth = 40;
+	int MaxHealth = 85;
 	int CurrentHealth;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Stats")
 	int Speed = 5;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Stats")
-	int MaxActionPoints = 4;
+	int MaxEnergy = 3;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Stats")
-	int StartActionPoints = 3;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Stats")
-	int ActionPointsPerTurn = 2;
+	int EnergyPerTurn = 3;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Stats")
 	int MovementSpeed = 6;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Stats")
-	int Movement = 250;
+	int Movement = 500;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TArray<TSubclassOf<UDRAbility>> AbilityClasses;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)

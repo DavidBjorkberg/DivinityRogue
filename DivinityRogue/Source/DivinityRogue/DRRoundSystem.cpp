@@ -58,13 +58,6 @@ void UDRRoundSystem::RemoveFromTurnQueue(ADRCharacter* character)
 
 void UDRRoundSystem::StartTurn()
 {
-	if (mTurnQueue->IsEmpty())
-	{
-		EndRound();
-		return;
-	}
-	if (mTurnQueue->IsEmpty()) return;
-
 	ADRCharacter* previousCharacter = mCharacterInPlay;
 	mCharacterInPlay = mTurnQueue->GetNext();
 

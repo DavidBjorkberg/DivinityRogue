@@ -20,7 +20,6 @@ public:
 	ADRCharacter* GetNext();
 	void Remove(ADRCharacter* characterToRemove);
 	void FillQueueFromWorld();
-	bool IsEmpty() const { return mQueue.Num() == 0; }
 	int GetQueueSize() const { return mQueue.Num(); }
 	ADRCharacter* GetCharacterAt(int index) { return mQueue[index]; }
 	FCharacterAdded mOnCharacterAdded;

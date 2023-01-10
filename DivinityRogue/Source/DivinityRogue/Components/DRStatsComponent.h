@@ -11,20 +11,18 @@ USTRUCT(BlueprintType)
 struct FCharacterStats
 {
 	GENERATED_BODY()
-	UPROPERTY(BlueprintReadOnly, DisplayName="Speed")
+	UPROPERTY(BlueprintReadOnly, DisplayName="Initiative")
 	int mInitiative;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Movement Speed")
 	int mMovementSpeed;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Movement")
 	int mMovement;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Max Energy")
-	int mMaxActionPoints;
+	int mMaxEnergy;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Current Energy")
-	int mCurrentActionPoints;
-	UPROPERTY(BlueprintReadOnly, DisplayName="Start Energy")
-	int mStartActionPoints;
+	int mCurrentEnergy;
 	UPROPERTY(BlueprintReadOnly, DisplayName="Energy per turn")
-	int mActionPointsPerTurn;
+	int mEnergyPerTurn;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnergyChange, int, newEnergy);

@@ -10,17 +10,15 @@ UDRStatsComponent::UDRStatsComponent()
 
 void UDRStatsComponent::ModifyEnergy(int difference)
 {
-	mStats.mCurrentActionPoints = FMath::Clamp(mStats.mCurrentActionPoints + difference, 0, mStats.mMaxActionPoints);
-	mOnEnergyChange.Broadcast(mStats.mCurrentActionPoints);
+	mStats.mCurrentEnergy = FMath::Clamp(mStats.mCurrentEnergy + difference, 0, mStats.mMaxEnergy);
+	mOnEnergyChange.Broadcast(mStats.mCurrentEnergy);
 }
 
 void UDRStatsComponent::ApplyTemplate(UDRCharacterTemplate* charTemplate)
 {
 	mStats.mInitiative = charTemplate->Speed;
-	mStats.mMaxActionPoints = charTemplate->MaxActionPoints;
-	mStats.mStartActionPoints = charTemplate->StartActionPoints;
-	mStats.mCurrentActionPoints = charTemplate->StartActionPoints;
-	mStats.mActionPointsPerTurn = charTemplate->ActionPointsPerTurn;
+	mStats.mMaxEnergy = charTemplate->MaxEnergy;
+	mStats.mEnergyPerTurn = charTemplate->EnergyPerTurn;
 	mStats.mMovement = charTemplate->Movement;
 	mStats.mMovementSpeed = charTemplate->MovementSpeed;
 }

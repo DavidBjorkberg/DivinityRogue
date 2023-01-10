@@ -114,7 +114,7 @@ void ADRHUD::DrawActionCostText()
 	float x;
 	float y;
 	int totalCost = energyCost + mAttackCost;
-	int currentEnergy = mRoundSystem->GetCharacterInPlay()->GetStatsComponent()->GetStats().mCurrentActionPoints;
+	int currentEnergy = mRoundSystem->GetCharacterInPlay()->GetStatsComponent()->GetStats().mCurrentEnergy;
 	bool canAfford = currentEnergy >= totalCost;
 	mPlayerController->GetMousePosition(x, y);
 	DrawText(TEXT("Cost: " + FString::FromInt(totalCost)),

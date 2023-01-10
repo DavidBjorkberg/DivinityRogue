@@ -91,7 +91,8 @@ void ADRGameMode::InitializePlayerCharacters()
 	{
 		UDRCharacterTemplate* charTemplate = GI->mPlayerCharacters[i];
 		FVector spawnLocation = playerSpawnpoints[i]->GetActorLocation();
-		SpawnCharacter(charTemplate,spawnLocation, ETeam::PLAYER);
+		FRotator spawnRotation = playerSpawnpoints[i]->GetActorRotation();
+		SpawnCharacter(charTemplate, spawnLocation, spawnRotation, ETeam::PLAYER);
 	}
 }
 
@@ -108,10 +109,9 @@ void ADRGameMode::InitializeEnemyCharacters()
 	}
 }
 
-void ADRGameMode::SpawnCharacter(UDRCharacterTemplate* charTemplate, FVector location, ETeam team)
+void ADRGameMode::SpawnCharacter(UDRCharacterTemplate* charTemplate, FVector location, FRotator rotation, ETeam team)
 {
-	ADRCharacter* spawnedChar = GetWorld()->SpawnActor<ADRCharacter>(mPlayerCharacterClass);
-	spawnedChar->SetActorLocation(location);
+	ADRCharacter* spawnedChar = GetWorld()->SpawnActor<ADRCharacter>(mPlayerCharacterClass, location, rotation);
 	spawnedChar->Initialize(charTemplate, team);
 	mOnCharacterSpawned.Broadcast(spawnedChar);
 }

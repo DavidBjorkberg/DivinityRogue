@@ -65,7 +65,7 @@ bool ADREnemyAIController::TryMoveTo(UDRAbilityTargetComponent* target)
 void ADREnemyAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
 	Super::OnMoveCompleted(RequestID, Result);
-	if (Result.IsSuccess() && mOwner->GetStatsComponent()->GetStats().mCurrentActionPoints > 0)
+	if (Result.IsSuccess() && mOwner->GetStatsComponent()->GetStats().mCurrentEnergy > 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("MoveCompleted"));
 		StartRequestAction();
@@ -74,7 +74,7 @@ void ADREnemyAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFo
 
 void ADREnemyAIController::OnFinishedAttack()
 {
-	if (mOwner->GetStatsComponent()->GetStats().mCurrentActionPoints > 0)
+	if (mOwner->GetStatsComponent()->GetStats().mCurrentEnergy > 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("FinishedAttack"));
 		StartRequestAction();
