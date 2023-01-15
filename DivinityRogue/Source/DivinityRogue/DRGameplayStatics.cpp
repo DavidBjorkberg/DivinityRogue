@@ -35,6 +35,12 @@ bool UDRGameplayStatics::GetGroundHitResultUnderCursor(const UObject* worldConte
 	return true;
 }
 
+ADRCharacter* UDRGameplayStatics::GetCharacterInPlay(const UObject* worldContextObject)
+{
+	UDRRoundSystem* roundSystem = worldContextObject->GetWorld()->GetSubsystem<UDRRoundSystem>();
+	return roundSystem->GetCharacterInPlay();
+}
+
 void UDRGameplayStatics::GetAllAlivePlayerCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& playerList)
 {
 	playerList.Empty();

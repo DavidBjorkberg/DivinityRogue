@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NavigationPath.h"
 #include "Components/SplineComponent.h"
 #include "Components/SplineMeshComponent.h"
 #include "GameFramework/Actor.h"
@@ -16,19 +17,18 @@ class DIVINITYROGUE_API ADRMovementSpline : public AActor
 	
 public:	
 	ADRMovementSpline();
-	UFUNCTION(BlueprintImplementableEvent)
 	void DrawMovementSpline();
-	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
 	void ClearSpline();
 protected:
 	virtual void BeginPlay() override;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USplineComponent* mSplineComp;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<USplineMeshComponent*> mSplineMeshComps;
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMesh* mSplineMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USplineComponent* mSplineComp;
 private:
+	void CreateSplineMeshComponents(TArray<FVector> pathPoints);
+	UPROPERTY()
+	TArray<USplineMeshComponent*> mSplineMeshComps;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 };

@@ -24,6 +24,8 @@ public:
 	static bool GetGroundHitResultUnderCursor(const UObject* worldContextObject, FHitResult& outHitResult,
 	                                          bool onlyWalkable);
 
+	UFUNCTION(BlueprintPure, Category="DivinityRTS", meta =(WorldContext = "WorldContextObject"))
+	static ADRCharacter* GetCharacterInPlay(const UObject* worldContextObject);
 	UFUNCTION(BlueprintPure, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
 	static ADRHUD* GetHUD(const UObject* WorldContextObject)
 	{
