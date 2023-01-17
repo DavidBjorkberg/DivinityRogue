@@ -18,6 +18,7 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 	void SetDesiredRotation(FRotator desiredRotation) { mDesiredRotation = desiredRotation; };
 	int GetEnergyCostToMouse();
+	float GetWalkableDistance();
 	float GetPathLengthToMouse();
 	float mDistanceLeftUntilEnergyCost;
 protected:
@@ -36,5 +37,6 @@ private:
 	ADRPlayerController* mPlayerController;
 	FRotator mDesiredRotation;
 	int mMovementSpeed;
+	float distanceTravelled;
 };
 

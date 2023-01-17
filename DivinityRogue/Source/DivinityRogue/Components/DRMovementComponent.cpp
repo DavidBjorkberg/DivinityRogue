@@ -26,15 +26,33 @@ void UDRMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 int UDRMovementComponent::GetEnergyCostToMouse()
 {
 	const float characterMovement = mOwner->GetStatsComponent()->GetStats().mMovement;
-	float pathLength = mPlayerController->GetPathToMouse()->GetPathLength();
+	float pathLength = GetPathLengthToMouse();
 	pathLength -= mDistanceLeftUntilEnergyCost;
 	int energyCost = FMath::CeilToInt(pathLength / characterMovement);
 	return energyCost;
 }
 
+float UDRMovementComponent::GetWalkableDistance()
+{
+	const float characterMovement = mOwner->GetStatsComponent()->GetStats().mMovement;
+	int currentEnergy = mOwner->GetStatsComponent()->GetStats().mCurrentEnergy;
+	float walkableDistance = mDistanceLeftUntilEnergyCost + characterMovement * (currentEnergy - 1);
+	return walkableDistance;
+}
+
 float UDRMovementComponent::GetPathLengthToMouse()
 {
-	return mPlayerController->GetPathToMouse()->GetPathLength();
+	UNavigationPath* path = mPlayerController->FindTruncatedPathToMouse(); 
+	float distance2D = 0;
+	for (int i = 0; i < path->PathPoints.Num() - 1; i++)
+	{
+		if (path->PathPoints[i].Z != path->PathPoints[i + 1].Z)
+			continue;
+		
+		distance2D += FVector::Dist2D(path->PathPoints[i], path->PathPoints[i + 1]);
+	}
+
+	return distance2D;
 }
 
 void UDRMovementComponent::OnMovementUpdated(float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity)
@@ -42,15 +60,16 @@ void UDRMovementComponent::OnMovementUpdated(float DeltaSeconds, const FVector& 
 	if (OldVelocity.Size2D() > 0)
 	{
 		SetDesiredRotation(OldVelocity.GetSafeNormal2D().Rotation());
-		FVector moveVec = OldVelocity * DeltaSeconds;
-		mDistanceLeftUntilEnergyCost -= moveVec.Length();
+		float distance = FVector::Dist2D(GetOwner()->GetActorLocation(),OldLocation);
+		mDistanceLeftUntilEnergyCost -= distance;
+		distanceTravelled += distance;
 		if (mDistanceLeftUntilEnergyCost <= 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Spent energy"));
 			mOwner->FindComponentByClass<UDRStatsComponent>()->ModifyEnergy(-1);
 			mOwner->EndTurnIfOutOfActionPoints();
 			mDistanceLeftUntilEnergyCost = mOwner->GetStatsComponent()->GetStats().mMovement;
 		}
+		
 		if (!GetOwner()->GetActorRotation().Equals(mDesiredRotation, 10.0f))
 		{
 			FRotator deltaRotation = mDesiredRotation - GetOwner()->GetActorRotation();

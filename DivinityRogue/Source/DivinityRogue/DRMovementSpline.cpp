@@ -22,7 +22,7 @@ void ADRMovementSpline::DrawMovementSpline()
 
 	ADRPlayerController* pc = GetWorld()->GetFirstPlayerController<ADRPlayerController>();
 
-	UNavigationPath* path = pc->GetPathToMouse();
+	UNavigationPath* path = pc->FindTruncatedPathToMouse();
 	TArray<FVector> pathPoints;
 	for (int i = 0; i < path->PathPoints.Num(); i++)
 	{

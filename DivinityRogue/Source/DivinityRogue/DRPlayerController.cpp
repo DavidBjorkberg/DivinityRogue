@@ -84,6 +84,69 @@ void ADRPlayerController::SetupInputComponent()
 	                           &ADRPlayerController::OnLeftMouseClick);
 }
 
+UNavigationPath* ADRPlayerController::FindTruncatedPathToMouse()
+{
+	ADRCharacter* charInPlay = mRoundSystem->GetCharacterInPlay();
+
+	float maxDistance = charInPlay->GetDRMovementComponent()->GetWalkableDistance();
+	UNavigationPath* pathToMouse = GetPathToMouse();
+	if (pathToMouse == nullptr)
+		return nullptr;
+
+	float walkedDistance = 0;
+	TArray<float> distances;
+	int lastReachedPointIndex = 0;
+	for (int i = 0; i < pathToMouse->PathPoints.Num() - 1; i++)
+	{
+		float distance = FVector::Dist2D(pathToMouse->PathPoints[i], pathToMouse->PathPoints[i + 1]);
+		distances.Add(distance);
+		walkedDistance += distance;
+		if (walkedDistance > maxDistance)
+		{
+			lastReachedPointIndex = i;
+			break;
+		}
+	}
+	if (walkedDistance <= maxDistance)
+	{
+		return pathToMouse;
+	}
+	FVector dirToNextPoint = pathToMouse->PathPoints[lastReachedPointIndex + 1] - pathToMouse->PathPoints[
+		lastReachedPointIndex];
+	dirToNextPoint = dirToNextPoint.GetSafeNormal();
+
+	float remainingDistance;
+	if (lastReachedPointIndex == 0)
+	{
+		remainingDistance = maxDistance;
+	}
+	else
+	{
+		//remainingDistance = maxDistance - distances[lastReachedPointIndex];
+		float sumOfPreviousDistances = 0;
+		for (int i = 0; i < lastReachedPointIndex; i++)
+		{
+			sumOfPreviousDistances += distances[i];
+		}
+		remainingDistance = maxDistance - sumOfPreviousDistances;
+		//remainingDistance = walkedDistance - maxDistance;
+	}
+	FVector newLastPoint = pathToMouse->PathPoints[lastReachedPointIndex] + dirToNextPoint * remainingDistance;
+	ADRCharacter* characterInPlay = mRoundSystem->GetCharacterInPlay();
+	FVector pathStart = characterInPlay->GetActorLocation();
+
+	return UNavigationSystemV1::FindPathToLocationSynchronously(
+		GetWorld(), pathStart, newLastPoint, characterInPlay);
+
+	//If path is longer than maxdistance
+	//Iterate through the points and see which is the last one that is under max distance
+	//Get the direction from the found point to the last point
+	//Get the remaining distance to walk
+	//Get the new last point my multiplying direction with remaining distance
+	// find new path to that point.
+	//Return
+}
+
 void ADRPlayerController::OnLeftMouseClick()
 {
 	if (!mRoundSystem->IsPlayersTurn()) return;
@@ -102,7 +165,7 @@ void ADRPlayerController::OnLeftMouseClick()
 				characterInPlay->OrderAttackMoveToActor(mSelectableUnderCursor);
 			}
 		}
-		else if(GetMouseHoverState() != EMouseHoverState::HoverUI)
+		else if (GetMouseHoverState() != EMouseHoverState::HoverUI)
 		{
 			FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(
 				GetWorld(), ECollisionChannel::ECC_WorldStatic);

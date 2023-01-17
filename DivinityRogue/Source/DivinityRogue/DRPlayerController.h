@@ -40,8 +40,8 @@ public:
 	UFUNCTION(BlueprintPure)
 	UDRAbilityTargetComponent* GetAbilityTargetUnderCursor() const { return mSelectableUnderCursor; }
 
-	UFUNCTION(BlueprintCallable)
-	UNavigationPath* GetPathToMouse();
+	//Returns the path to the mouse. Truncated to the length the current character can walk.
+	UNavigationPath* FindTruncatedPathToMouse();
 
 	UFUNCTION(BlueprintPure)
 	EMouseHoverState GetMouseHoverState() const { return mMouseHoverState; }
@@ -63,6 +63,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> mAttackCursorWidget;
 private:
+	UFUNCTION(BlueprintCallable)
+	UNavigationPath* GetPathToMouse();
 	UFUNCTION()
 	void OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState);
 	UFUNCTION()
