@@ -27,7 +27,7 @@ int UDRMovementComponent::GetEnergyCostToMouse()
 {
 	const float characterMovement = mOwner->GetStatsComponent()->GetStats().mMovement;
 	float pathLength = GetPathLengthToMouse();
-	pathLength -= mDistanceLeftUntilEnergyCost;
+	pathLength -= mDistanceLeftUntilEnergyCost -1;
 	int energyCost = FMath::CeilToInt(pathLength / characterMovement);
 	return energyCost;
 }
