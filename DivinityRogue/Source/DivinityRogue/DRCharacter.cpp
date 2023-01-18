@@ -8,6 +8,7 @@
 #include "DRGameplayStatics.h"
 #include "DRHUD.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/DecalComponent.h"
 #include "Engine/StaticMeshActor.h"
 
 ADRCharacter::ADRCharacter(const FObjectInitializer& ObjectInitializer) :
@@ -157,6 +158,21 @@ void ADRCharacter::AddAbility(TSubclassOf<UDRAbility> newAbility)
 void ADRCharacter::OnTurnStart()
 {
 	mStatsComponent->ModifyEnergy(mStatsComponent->GetStats().mEnergyPerTurn);
+}
+
+void ADRCharacter::ShowRangeIndicator(float range)
+{
+	mRangeIndicator = GetWorld()->SpawnActor<ADRCircleDecal>(mRangeIndicatorClass);
+	mRangeIndicator->GetDecalComponent()->SetDecalMaterial(mRangeIndicatorMaterial);
+	mRangeIndicator->SetRadius(range);
+	mRangeIndicator->SetActorLocation(GetActorLocation() + FVector(0,0,10));
+	mRangeIndicator->SetActorRotation(FVector(0,0,1).Rotation());
+
+}
+
+void ADRCharacter::HideRangeIndicator()
+{
+	mRangeIndicator->Destroy();
 }
 
 UDRMovementComponent* ADRCharacter::GetDRMovementComponent()

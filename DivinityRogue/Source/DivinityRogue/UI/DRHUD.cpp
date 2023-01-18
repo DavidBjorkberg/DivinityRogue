@@ -30,11 +30,7 @@ void ADRHUD::DrawHUD()
 	DrawFloatingDamageTexts();
 	if (!mRoundSystem->IsPlayersTurn()) return;
 
-	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
-	{
-		DrawAbilityRangeCircle();
-	}
-	else if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mPlayerController->GetMouseHoverState() !=
+	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mPlayerController->GetMouseHoverState() !=
 		EMouseHoverState::HoverUI)
 	{
 		DrawActionCostText();

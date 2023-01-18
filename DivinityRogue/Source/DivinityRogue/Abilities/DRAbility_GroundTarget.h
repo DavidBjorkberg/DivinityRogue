@@ -28,7 +28,8 @@ protected:
 	virtual void ClearSelection() override;
 	virtual void OnAbilitySelected() override;
 	virtual void OnAbilityDeselected() override;
-	virtual bool IsOnValidArea();
+	virtual bool IsTargetLocationInRange();
+	virtual bool IsTargetLocationOnWall();
 	virtual bool IsValidTarget(UDRAbilityTargetComponent* target) override;
 	void SetDecalMaterial(UMaterialInterface* newMaterial);
 	virtual FVector GetTargetLocation() { return mTargetLocation; }

@@ -7,6 +7,7 @@
 #include "DRAIController.h"
 #include "DRCharacterAnimationComponent.h"
 #include "DRCharacterTemplate.h"
+#include "DRCircleDecal.h"
 #include "DRHealthComponent.h"
 #include "DRMovementComponent.h"
 #include "DRStatsComponent.h"
@@ -51,6 +52,8 @@ public:
 	void AddAbility(TSubclassOf<UDRAbility> newAbility);
 	UFUNCTION()
 	void OnTurnStart();
+	void ShowRangeIndicator(float range);
+	void HideRangeIndicator();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRCharacterAnimationComponent* GetAnimationComponent() const { return mAnimationComponent; }
 
@@ -95,6 +98,10 @@ protected:
 	UDRAbilityComponent* mAbilityComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDRAbilityTargetComponent* mAbilityTargetComponent;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ADRCircleDecal> mRangeIndicatorClass;
+	UPROPERTY(EditDefaultsOnly)
+	UMaterialInterface* mRangeIndicatorMaterial;
 	//Components - End
 
 private:
@@ -106,4 +113,6 @@ private:
 	ADRGameMode* mGameMode;
 	UPROPERTY()
 	UDRRoundSystem* mRoundSystem;
+	UPROPERTY()
+	ADRCircleDecal* mRangeIndicator;
 };

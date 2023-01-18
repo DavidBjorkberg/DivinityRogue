@@ -28,7 +28,6 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameplayStateChange, EGameplayStat
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSelectedAbilityChanged, UDRAbility*, ability);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterSpawned, ADRCharacter*, spawnedCharacter);
 
-
 UCLASS()
 class DIVINITYROGUE_API ADRGameMode : public AGameModeBase
 {

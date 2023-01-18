@@ -11,7 +11,7 @@ void UDRAbility_GroundTarget_Inclusive::OnLeftMouseDown()
 	{
 		FHitResult groundUnderCursorHitResult;
 		UDRGameplayStatics::GetGroundHitResultUnderCursor(GetWorld(), groundUnderCursorHitResult, false);
-		if (IsOnValidArea())
+		if (IsTargetLocationInRange() && !IsTargetLocationOnWall())
 		{
 			mTargetLocation = groundUnderCursorHitResult.Location;
 			mTargets = UDRGameplayStatics::GetAllAbilityTargetsInRadius(GetWorld(), groundUnderCursorHitResult.Location,

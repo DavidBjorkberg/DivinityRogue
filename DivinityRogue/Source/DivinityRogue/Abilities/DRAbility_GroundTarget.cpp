@@ -16,9 +16,10 @@ void UDRAbility_GroundTarget::Tick(float DeltaTime)
 		if (UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, mouseGroundHitResult, false))
 		{
 			mDecalActorInst->SetActorLocation(mouseGroundHitResult.Location + FVector(0, 0, 20));
-			mDecalActorInst->SetActorRotation((-mouseGroundHitResult.Normal).Rotation());
 		}
-		if (IsOnValidArea())
+		mDecalActorInst->SetActorHiddenInGame(IsTargetLocationOnWall());
+
+		if (IsTargetLocationInRange())
 		{
 			SetDecalMaterial(mDecalMaterial);
 		}
@@ -53,6 +54,7 @@ void UDRAbility_GroundTarget::OnAbilitySelected()
 	mDecalActorInst = GetWorld()->SpawnActor<ADRCircleDecal>(mDecalActor);
 	SetDecalMaterial(mDecalMaterial);
 	mDecalActorInst->SetRadius(mRadius);
+	mDecalActorInst->SetActorRotation(FVector(0, 0, 1).Rotation());
 }
 
 void UDRAbility_GroundTarget::OnAbilityDeselected()
@@ -61,11 +63,18 @@ void UDRAbility_GroundTarget::OnAbilityDeselected()
 	mDecalActorInst->Destroy();
 }
 
-bool UDRAbility_GroundTarget::IsOnValidArea()
+bool UDRAbility_GroundTarget::IsTargetLocationInRange()
 {
 	FHitResult groundUnderCursorHitResult;
 	UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, groundUnderCursorHitResult, false);
 	return IsInRange(groundUnderCursorHitResult.Location);
+}
+
+bool UDRAbility_GroundTarget::IsTargetLocationOnWall()
+{
+	FHitResult groundUnderCursorHitResult;
+	UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, groundUnderCursorHitResult, false);
+	return groundUnderCursorHitResult.Normal != FVector(0, 0, 1);
 }
 
 bool UDRAbility_GroundTarget::IsValidTarget(UDRAbilityTargetComponent* target)

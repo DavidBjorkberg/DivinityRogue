@@ -16,6 +16,6 @@ class DIVINITYROGUE_API UDRAbility_GroundTarget_Exclusive : public UDRAbility_Gr
 public:
 	virtual void OnLeftMouseDown() override;
 protected:
-	virtual bool IsOnValidArea() override;
+	virtual bool IsTargetLocationInRange() override;
 
 };

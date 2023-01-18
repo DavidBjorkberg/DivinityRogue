@@ -27,7 +27,7 @@ void ADRAIController::OnFinishedAttack()
 
 void ADRAIController::OrderMoveToLocation(FVector targetLoc)
 {
-	MoveToLocation(targetLoc, 0, false);
+	MoveToLocation(targetLoc, 1, false);
 	mOwner->GetAnimationComponent()->PlayRunAnimation();
 	mGameMode->SetGameplayState(EGameplayState::WalkingPath);
 }

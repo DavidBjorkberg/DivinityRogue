@@ -34,6 +34,7 @@ void UDRAbility::Use()
 
 void UDRAbility::OnAbilitySelected()
 {
+	mOwner->ShowRangeIndicator(mAbilityInfo.mRange);
 	mIsSelected = true;
 	ClearSelection();
 	mPlayerController->mOnLeftMouseDown.AddDynamic(this, &UDRAbility::OnLeftMouseDown);
@@ -41,6 +42,7 @@ void UDRAbility::OnAbilitySelected()
 
 void UDRAbility::OnAbilityDeselected()
 {
+	mOwner->HideRangeIndicator();
 	mIsSelected = false;
 	mPlayerController->mOnLeftMouseDown.RemoveDynamic(this, &UDRAbility::OnLeftMouseDown);
 }
@@ -82,7 +84,7 @@ bool UDRAbility::IsInRange(UDRAbilityTargetComponent* target)
 
 bool UDRAbility::IsInRange(FVector targetLocation)
 {
-	float distanceToTarget = FVector::Distance(mOwner->GetActorLocation(), targetLocation);
+	float distanceToTarget = FVector::Dist2D(mOwner->GetActorLocation(), targetLocation);
 	return distanceToTarget <= mAbilityInfo.mRange;
 }
 

@@ -9,7 +9,7 @@ void UDRAbility_GroundTarget_Exclusive::OnLeftMouseDown()
 {
 	if (mGameMode->IsInGameplayState(EGameplayState::SelectingTarget))
 	{
-		if (IsOnValidArea())
+		if (IsTargetLocationInRange() && !IsTargetLocationOnWall())
 		{
 			FHitResult groundUnderCursorHitResult;
 			UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, groundUnderCursorHitResult, true);
@@ -24,7 +24,7 @@ void UDRAbility_GroundTarget_Exclusive::OnLeftMouseDown()
 	}
 }
 
-bool UDRAbility_GroundTarget_Exclusive::IsOnValidArea()
+bool UDRAbility_GroundTarget_Exclusive::IsTargetLocationInRange()
 {
 	FHitResult groundUnderCursorHitResult;
 	return UDRGameplayStatics::GetGroundHitResultUnderCursor(mWorld, groundUnderCursorHitResult, true) &&
