@@ -28,8 +28,8 @@ void ADRHUD::DrawHUD()
 	DrawFloatingDamageTexts();
 	if (!mRoundSystem->IsPlayersTurn()) return;
 
-	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) && mPlayerController->GetMouseHoverState() !=
-		EMouseHoverState::HoverUI)
+	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) &&
+		mPlayerController->GetMouseHoverState() != HoverUI)
 	{
 		DrawActionCostText();
 		DrawPathLengthText();
@@ -105,7 +105,7 @@ void ADRHUD::DrawAbilityRangeCircle()
 void ADRHUD::DrawActionCostText()
 {
 	int cost;
-	if (mPlayerController->GetMouseHoverState() == EnemyCharacter || mPlayerController->GetMouseHoverState() == EnemyCharacterInBasicAttackRange)
+	if (mPlayerController->GetMouseHoverState() == Enemy || mPlayerController->GetMouseHoverState() == EnemyInBasicAttackRange)
 	{
 		UDRAbility_BasicAttack* basicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->
 		                                                    GetBasicAttack();

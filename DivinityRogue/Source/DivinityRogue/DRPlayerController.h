@@ -15,9 +15,9 @@ UENUM()
 enum EMouseHoverState
 {
 	NoCharacter,
-	AllyCharacter,
-	EnemyCharacter,
-	EnemyCharacterInBasicAttackRange,
+	Ally,
+	Enemy,
+	EnemyInBasicAttackRange,
 	HoverUI,
 };
 

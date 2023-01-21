@@ -22,7 +22,9 @@ void ADRPlayerController::Tick(float DeltaSeconds)
 
 	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) &&
 		mRoundSystem->IsPlayersTurn() &&
-		GetMouseHoverState() != EMouseHoverState::HoverUI)
+		GetMouseHoverState() != HoverUI &&
+		GetMouseHoverState() != Enemy &&
+		GetMouseHoverState() != EnemyInBasicAttackRange)
 	{
 		mMovementSpline->DrawMovementSpline();
 	}
@@ -59,7 +61,7 @@ UNavigationPath* ADRPlayerController::GetPathToMouse()
 	FVector pathStart = characterInPlay->GetActorLocation();
 	FVector pathEnd;
 
-	if (GetMouseHoverState() == EnemyCharacterInBasicAttackRange)
+	if (GetMouseHoverState() == EnemyInBasicAttackRange)
 	{
 		pathEnd = GetAbilityTargetUnderCursor()->GetOwner()->GetActorLocation();
 	}
@@ -146,7 +148,7 @@ void ADRPlayerController::OnLeftMouseClick()
 		{
 			ADRCharacter* characterInPlay = mRoundSystem->GetCharacterInPlay();
 
-			if (mMouseHoverState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
+			if (mMouseHoverState == EMouseHoverState::EnemyInBasicAttackRange)
 			{
 				characterInPlay->TryBasicAttack(mSelectableUnderCursor);
 			}
@@ -206,8 +208,8 @@ void ADRPlayerController::OnAbilityTargetUnderCursorChanged(UDRAbilityTargetComp
 	if (isPlayersTurn)
 	{
 		if (newSelectableComp != nullptr &&
-			newState == EnemyCharacter ||
-			newState == EnemyCharacterInBasicAttackRange)
+			newState == Enemy ||
+			newState == EnemyInBasicAttackRange)
 		{
 			UDRAbility* basicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
 			if (basicAttack->IsRanged())
@@ -225,8 +227,8 @@ void ADRPlayerController::OnAbilityTargetUnderCursorChanged(UDRAbilityTargetComp
 
 void ADRPlayerController::UpdateCursor()
 {
-	if (mMouseHoverState == EnemyCharacter ||
-		mMouseHoverState == EnemyCharacterInBasicAttackRange)
+	if (mMouseHoverState == Enemy ||
+		mMouseHoverState == EnemyInBasicAttackRange)
 	{
 		CurrentMouseCursor = EMouseCursor::Type::Crosshairs;
 	}
@@ -251,16 +253,16 @@ void ADRPlayerController::UpdateMouseHoverState(UDRAbilityTargetComponent* abili
 			                                                    GetBasicAttack();
 			if (mRoundSystem->IsPlayersTurn() && BasicAttack->IsInRange(abilityTargetUnderCursor))
 			{
-				mMouseHoverState = EMouseHoverState::EnemyCharacterInBasicAttackRange;
+				mMouseHoverState = EMouseHoverState::EnemyInBasicAttackRange;
 			}
 			else
 			{
-				mMouseHoverState = EMouseHoverState::EnemyCharacter;
+				mMouseHoverState = EMouseHoverState::Enemy;
 			}
 		}
 		if (targetTeam == ETeam::PLAYER)
 		{
-			mMouseHoverState = EMouseHoverState::AllyCharacter;
+			mMouseHoverState = EMouseHoverState::Ally;
 		}
 	}
 }
