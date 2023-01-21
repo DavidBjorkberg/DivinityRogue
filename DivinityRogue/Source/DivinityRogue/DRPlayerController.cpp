@@ -44,7 +44,7 @@ void ADRPlayerController::BeginPlay()
 	mMovementSpline = GetWorld()->SpawnActor<ADRMovementSpline>(mMovementSplineBP);
 	mGameMode->mOnGameplayStateChanged.AddDynamic(this, &ADRPlayerController::OnGameplayStateChanged);
 	mRoundSystem->mOnNewTurn.AddDynamic(this, &ADRPlayerController::OnNewTurn);
-	mOnCharacterUnderCursorChanged.AddDynamic(this, &ADRPlayerController::OnSelectableUnderCursorChanged);
+	mOnCharacterUnderCursorChanged.AddDynamic(this, &ADRPlayerController::OnAbilityTargetUnderCursorChanged);
 	SetInputMode(FInputModeGameAndUI());
 }
 
@@ -122,14 +122,12 @@ UNavigationPath* ADRPlayerController::FindTruncatedPathToMouse()
 	}
 	else
 	{
-		//remainingDistance = maxDistance - distances[lastReachedPointIndex];
 		float sumOfPreviousDistances = 0;
 		for (int i = 0; i < lastReachedPointIndex; i++)
 		{
 			sumOfPreviousDistances += distances[i];
 		}
 		remainingDistance = maxDistance - sumOfPreviousDistances;
-		//remainingDistance = walkedDistance - maxDistance;
 	}
 	FVector newLastPoint = pathToMouse->PathPoints[lastReachedPointIndex] + dirToNextPoint * remainingDistance;
 	ADRCharacter* characterInPlay = mRoundSystem->GetCharacterInPlay();
@@ -137,14 +135,6 @@ UNavigationPath* ADRPlayerController::FindTruncatedPathToMouse()
 
 	return UNavigationSystemV1::FindPathToLocationSynchronously(
 		GetWorld(), pathStart, newLastPoint, characterInPlay);
-
-	//If path is longer than maxdistance
-	//Iterate through the points and see which is the last one that is under max distance
-	//Get the direction from the found point to the last point
-	//Get the remaining distance to walk
-	//Get the new last point my multiplying direction with remaining distance
-	// find new path to that point.
-	//Return
 }
 
 void ADRPlayerController::OnLeftMouseClick()
@@ -192,11 +182,13 @@ void ADRPlayerController::OnNewTurn(ADRCharacter* previousCharacter, ADRCharacte
 	mMovementSpline->ClearSpline();
 }
 
-void ADRPlayerController::OnSelectableUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp,
-                                                         UDRAbilityTargetComponent* newSelectableComp)
+void ADRPlayerController::OnAbilityTargetUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp,
+                                                            UDRAbilityTargetComponent* newSelectableComp,
+                                                            EMouseHoverState newState, bool isPlayersTurn)
 {
 	UpdateMouseHoverState(newSelectableComp);
 	UpdateCursor();
+
 	if (previousSelectableComp != nullptr)
 	{
 		previousSelectableComp->SetHighlight(false);
@@ -209,6 +201,22 @@ void ADRPlayerController::OnSelectableUnderCursorChanged(UDRAbilityTargetCompone
 	else
 	{
 		mHUD->HideHoverPanel();
+	}
+	
+	if (isPlayersTurn)
+	{
+		if (newSelectableComp != nullptr &&
+			newState == EnemyCharacter ||
+			newState == EnemyCharacterInBasicAttackRange)
+		{
+			float basicAttackRange = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack()->
+			                                       GetRange();
+			mRoundSystem->GetCharacterInPlay()->ShowRangeIndicator(basicAttackRange);
+		}
+		else
+		{
+			mRoundSystem->GetCharacterInPlay()->HideRangeIndicator();
+		}
 	}
 }
 
@@ -273,6 +281,8 @@ void ADRPlayerController::UpdateCharacterUnderCursor()
 
 	if (previousSelectable != mSelectableUnderCursor)
 	{
-		mOnCharacterUnderCursorChanged.Broadcast(previousSelectable, mSelectableUnderCursor);
+		UpdateMouseHoverState(mSelectableUnderCursor);
+		mOnCharacterUnderCursorChanged.Broadcast(previousSelectable, mSelectableUnderCursor, mMouseHoverState,
+		                                         mRoundSystem->IsPlayersTurn());
 	}
 }

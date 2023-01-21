@@ -21,13 +21,10 @@ enum EMouseHoverState
 	HoverUI,
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCharacterUnderCursorChanged,
-                                             UDRAbilityTargetComponent*, previousSelectableComp,
-                                             UDRAbilityTargetComponent*, newSelectableComp);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FCharacterUnderCursorChanged,UDRAbilityTargetComponent*, previousSelectableComp,
+											 UDRAbilityTargetComponent*, newSelectableComp, EMouseHoverState, newState, bool, isPlayersTurn);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLeftMouseDown);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMouseHoverStateChanged, EMouseHoverState, newState);
 
 UCLASS()
 class DIVINITYROGUE_API ADRPlayerController : public APlayerController
@@ -51,7 +48,6 @@ public:
 
 	FCharacterUnderCursorChanged mOnCharacterUnderCursorChanged;
 	FLeftMouseDown mOnLeftMouseDown;
-	FOnMouseHoverStateChanged mOnMouseHoverStateChanged;
 protected:
 	virtual void SetupInputComponent() override;
 	UFUNCTION()
@@ -70,8 +66,8 @@ private:
 	UFUNCTION()
 	void OnNewTurn(ADRCharacter* previousCharacter, ADRCharacter* newCharacter);
 	UFUNCTION()
-	void OnSelectableUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp,
-	                                    UDRAbilityTargetComponent* newSelectableComp);
+	void OnAbilityTargetUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp,
+											 UDRAbilityTargetComponent* newSelectableComp, EMouseHoverState newState, bool isPlayersTurn);
 	void UpdateCursor();
 	void UpdateMouseHoverState(UDRAbilityTargetComponent* abilityTargetUnderCursor);
 	void UpdateCharacterUnderCursor();

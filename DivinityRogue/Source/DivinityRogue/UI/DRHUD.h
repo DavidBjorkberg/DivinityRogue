@@ -53,7 +53,8 @@ private:
 	void DrawPathLengthText();
 	void DrawFloatingDamageTexts();
 	UFUNCTION()
-	void OnMouseHoverStateChanged(EMouseHoverState newState);
+	void OnCharacterUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp,
+											 UDRAbilityTargetComponent* newSelectableComp, EMouseHoverState state, bool isPlayersTurn);
 	UPROPERTY()
 	TArray<ADRFloatingDamageText*> mFloatingDamageTexts;
  	UPROPERTY()

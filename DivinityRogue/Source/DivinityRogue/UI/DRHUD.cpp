@@ -19,8 +19,8 @@ void ADRHUD::BeginPlay()
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
 	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
-	mPlayerController->mOnMouseHoverStateChanged.AddDynamic(
-		this, &ADRHUD::OnMouseHoverStateChanged);
+	mPlayerController->mOnCharacterUnderCursorChanged.AddDynamic(
+		this, &ADRHUD::OnCharacterUnderCursorChanged);
 	ShowBattleUI();
 }
 
@@ -151,10 +151,11 @@ void ADRHUD::DrawFloatingDamageTexts()
 	}
 }
 
-void ADRHUD::OnMouseHoverStateChanged(EMouseHoverState newState)
+void ADRHUD::OnCharacterUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp,
+											 UDRAbilityTargetComponent* newSelectableComp, EMouseHoverState state, bool isPlayersTurn)
 {
-	if (newState == EMouseHoverState::EnemyCharacter ||
-		newState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
+	if (isPlayersTurn && newSelectableComp && state == EnemyCharacter ||
+		state == EnemyCharacterInBasicAttackRange)
 	{
 		UDRAbility_BasicAttack* basicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->
 		                                                    GetBasicAttack();
