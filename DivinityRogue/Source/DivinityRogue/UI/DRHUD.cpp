@@ -19,8 +19,6 @@ void ADRHUD::BeginPlay()
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
 	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
-	mPlayerController->mOnCharacterUnderCursorChanged.AddDynamic(
-		this, &ADRHUD::OnCharacterUnderCursorChanged);
 	ShowBattleUI();
 }
 
@@ -106,14 +104,23 @@ void ADRHUD::DrawAbilityRangeCircle()
 
 void ADRHUD::DrawActionCostText()
 {
-	int energyCost = mRoundSystem->GetCharacterInPlay()->GetDRMovementComponent()->GetEnergyCostToMouse();
+	int cost;
+	if (mPlayerController->GetMouseHoverState() == EnemyCharacter || mPlayerController->GetMouseHoverState() == EnemyCharacterInBasicAttackRange)
+	{
+		UDRAbility_BasicAttack* basicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->
+		                                                    GetBasicAttack();
+		cost = basicAttack->GetAbilityInfo().mActionPointCost;
+	}
+	else
+	{
+		cost = mRoundSystem->GetCharacterInPlay()->GetDRMovementComponent()->GetEnergyCostToMouse();
+	}
 	float x;
 	float y;
-	int totalCost = energyCost + mAttackCost;
 	int currentEnergy = mRoundSystem->GetCharacterInPlay()->GetStatsComponent()->GetStats().mCurrentEnergy;
-	bool canAfford = currentEnergy >= totalCost;
+	bool canAfford = currentEnergy >= cost;
 	mPlayerController->GetMousePosition(x, y);
-	DrawText(TEXT("Cost: " + FString::FromInt(totalCost)),
+	DrawText(TEXT("Cost: " + FString::FromInt(cost)),
 	         canAfford ? FLinearColor::Black : FLinearColor::Red, x + 30,
 	         y,
 	         nullptr,
@@ -131,7 +138,7 @@ void ADRHUD::DrawPathLengthText()
 	FString pathLengthText = FString::SanitizeFloat(pathLengthInMeters);
 	int index;
 	pathLengthText.FindChar('.', index);
-	pathLengthText.RemoveAt(index + 2,pathLengthText.Len());
+	pathLengthText.RemoveAt(index + 2, pathLengthText.Len());
 	DrawText(pathLengthText + "m",
 	         FLinearColor::Black, x + 30,
 	         y + 20,
@@ -148,21 +155,5 @@ void ADRHUD::DrawFloatingDamageTexts()
 			mFloatingDamageTexts[i]->Destroy();
 			mFloatingDamageTexts.RemoveAt(i);
 		}
-	}
-}
-
-void ADRHUD::OnCharacterUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp,
-											 UDRAbilityTargetComponent* newSelectableComp, EMouseHoverState state, bool isPlayersTurn)
-{
-	if (isPlayersTurn && newSelectableComp && state == EnemyCharacter ||
-		state == EnemyCharacterInBasicAttackRange)
-	{
-		UDRAbility_BasicAttack* basicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->
-		                                                    GetBasicAttack();
-		mAttackCost = basicAttack->GetAbilityInfo().mActionPointCost;
-	}
-	else
-	{
-		mAttackCost = 0;
 	}
 }

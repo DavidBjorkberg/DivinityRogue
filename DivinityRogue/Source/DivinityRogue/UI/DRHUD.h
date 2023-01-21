@@ -52,9 +52,6 @@ private:
 	void DrawActionCostText();
 	void DrawPathLengthText();
 	void DrawFloatingDamageTexts();
-	UFUNCTION()
-	void OnCharacterUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp,
-											 UDRAbilityTargetComponent* newSelectableComp, EMouseHoverState state, bool isPlayersTurn);
 	UPROPERTY()
 	TArray<ADRFloatingDamageText*> mFloatingDamageTexts;
  	UPROPERTY()
@@ -67,6 +64,4 @@ private:
 	ADRGameMode* mGameMode;
 	UPROPERTY()
 	UUserWidget* mSelectRewardUI;
-	int mAttackCost;
-	bool mIsTargeting;
 };

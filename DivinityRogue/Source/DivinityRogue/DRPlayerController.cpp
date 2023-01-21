@@ -59,7 +59,7 @@ UNavigationPath* ADRPlayerController::GetPathToMouse()
 	FVector pathStart = characterInPlay->GetActorLocation();
 	FVector pathEnd;
 
-	if (GetMouseHoverState() == EMouseHoverState::EnemyCharacterInBasicAttackRange)
+	if (GetMouseHoverState() == EnemyCharacterInBasicAttackRange)
 	{
 		pathEnd = GetAbilityTargetUnderCursor()->GetOwner()->GetActorLocation();
 	}
@@ -202,16 +202,19 @@ void ADRPlayerController::OnAbilityTargetUnderCursorChanged(UDRAbilityTargetComp
 	{
 		mHUD->HideHoverPanel();
 	}
-	
+
 	if (isPlayersTurn)
 	{
 		if (newSelectableComp != nullptr &&
 			newState == EnemyCharacter ||
 			newState == EnemyCharacterInBasicAttackRange)
 		{
-			float basicAttackRange = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack()->
-			                                       GetRange();
-			mRoundSystem->GetCharacterInPlay()->ShowRangeIndicator(basicAttackRange);
+			UDRAbility* basicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->GetBasicAttack();
+			if (basicAttack->IsRanged())
+			{
+				float basicAttackRange = basicAttack->GetRange();
+				mRoundSystem->GetCharacterInPlay()->ShowRangeIndicator(basicAttackRange);
+			}
 		}
 		else
 		{
@@ -222,8 +225,8 @@ void ADRPlayerController::OnAbilityTargetUnderCursorChanged(UDRAbilityTargetComp
 
 void ADRPlayerController::UpdateCursor()
 {
-	if (mMouseHoverState == EMouseHoverState::EnemyCharacter ||
-		mMouseHoverState == EMouseHoverState::EnemyCharacterInBasicAttackRange)
+	if (mMouseHoverState == EnemyCharacter ||
+		mMouseHoverState == EnemyCharacterInBasicAttackRange)
 	{
 		CurrentMouseCursor = EMouseCursor::Type::Crosshairs;
 	}

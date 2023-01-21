@@ -62,6 +62,7 @@ public:
 	//Used for rotating the user to the desired rotation
 	virtual FVector GetTargetLocation();
 	virtual bool ShouldRotateUser() const { return true; }
+	bool IsRanged() const {return GetRange() >= mRangedAttackThreshold;}
 protected:
 	virtual UWorld* GetWorld() const override;
 	UFUNCTION()
@@ -81,7 +82,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	int mRemainingCooldown;
 	bool mIsSelected;
-
 	
 	UPROPERTY()
 	ADRGameMode* mGameMode;
@@ -94,6 +94,7 @@ protected:
 	UPROPERTY()
 	ADRCharacter* mOwner;
 private:
+	float mRangedAttackThreshold = 400;
 	UFUNCTION()
 	void OnSelectedAbilityChanged(UDRAbility* ability);
 	UFUNCTION()
