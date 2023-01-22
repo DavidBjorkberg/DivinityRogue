@@ -30,7 +30,6 @@ void ADRCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	mAbilityTargetComponent->SetHighlightMesh(GetMesh());
-	//Cast<UCharacterMovementComponent>(GetMovementComponent())->GravityScale = 0;
 	mController = Cast<ADRAIController>(GetController());
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
 	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
@@ -165,14 +164,16 @@ void ADRCharacter::ShowRangeIndicator(float range)
 	mRangeIndicator = GetWorld()->SpawnActor<ADRCircleDecal>(mRangeIndicatorClass);
 	mRangeIndicator->GetDecalComponent()->SetDecalMaterial(mRangeIndicatorMaterial);
 	mRangeIndicator->SetRadius(range);
-	mRangeIndicator->SetActorLocation(GetActorLocation() + FVector(0,0,10));
-	mRangeIndicator->SetActorRotation(FVector(0,0,1).Rotation());
-
+	mRangeIndicator->SetActorLocation(GetActorLocation() + FVector(0, 0, 10));
+	mRangeIndicator->SetActorRotation(FVector(0, 0, 1).Rotation());
 }
 
 void ADRCharacter::HideRangeIndicator()
 {
-	mRangeIndicator->Destroy();
+	if (mRangeIndicator->IsValidLowLevel())
+	{
+		mRangeIndicator->Destroy();
+	}
 }
 
 UDRMovementComponent* ADRCharacter::GetDRMovementComponent()

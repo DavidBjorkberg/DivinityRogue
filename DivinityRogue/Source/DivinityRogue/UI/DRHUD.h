@@ -48,9 +48,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> mSelectRewardClass;
 private:
-	void DrawAbilityRangeCircle();
-	void DrawActionCostText();
-	void DrawPathLengthText();
 	void DrawFloatingDamageTexts();
 	UPROPERTY()
 	TArray<ADRFloatingDamageText*> mFloatingDamageTexts;
@@ -58,8 +55,6 @@ private:
 	UDRBattleUI* mBattleUI;
  	UPROPERTY()
 	ADRPlayerController* mPlayerController;
-	UPROPERTY()
-	UDRRoundSystem* mRoundSystem;
 	UPROPERTY()
 	ADRGameMode* mGameMode;
 	UPROPERTY()

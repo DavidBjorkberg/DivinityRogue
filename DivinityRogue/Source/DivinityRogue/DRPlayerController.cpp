@@ -34,6 +34,7 @@ void ADRPlayerController::Tick(float DeltaSeconds)
 	}
 
 	UpdateCharacterUnderCursor();
+
 }
 
 
@@ -148,7 +149,7 @@ void ADRPlayerController::OnLeftMouseClick()
 		{
 			ADRCharacter* characterInPlay = mRoundSystem->GetCharacterInPlay();
 
-			if (mMouseHoverState == EMouseHoverState::EnemyInBasicAttackRange)
+			if (mMouseHoverState == EnemyInBasicAttackRange)
 			{
 				characterInPlay->TryBasicAttack(mSelectableUnderCursor);
 			}
@@ -157,10 +158,10 @@ void ADRPlayerController::OnLeftMouseClick()
 				characterInPlay->OrderAttackMoveToActor(mSelectableUnderCursor);
 			}
 		}
-		else if (GetMouseHoverState() != EMouseHoverState::HoverUI)
+		else if (GetMouseHoverState() != HoverUI)
 		{
 			FHitResult hitResult = UDRGameplayStatics::GetHitResultUnderCursor(
-				GetWorld(), ECollisionChannel::ECC_WorldStatic);
+				GetWorld(), ECC_WorldStatic);
 			if (hitResult.bBlockingHit && GetPathToMouse()->GetPathLength() > 0)
 			{
 				mRoundSystem->GetCharacterInPlay()->OrderMoveToLocation(hitResult.Location);
@@ -189,8 +190,7 @@ void ADRPlayerController::OnAbilityTargetUnderCursorChanged(UDRAbilityTargetComp
                                                             EMouseHoverState newState, bool isPlayersTurn)
 {
 	UpdateMouseHoverState(newSelectableComp);
-	UpdateCursor();
-
+	mCurrentCursorWidget->UpdateCursor(newState);
 	if (previousSelectableComp != nullptr)
 	{
 		previousSelectableComp->SetHighlight(false);
@@ -222,19 +222,6 @@ void ADRPlayerController::OnAbilityTargetUnderCursorChanged(UDRAbilityTargetComp
 		{
 			mRoundSystem->GetCharacterInPlay()->HideRangeIndicator();
 		}
-	}
-}
-
-void ADRPlayerController::UpdateCursor()
-{
-	if (mMouseHoverState == Enemy ||
-		mMouseHoverState == EnemyInBasicAttackRange)
-	{
-		CurrentMouseCursor = EMouseCursor::Type::Crosshairs;
-	}
-	else
-	{
-		CurrentMouseCursor = EMouseCursor::Type::Default;
 	}
 }
 

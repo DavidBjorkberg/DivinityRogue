@@ -6,6 +6,7 @@
 #include "DRCharacter.h"
 #include "DRMovementSpline.h"
 #include "DRAbilityTargetComponent.h"
+#include "DRCursor.h"
 #include "GameFramework/PlayerController.h"
 #include "DRPlayerController.generated.h"
 
@@ -48,14 +49,15 @@ public:
 
 	FCharacterUnderCursorChanged mOnCharacterUnderCursorChanged;
 	FLeftMouseDown mOnLeftMouseDown;
+	UPROPERTY()
+	UDRCursor* mCurrentCursorWidget;
+
 protected:
 	virtual void SetupInputComponent() override;
 	UFUNCTION()
 	void OnLeftMouseClick();
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ADRMovementSpline> mMovementSplineBP;
-	UPROPERTY(EditDefaultsOnly)
-	UUserWidget* mDefaultCursorWidget;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> mAttackCursorWidget;
 private:
@@ -68,7 +70,7 @@ private:
 	UFUNCTION()
 	void OnAbilityTargetUnderCursorChanged(UDRAbilityTargetComponent* previousSelectableComp,
 											 UDRAbilityTargetComponent* newSelectableComp, EMouseHoverState newState, bool isPlayersTurn);
-	void UpdateCursor();
+
 	void UpdateMouseHoverState(UDRAbilityTargetComponent* abilityTargetUnderCursor);
 	void UpdateCharacterUnderCursor();
 

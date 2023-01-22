@@ -17,7 +17,6 @@ void ADRHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	mGameMode = GetWorld()->GetAuthGameMode<ADRGameMode>();
-	mRoundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();
 	mPlayerController = Cast<ADRPlayerController>(GetWorld()->GetFirstPlayerController());
 	ShowBattleUI();
 }
@@ -26,14 +25,6 @@ void ADRHUD::DrawHUD()
 {
 	Super::DrawHUD();
 	DrawFloatingDamageTexts();
-	if (!mRoundSystem->IsPlayersTurn()) return;
-
-	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) &&
-		mPlayerController->GetMouseHoverState() != HoverUI)
-	{
-		DrawActionCostText();
-		DrawPathLengthText();
-	}
 }
 
 void ADRHUD::ShowBattleUI()
@@ -91,59 +82,6 @@ void ADRHUD::SpawnFloatingDamageText(AActor* damagedActor, int damage, bool isHe
 	FColor color = isHeal ? FColor::Green : FColor::Red;
 	damageText->Initialize(damage, color);
 	mFloatingDamageTexts.Add(damageText);
-}
-
-void ADRHUD::DrawAbilityRangeCircle()
-{
-	const ADRCharacter* characterUsingAbility = mRoundSystem->GetCharacterInPlay();
-	DrawCircle(GetWorld(), characterUsingAbility->GetActorLocation() + FVector::UpVector * 0.1f,
-	           FVector::RightVector,
-	           FVector::ForwardVector,
-	           FColor::Orange, mGameMode->GetSelectedAbility()->GetRange(), 3000, false, -1, 0, 10);
-}
-
-void ADRHUD::DrawActionCostText()
-{
-	int cost;
-	if (mPlayerController->GetMouseHoverState() == Enemy || mPlayerController->GetMouseHoverState() == EnemyInBasicAttackRange)
-	{
-		UDRAbility_BasicAttack* basicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->
-		                                                    GetBasicAttack();
-		cost = basicAttack->GetAbilityInfo().mActionPointCost;
-	}
-	else
-	{
-		cost = mRoundSystem->GetCharacterInPlay()->GetDRMovementComponent()->GetEnergyCostToMouse();
-	}
-	float x;
-	float y;
-	int currentEnergy = mRoundSystem->GetCharacterInPlay()->GetStatsComponent()->GetStats().mCurrentEnergy;
-	bool canAfford = currentEnergy >= cost;
-	mPlayerController->GetMousePosition(x, y);
-	DrawText(TEXT("Cost: " + FString::FromInt(cost)),
-	         canAfford ? FLinearColor::Black : FLinearColor::Red, x + 30,
-	         y,
-	         nullptr,
-	         1.5);
-}
-
-void ADRHUD::DrawPathLengthText()
-{
-	float pathLength = mRoundSystem->GetCharacterInPlay()->GetDRMovementComponent()->GetPathLengthToMouse();
-	float x;
-	float y;
-	mPlayerController->GetMousePosition(x, y);
-
-	float pathLengthInMeters = pathLength / 100.0f;
-	FString pathLengthText = FString::SanitizeFloat(pathLengthInMeters);
-	int index;
-	pathLengthText.FindChar('.', index);
-	pathLengthText.RemoveAt(index + 2, pathLengthText.Len());
-	DrawText(pathLengthText + "m",
-	         FLinearColor::Black, x + 30,
-	         y + 20,
-	         nullptr,
-	         1.5);
 }
 
 void ADRHUD::DrawFloatingDamageTexts()
