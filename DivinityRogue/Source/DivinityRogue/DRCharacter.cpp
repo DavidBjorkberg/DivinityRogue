@@ -114,6 +114,12 @@ void ADRCharacter::Initialize(UDRCharacterTemplate* charTemplate, ETeam team)
 	mAbilityComponent->ApplyTemplate(charTemplate);
 	mAnimationComponent->SetAnimInstance(charTemplate->AnimInstance);
 	mAbilityTargetComponent->SetName(charTemplate->Name);
+	GetDRMovementComponent()->MaxWalkSpeed = mBaseMovementSpeed * charTemplate->MovementSpeedFactor;
+	if (team == ETeam::ENEMY)
+	{
+		GetDRMovementComponent()->MaxWalkSpeed *= 2;
+	} 
+	GetDRMovementComponent()->MaxAcceleration = 10000;
 }
 
 void ADRCharacter::Heal(int healAmount)

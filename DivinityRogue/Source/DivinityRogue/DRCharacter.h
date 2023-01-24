@@ -117,4 +117,5 @@ private:
 	UDRRoundSystem* mRoundSystem;
 	UPROPERTY()
 	ADRCircleDecal* mRangeIndicator;
+	const int mBaseMovementSpeed = 500;
 };

@@ -26,7 +26,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Stats")
 	int EnergyPerTurn = 3;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Stats")
-	int MovementSpeed = 6;
+	float MovementSpeedFactor = 1;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Stats")
 	int Movement = 500;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)

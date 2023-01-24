@@ -20,5 +20,5 @@ void UDRStatsComponent::ApplyTemplate(UDRCharacterTemplate* charTemplate)
 	mStats.mMaxEnergy = charTemplate->MaxEnergy;
 	mStats.mEnergyPerTurn = charTemplate->EnergyPerTurn;
 	mStats.mMovement = charTemplate->Movement;
-	mStats.mMovementSpeed = charTemplate->MovementSpeed;
+	mStats.mMovementSpeed = charTemplate->MovementSpeedFactor;
 }
