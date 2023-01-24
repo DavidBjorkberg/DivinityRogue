@@ -54,6 +54,7 @@ public:
 	void OnTurnStart();
 	void ShowRangeIndicator(float range);
 	void HideRangeIndicator();
+	bool IsRanged() const { return mAbilityComponent->GetBasicAttack()->IsRanged(); }
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRCharacterAnimationComponent* GetAnimationComponent() const { return mAnimationComponent; }
 
@@ -65,9 +66,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRHealthComponent* GetHealthComponent() const { return mHealthComponent; }
-	
+
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRAbilityTargetComponent* GetAbilityTargetComponent() const { return mAbilityTargetComponent; }
+
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRMovementComponent* GetDRMovementComponent();
 	//Getters - End

@@ -22,17 +22,9 @@ void UDRCursor::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	else
 	{
 		Clear();
-		if (mRoundSystem->IsPlayersTurn() &&
-			mGameMode->IsInGameplayState(EGameplayState::PlanningPath) &&
-			mPlayerController->GetMouseHoverState() != HoverUI)
-		{
-			ShowCostText();
-			if (mPlayerController->GetMouseHoverState() != Enemy &&
-				mPlayerController->GetMouseHoverState() != EnemyInBasicAttackRange)
-			{
-				ShowDistanceText();
-			}
-		}
+		TryShowCostText();
+		TryShowDistanceText();
+		TryShowOutOfRangeText();
 	}
 }
 
@@ -40,10 +32,35 @@ void UDRCursor::Clear()
 {
 	mCostText->SetVisibility(ESlateVisibility::Collapsed);
 	mDistanceText->SetVisibility(ESlateVisibility::Collapsed);
+	mOutOfRangeText->SetVisibility(ESlateVisibility::Collapsed);
 }
 
-void UDRCursor::ShowCostText()
+void UDRCursor::TryShowOutOfRangeText()
 {
+	ADRCharacter* charInPlay = mRoundSystem->GetCharacterInPlay();
+	if (!charInPlay->IsRanged()) return;
+
+	if (mPlayerController->GetMouseHoverState() == Enemy || mPlayerController->GetMouseHoverState() ==
+		EnemyInBasicAttackRange)
+	{
+		UDRAbility_BasicAttack* basicAttack = mRoundSystem->GetCharacterInPlay()->GetAbilityComponent()->
+		                                                    GetBasicAttack();
+		if (!basicAttack->IsInRange(mPlayerController->GetAbilityTargetUnderCursor()))
+		{
+			mOutOfRangeText->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+}
+
+void UDRCursor::TryShowCostText()
+{
+	if (!mRoundSystem->IsPlayersTurn() ||
+		!mGameMode->IsInGameplayState(EGameplayState::PlanningPath) ||
+		mPlayerController->GetMouseHoverState() == HoverUI)
+	{
+		return;
+	}
+
 	int cost;
 	if (mPlayerController->GetMouseHoverState() == Enemy || mPlayerController->GetMouseHoverState() ==
 		EnemyInBasicAttackRange)
@@ -65,8 +82,15 @@ void UDRCursor::ShowCostText()
 	mCostText->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UDRCursor::ShowDistanceText()
+void UDRCursor::TryShowDistanceText()
 {
+	if (!mRoundSystem->IsPlayersTurn() ||
+		!mGameMode->IsInGameplayState(EGameplayState::PlanningPath) ||
+		mPlayerController->GetMouseHoverState() != NoCharacter)
+	{
+		return;
+	}
+
 	float pathLength = mRoundSystem->GetCharacterInPlay()->GetDRMovementComponent()->GetPathLengthToMouse();
 
 	float pathLengthInMeters = pathLength / 100.0f;

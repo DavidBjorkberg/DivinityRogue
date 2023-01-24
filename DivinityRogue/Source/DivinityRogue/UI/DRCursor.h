@@ -24,8 +24,9 @@ class DIVINITYROGUE_API UDRCursor : public UUserWidget
 public:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 	void Clear();
-	void ShowCostText();
-	void ShowDistanceText();
+	void TryShowOutOfRangeText();
+	void TryShowCostText();
+	void TryShowDistanceText();
 	void UpdateCursor(EMouseHoverState newState);
 	
 protected:
@@ -39,7 +40,8 @@ protected:
 	UTextBlock* mCostText;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* mDistanceText;
-	
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* mOutOfRangeText;
 private:
 	UPROPERTY()
 	UDRRoundSystem* mRoundSystem;

@@ -61,6 +61,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> mAttackCursorWidget;
 private:
+	void TickMovementSpline();
 	UFUNCTION(BlueprintCallable)
 	UNavigationPath* GetPathToMouse();
 	UFUNCTION()

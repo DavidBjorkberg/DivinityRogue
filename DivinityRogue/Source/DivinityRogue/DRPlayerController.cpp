@@ -20,21 +20,8 @@ void ADRPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (mGameMode->IsInGameplayState(EGameplayState::PlanningPath) &&
-		mRoundSystem->IsPlayersTurn() &&
-		GetMouseHoverState() != HoverUI &&
-		GetMouseHoverState() != Enemy &&
-		GetMouseHoverState() != EnemyInBasicAttackRange)
-	{
-		mMovementSpline->DrawMovementSpline();
-	}
-	else
-	{
-		mMovementSpline->ClearSpline();
-	}
-
+	TickMovementSpline();
 	UpdateCharacterUnderCursor();
-
 }
 
 
@@ -49,6 +36,29 @@ void ADRPlayerController::BeginPlay()
 	mRoundSystem->mOnNewTurn.AddDynamic(this, &ADRPlayerController::OnNewTurn);
 	mOnCharacterUnderCursorChanged.AddDynamic(this, &ADRPlayerController::OnAbilityTargetUnderCursorChanged);
 	SetInputMode(FInputModeGameAndUI());
+}
+
+void ADRPlayerController::TickMovementSpline()
+{
+	ADRCharacter* currentChar = mRoundSystem->GetCharacterInPlay();
+	if(!currentChar) return;
+	
+	bool isRanged = currentChar->IsRanged();
+	bool hoveringEnemy = GetMouseHoverState() == Enemy || GetMouseHoverState() == EnemyInBasicAttackRange;
+	bool isPlayersTurn = mRoundSystem->IsPlayersTurn();
+	bool isPlanningPath = mGameMode->IsInGameplayState(EGameplayState::PlanningPath);
+	bool isHoveringUI = GetMouseHoverState() == HoverUI;
+	if(!isPlanningPath ||
+		!isPlayersTurn ||
+		isHoveringUI ||
+		(hoveringEnemy && isRanged))
+	{
+		mMovementSpline->ClearSpline();
+	}
+	else
+	{
+		mMovementSpline->DrawMovementSpline();
+	}
 }
 
 UNavigationPath* ADRPlayerController::GetPathToMouse()
@@ -153,7 +163,7 @@ void ADRPlayerController::OnLeftMouseClick()
 			{
 				characterInPlay->TryBasicAttack(mSelectableUnderCursor);
 			}
-			else
+			else if(!characterInPlay->IsRanged())
 			{
 				characterInPlay->OrderAttackMoveToActor(mSelectableUnderCursor);
 			}
