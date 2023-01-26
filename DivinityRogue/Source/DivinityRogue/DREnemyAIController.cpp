@@ -23,31 +23,42 @@ void ADREnemyAIController::RequestAction()
 {
 	GetWorldTimerManager().ClearTimer(RequestActionTimer); // This shouldn't be necessary, timer has run out.
 
-	if(mGameMode->IsGameOver())
+	if (mGameMode->IsGameOver())
 	{
 		mRoundSystem->EndTurn();
 		return;
 	}
-	
+
 	TArray<UDRAbilityTargetComponent*> allPlayerUnits = mGameMode->GetAllPlayerAbilityTargets();
-	UDRGameplayStatics::SortComponentListByDistance(mOwner,allPlayerUnits);
-	if (TryUseAbility()) return;
+	UDRGameplayStatics::SortComponentListByDistance(mOwner, allPlayerUnits);
+	if (UDRAbility* abilityToUse = GetAbilityToUse())
+	{
+		UDRGameplayStatics::GetHUD(GetWorld())->ShowUsedAbilityPopup(mRoundSystem->GetCharacterInPlay(), abilityToUse,
+		                                                             mPerformAbilityDelay + 1);
+		FTimerHandle handle;
+		GetWorld()->GetTimerManager().SetTimer(handle,
+		                                       FTimerDelegate::CreateLambda([this,abilityToUse]
+		                                       {
+			                                       mOwner->UseAbility(abilityToUse);
+		                                       }), mPerformAbilityDelay, false);
+		return;
+	}
+	if (GetAbilityToUse()) return;
 	if (mOwner->TryBasicAttack(allPlayerUnits[0])) return;
 	if (TryMoveTo(allPlayerUnits[0])) return;
 	mRoundSystem->EndTurn();
 }
 
-bool ADREnemyAIController::TryUseAbility()
+UDRAbility* ADREnemyAIController::GetAbilityToUse()
 {
 	for (UDRAbility* ability : mOwner->GetAbilityComponent()->GetAbilities())
 	{
-		if (ability->CanAffordCast() && ability->TrySetRandomTargets())
+		if (ability->CanAffordCast() && !ability->IsOnCooldown() && ability->TrySetRandomTargets())
 		{
-			mOwner->UseAbility(ability);
-			return true;
+			return ability;
 		}
 	}
-	return false;
+	return nullptr;
 }
 
 

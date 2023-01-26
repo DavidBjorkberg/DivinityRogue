@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DRAbilityTargetComponent.h"
+#include "DRUsedAbilityPopup.h"
 #include "Components/Button.h"
 #include "DRBattleUI.generated.h"
 
@@ -23,11 +24,13 @@ public:
 	void ShowHoverPanel(UDRAbilityTargetComponent* selectableComp);
 	UFUNCTION(BlueprintImplementableEvent)
 	void HideHoverCharacterPanel();
-
+	void ShowUsedAbilityPopup(ADRCharacter* character, UDRAbility* ability,float duration);
 private:
 	UFUNCTION()
 	void OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState);
-	
+
+	UPROPERTY(meta=(BindWidget))
+	UDRUsedAbilityPopup* mUsedAbilityPopup;
 	UPROPERTY(meta=(BindWidget))
 	UButton* mEndTurnButton;
 };

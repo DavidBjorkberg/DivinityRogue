@@ -48,6 +48,11 @@ void ADRHUD::HideHoverPanel()
 	mBattleUI->HideHoverCharacterPanel();
 }
 
+void ADRHUD::ShowUsedAbilityPopup(ADRCharacter* character, UDRAbility* ability, float duration)
+{
+	mBattleUI->ShowUsedAbilityPopup(character,ability,duration);
+}
+
 void ADRHUD::ShowGameOverScreen()
 {
 	mBattleUI->SetVisibility(ESlateVisibility::Collapsed);

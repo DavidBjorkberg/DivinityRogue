@@ -16,6 +16,11 @@ void UDRBattleUI::NativeConstruct()
 	gameMode->mOnGameplayStateChanged.AddDynamic(this, &UDRBattleUI::OnGameplayStateChanged);
 }
 
+void UDRBattleUI::ShowUsedAbilityPopup(ADRCharacter* character, UDRAbility* ability,float duration)
+{
+	mUsedAbilityPopup->Show(character,ability,duration);
+}
+
 void UDRBattleUI::OnGameplayStateChanged(EGameplayState oldState, EGameplayState newState)
 {
 	UDRRoundSystem* roundSystem = GetWorld()->GetSubsystem<UDRRoundSystem>();

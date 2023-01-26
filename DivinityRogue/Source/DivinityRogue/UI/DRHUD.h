@@ -28,6 +28,7 @@ public:
 	void HideBattleUI();
 	void ShowHoverPanel(UDRAbilityTargetComponent* selectableComp);
 	void HideHoverPanel();
+	void ShowUsedAbilityPopup(ADRCharacter* character, UDRAbility* ability, float duration);
 	void ShowGameOverScreen();
 	UFUNCTION(BlueprintCallable)
 	void ShowNextMapSelect();
@@ -40,7 +41,6 @@ protected:
 	TSubclassOf<UDRBattleUI> mScreenUIClass;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDRGameOverUI> mGameOverUIClass;
-	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ADRFloatingDamageText> mFloatingDamageTextClass;
 	UPROPERTY(EditDefaultsOnly)

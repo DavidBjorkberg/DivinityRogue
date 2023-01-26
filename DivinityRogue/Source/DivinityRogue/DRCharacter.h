@@ -43,7 +43,6 @@ public:
 	void Initialize(UDRCharacterTemplate* charTemplate, ETeam team);
 	void Heal(int healAmount);
 	void OrderMoveToLocation(FVector targetLoc);
-	void OrderMoveToActor(UDRAbilityTargetComponent* target);
 	void OrderAttackMoveToActor(UDRAbilityTargetComponent* target);
 	bool TryBasicAttack(UDRAbilityTargetComponent* target);
 	void EndTurnIfOutOfActionPoints();
@@ -72,7 +71,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDRMovementComponent* GetDRMovementComponent();
-	//Getters - End
 
 	UPROPERTY(BlueprintAssignable)
 	FUnitDied mOnUnitDied;

@@ -20,13 +20,13 @@ public:
 	virtual void OnFinishedAttack() override;
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	float mRequestActionDelay = 1;
-	UPROPERTY(EditDefaultsOnly)
 	float mAdjacentToActorThreshold;
 private:
 	UFUNCTION()
 	void RequestAction();
-	bool TryUseAbility();
+	UDRAbility* GetAbilityToUse();
 	bool TryMoveTo(UDRAbilityTargetComponent* target);
 	FTimerHandle RequestActionTimer;
+	float mRequestActionDelay = 1;
+	float mPerformAbilityDelay = 1;
 };

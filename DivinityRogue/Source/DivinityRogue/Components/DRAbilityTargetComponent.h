@@ -28,7 +28,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	ETeam GetTeam() const { return mTeam; }
 
-	FText GetName() const { return mName; }
+	FText GetCharacterName() const { return mName; }
 	void SetName(FText newName) { mName = newName; }
 	void SetTeam(ETeam team) { mTeam = team; }
 	void SetHighlightMesh(UPrimitiveComponent* mesh);

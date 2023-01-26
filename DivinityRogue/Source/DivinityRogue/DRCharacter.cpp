@@ -47,11 +47,6 @@ void ADRCharacter::OrderMoveToLocation(FVector targetLoc)
 	mController->OrderMoveToLocation(targetLoc);
 }
 
-void ADRCharacter::OrderMoveToActor(UDRAbilityTargetComponent* target)
-{
-	mController->OrderMoveToActor(target);
-}
-
 void ADRCharacter::OrderAttackMoveToActor(UDRAbilityTargetComponent* target)
 {
 	mController->OrderAttackMoveToActor(target);

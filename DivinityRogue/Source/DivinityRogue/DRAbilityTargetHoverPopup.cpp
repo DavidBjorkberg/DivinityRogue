@@ -25,7 +25,7 @@ void UDRAbilityTargetHoverPopup::Show(UDRAbilityTargetComponent* target)
 		{
 			mHealthBar->SetVisibility(ESlateVisibility::Collapsed);
 		}
-		mNameText->SetText(target->GetName());
+		mNameText->SetText(target->GetCharacterName());
 		SetVisibility(ESlateVisibility::Visible);
 	}
 }
