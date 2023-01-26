@@ -57,6 +57,7 @@ public:
 	bool IsInRange(UDRAbilityTargetComponent* target);
 	virtual bool IsTargetCorrectTeam(UDRAbilityTargetComponent* selectableComp);
 	bool CanAffordCast();
+	virtual bool AIShouldUse() PURE_VIRTUAL(UDRAbility::AIShouldUse, return true;)
 	bool IsOnCooldown() const { return mRemainingCooldown > 0; }
 	FAbilityInfo GetAbilityInfo() const { return mAbilityInfo; }
 	//Used for rotating the user to the desired rotation

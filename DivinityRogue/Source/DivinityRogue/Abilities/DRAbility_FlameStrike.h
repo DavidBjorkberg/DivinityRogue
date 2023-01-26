@@ -15,6 +15,8 @@ class DIVINITYROGUE_API UDRAbility_FlameStrike : public UDRAbility_GroundTarget_
 	GENERATED_BODY()
 public:
 	virtual void Use() override;
+	virtual bool AIShouldUse() override;
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	int mDamage;

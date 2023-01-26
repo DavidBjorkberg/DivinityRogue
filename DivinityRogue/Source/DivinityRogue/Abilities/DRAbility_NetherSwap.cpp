@@ -18,3 +18,8 @@ void UDRAbility_NetherSwap::Use()
 	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,locationA);
 
 }
+
+bool UDRAbility_NetherSwap::AIShouldUse()
+{
+	return Super::AIShouldUse();
+}

@@ -14,3 +14,8 @@ void UDRAbility_MultiShot::Use()
 		target->TakeDamage(mDamage, mOwner);
 	}
 }
+
+bool UDRAbility_MultiShot::AIShouldUse()
+{
+	return Super::AIShouldUse();
+}

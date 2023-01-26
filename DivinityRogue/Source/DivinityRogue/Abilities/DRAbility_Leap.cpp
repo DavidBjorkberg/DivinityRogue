@@ -15,3 +15,8 @@ void UDRAbility_Leap::Use()
 	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,startLocation);
 
 }
+
+bool UDRAbility_Leap::AIShouldUse()
+{
+	return Super::AIShouldUse();
+}

@@ -14,10 +14,10 @@ UCLASS(Abstract)
 class DIVINITYROGUE_API UDRAbility_SingleTarget : public UDRAbility
 {
 	GENERATED_BODY()
-
+public:
+	virtual bool TrySetRandomTargets() override;
 protected:
 	virtual void OnLeftMouseDown() override;
-	virtual bool TrySetRandomTargets() override;
 	virtual void ClearSelection() override;
 	virtual bool IsValidTarget(UDRAbilityTargetComponent* target) override;
 	virtual FVector GetTargetLocation() { return mTarget->GetOwner()->GetActorLocation(); }

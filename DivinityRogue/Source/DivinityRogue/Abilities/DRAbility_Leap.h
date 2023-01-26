@@ -15,4 +15,6 @@ class DIVINITYROGUE_API UDRAbility_Leap : public UDRAbility_GroundTarget_Exclusi
 	GENERATED_BODY()
 public:
 	virtual void Use() override;
+	virtual bool AIShouldUse() override;
+
 };

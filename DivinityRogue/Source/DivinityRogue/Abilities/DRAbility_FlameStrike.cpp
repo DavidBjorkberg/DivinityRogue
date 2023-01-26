@@ -16,3 +16,8 @@ void UDRAbility_FlameStrike::Use()
 		target->TakeDamage(mDamage, mOwner);
 	}
 }
+
+bool UDRAbility_FlameStrike::AIShouldUse()
+{
+	return Super::AIShouldUse();
+}

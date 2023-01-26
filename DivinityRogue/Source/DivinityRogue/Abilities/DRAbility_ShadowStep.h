@@ -15,6 +15,7 @@ class DIVINITYROGUE_API UDRAbility_ShadowStep : public UDRAbility_SingleTarget
 	GENERATED_BODY()
 public:
 	virtual void Use() override;
+	virtual bool AIShouldUse() override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly)

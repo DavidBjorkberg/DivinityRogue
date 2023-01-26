@@ -15,6 +15,7 @@ class DIVINITYROGUE_API UDRAbility_Whirlwind : public UDRAbility_NoTarget
 	GENERATED_BODY()
 public:
 	virtual void Use() override;
+	virtual bool AIShouldUse() override;
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	int mDamage;

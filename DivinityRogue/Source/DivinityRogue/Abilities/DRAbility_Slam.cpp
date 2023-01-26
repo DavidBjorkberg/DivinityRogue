@@ -14,3 +14,8 @@ void UDRAbility_Slam::Use()
 	FVector belowTargetLocation = mTarget->GetOwner()->GetActorLocation() - FVector(0,0,mOwner->GetSimpleCollisionHalfHeight()) ;
 	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,belowTargetLocation);
 }
+
+bool UDRAbility_Slam::AIShouldUse()
+{
+	return Super::AIShouldUse();
+}

@@ -15,6 +15,8 @@ class DIVINITYROGUE_API UDRAbility_Battlecry : public UDRAbility_NoTarget
 	GENERATED_BODY()
 public:
 	virtual void Use() override;
+	virtual bool AIShouldUse() override;
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	int mHealAmount;

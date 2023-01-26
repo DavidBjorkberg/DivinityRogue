@@ -24,3 +24,8 @@ void UDRAbility_Whirlwind::Use()
 	UDRGameplayStatics::PlaySoundAtLocation(GetWorld(), mOnUsedSound, mOwner->GetActorLocation());
 	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,emitterLocation);
 }
+
+bool UDRAbility_Whirlwind::AIShouldUse()
+{
+	return Super::AIShouldUse();
+}

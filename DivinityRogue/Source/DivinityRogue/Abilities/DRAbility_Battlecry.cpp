@@ -14,3 +14,8 @@ void UDRAbility_Battlecry::Use()
 	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,mOwner->GetActorLocation());
 
 }
+
+bool UDRAbility_Battlecry::AIShouldUse()
+{
+	return Super::AIShouldUse();
+}

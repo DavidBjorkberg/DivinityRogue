@@ -14,3 +14,8 @@ void UDRAbility_Haste::Use()
 	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,mTarget->GetOwner()->GetActorLocation());
 
 }
+
+bool UDRAbility_Haste::AIShouldUse()
+{
+	return Super::AIShouldUse();
+}

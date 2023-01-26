@@ -19,3 +19,8 @@ void UDRAbility_ShadowStep::Use()
 	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,startLocation);
 	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,behindTargetLocation);
 }
+
+bool UDRAbility_ShadowStep::AIShouldUse()
+{
+	return Super::AIShouldUse();
+}

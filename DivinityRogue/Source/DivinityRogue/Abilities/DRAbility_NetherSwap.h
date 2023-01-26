@@ -12,4 +12,6 @@ class DIVINITYROGUE_API UDRAbility_NetherSwap : public UDRAbility_MultiTarget
 	GENERATED_BODY()
 public:
 	virtual void Use() override;
+	virtual bool AIShouldUse() override;
+
 };

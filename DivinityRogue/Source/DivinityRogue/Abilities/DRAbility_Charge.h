@@ -15,7 +15,10 @@ class DIVINITYROGUE_API UDRAbility_Charge : public UDRAbility_SingleTarget
 	GENERATED_BODY()
 public:
 	virtual void Use() override;
+	virtual bool AIShouldUse() override;
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	int mDamage;
+	UPROPERTY(EditDefaultsOnly, Category= "AI")
+	float mMinimumDistance;
 };

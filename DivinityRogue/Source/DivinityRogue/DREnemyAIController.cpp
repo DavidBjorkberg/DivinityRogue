@@ -43,7 +43,6 @@ void ADREnemyAIController::RequestAction()
 		                                       }), mPerformAbilityDelay, false);
 		return;
 	}
-	if (GetAbilityToUse()) return;
 	if (mOwner->TryBasicAttack(allPlayerUnits[0])) return;
 	if (TryMoveTo(allPlayerUnits[0])) return;
 	mRoundSystem->EndTurn();
@@ -53,7 +52,10 @@ UDRAbility* ADREnemyAIController::GetAbilityToUse()
 {
 	for (UDRAbility* ability : mOwner->GetAbilityComponent()->GetAbilities())
 	{
-		if (ability->CanAffordCast() && !ability->IsOnCooldown() && ability->TrySetRandomTargets())
+		if (ability->CanAffordCast() &&
+			!ability->IsOnCooldown() &&
+			ability->TrySetRandomTargets() &&
+			ability->AIShouldUse())
 		{
 			return ability;
 		}

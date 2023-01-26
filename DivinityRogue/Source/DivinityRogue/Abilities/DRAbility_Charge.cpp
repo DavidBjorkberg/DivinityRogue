@@ -16,3 +16,14 @@ void UDRAbility_Charge::Use()
 	mTarget->TakeDamage(mDamage, mOwner);
 	UDRGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mOnUsedParticleEffect,frontOfTargetLocation);
 }
+
+bool UDRAbility_Charge::AIShouldUse()
+{
+	if(TrySetRandomTargets())
+	{
+		FVector targetLocation = mTarget->GetOwner()->GetActorLocation();
+		FVector startLocation = mOwner->GetActorLocation();
+		return FVector::Dist2D(startLocation,targetLocation) >= mMinimumDistance;
+	}
+	return false;
+}
