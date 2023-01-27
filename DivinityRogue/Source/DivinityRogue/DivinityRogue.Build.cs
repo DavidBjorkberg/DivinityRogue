@@ -11,6 +11,7 @@ public class DivinityRogue : ModuleRules
 			{
 				"DivinityRogue",
 				"DivinityRogue/Abilities",
+				"DivinityRogue/Abilities/AbilityTypes",
 				"DivinityRogue/Components",
 				"DivinityRogue/UI",
 			});

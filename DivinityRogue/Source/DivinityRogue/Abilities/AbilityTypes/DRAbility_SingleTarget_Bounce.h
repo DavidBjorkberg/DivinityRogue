@@ -5,22 +5,22 @@
 #include "CoreMinimal.h"
 #include "DRAbilityTargetComponent.h"
 #include "DRAbility_SingleTarget.h"
-#include "DRAbility_SingleTarget_AOE.generated.h"
+#include "DRAbility_SingleTarget_Bounce.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class DIVINITYROGUE_API UDRAbility_SingleTarget_AOE : public UDRAbility_SingleTarget
+class DIVINITYROGUE_API UDRAbility_SingleTarget_Bounce : public UDRAbility_SingleTarget
 {
 	GENERATED_BODY()
 public:
 	virtual bool TrySetRandomTargets() override;
 protected:
+	TArray<UDRAbilityTargetComponent*> GetBounceTargets();
 	UPROPERTY(EditDefaultsOnly)
-	float mRadius;
-	UPROPERTY()
-	TArray<UDRAbilityTargetComponent*> mNearbyTargets;
-private:
+	float mBounceRange;
+	UPROPERTY(EditDefaultsOnly)
+	int mNrOfBounces;
 	
 };

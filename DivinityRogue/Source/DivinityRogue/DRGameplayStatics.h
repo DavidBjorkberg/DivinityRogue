@@ -57,9 +57,9 @@ public:
 
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
-	static void SortComponentListByDistance(AActor* thisActor, TArray<T*>& actorList)
+	static void SortComponentListByDistance(AActor* thisActor, TArray<T*>& componentList)
 	{
-		actorList.Sort([thisActor](const UActorComponent& A, const UActorComponent& B)
+		componentList.Sort([thisActor](const UActorComponent& A, const UActorComponent& B)
 		{
 			return A.GetOwner()->GetDistanceTo(thisActor) < B.GetOwner()->GetDistanceTo(thisActor);
 		});
