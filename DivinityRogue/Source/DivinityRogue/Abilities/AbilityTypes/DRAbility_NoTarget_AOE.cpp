@@ -7,17 +7,6 @@
 
 bool UDRAbility_NoTarget_AOE::TrySetRandomTargets()
 {
-	mTargets = UDRGameplayStatics::GetAllAbilityTargetsInRadius(GetWorld(), mOwner->GetActorLocation(), GetRange());
-	for (int i = mTargets.Num() - 1; i >= 0; i--)
-	{
-		if (GetAbilityInfo().mTargetType == TargetType::ANY)
-		{
-			break;
-		}
-		if(!IsTargetCorrectTeam(mTargets[i]))
-		{
-			mTargets.RemoveAt(i);
-		}
-	}
+	mTargets = GetAllValidTargetsInRadius(mOwner->GetActorLocation(),GetRange(),false);
 	return true;
 }

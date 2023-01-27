@@ -23,6 +23,7 @@ public:
 	UDRAbilityTargetComponent();
 	void SetHighlight(bool enabled);
 	void TakeDamage(float DamageAmount, AActor* DamageCauser);
+	void Heal(int amount);
 	void ModifyEnergy(int difference);
 	void TeleportTo(FVector targetLocation);
 	UFUNCTION(BlueprintCallable, BlueprintPure)

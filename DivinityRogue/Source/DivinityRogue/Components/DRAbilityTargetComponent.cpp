@@ -3,6 +3,7 @@
 
 #include "DRAbilityTargetComponent.h"
 
+#include "DRHealthComponent.h"
 #include "DRStatsComponent.h"
 
 UDRAbilityTargetComponent::UDRAbilityTargetComponent()
@@ -25,7 +26,13 @@ void UDRAbilityTargetComponent::TakeDamage(float DamageAmount, AActor* DamageCau
 	const FDamageEvent damageEvent;
 	GetOwner()->TakeDamage(DamageAmount, damageEvent, DamageCauser->GetInstigatorController(), DamageCauser);
 }
-
+void UDRAbilityTargetComponent::Heal(int amount)
+{
+	if (UDRHealthComponent* healthComp = GetOwner()->FindComponentByClass<UDRHealthComponent>())
+	{
+		healthComp->ModifyHealth(amount);
+	}
+}
 void UDRAbilityTargetComponent::ModifyEnergy(int difference)
 {
 	if (UDRStatsComponent* statsComp = GetOwner()->FindComponentByClass<UDRStatsComponent>())

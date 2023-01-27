@@ -72,6 +72,7 @@ protected:
 	virtual void OnAbilitySelected();
 	virtual void OnAbilityDeselected();
 	virtual bool IsValidTarget(UDRAbilityTargetComponent* target);
+	TArray<UDRAbilityTargetComponent*> GetAllValidTargetsInRadius(FVector location, float radius, bool ignoreSelf); 
 	void DeselectAbility();
 	bool IsInRange(FVector targetLocation);
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

@@ -14,8 +14,6 @@ UCLASS(Abstract)
 class DIVINITYROGUE_API UDRAbility_SingleTarget_Bounce : public UDRAbility_SingleTarget
 {
 	GENERATED_BODY()
-public:
-	virtual bool TrySetRandomTargets() override;
 protected:
 	TArray<UDRAbilityTargetComponent*> GetBounceTargets();
 	UPROPERTY(EditDefaultsOnly)

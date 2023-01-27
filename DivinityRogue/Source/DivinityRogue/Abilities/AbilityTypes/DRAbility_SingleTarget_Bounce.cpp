@@ -11,25 +11,21 @@ TArray<UDRAbilityTargetComponent*> UDRAbility_SingleTarget_Bounce::GetBounceTarg
 	UDRAbilityTargetComponent* previousJumpTarget = mTarget;
 	for (int i = 0; i < mNrOfBounces; i++)
 	{
-		TArray<UDRAbilityTargetComponent*> targetsInBounceRange = UDRGameplayStatics::GetAllAbilityTargetsInRadius(
-			GetWorld(), previousJumpTarget->GetOwner()->GetActorLocation(), mBounceRange);
-		targetsInBounceRange.Remove(previousJumpTarget);
+		TArray<UDRAbilityTargetComponent*> targetsInBounceRange = GetAllValidTargetsInRadius(
+			previousJumpTarget->GetOwner()->GetActorLocation(), mBounceRange, true);
 
 		for (int j = targetsInBounceRange.Num() - 1; j >= 0; j--)
 		{
-			if (!IsTargetCorrectTeam(targetsInBounceRange[j]) ||
-				bounceTargets.Contains(targetsInBounceRange[i]) ||
-				targetsInBounceRange[i] == mTarget)
+			if (bounceTargets.Contains(targetsInBounceRange[i]))
 			{
 				targetsInBounceRange.RemoveAt(j);
 			}
 		}
-		
-		if(targetsInBounceRange.Num() == 0) 
+
+		if (targetsInBounceRange.Num() == 0)
 		{
 			break;
 		}
-		
 
 		UDRGameplayStatics::SortComponentListByDistance(previousJumpTarget->GetOwner(), targetsInBounceRange);
 		bounceTargets.Add(targetsInBounceRange[0]);

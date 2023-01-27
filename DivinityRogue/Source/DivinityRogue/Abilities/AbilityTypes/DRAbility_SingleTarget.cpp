@@ -28,23 +28,15 @@ bool UDRAbility_SingleTarget::TrySetRandomTargets()
 {
 	mTarget = nullptr;
 
-	TArray<UDRAbilityTargetComponent*> allEnemyTargets;
-	TArray<UDRAbilityTargetComponent*> allAbilityTargets;
-	UDRGameplayStatics::FindAllComponents<UDRAbilityTargetComponent>(GetWorld(), allAbilityTargets);
-	UDRAbilityTargetComponent* ownerAbilityTarget = mOwner->FindComponentByClass<UDRAbilityTargetComponent>();
-	for (auto abilityTarget : allAbilityTargets)
+	TArray<UDRAbilityTargetComponent*> targetsInRange = GetAllValidTargetsInRadius(
+	mOwner->GetActorLocation(), GetRange(), true);
+	if(targetsInRange.Num() == 0)
 	{
-		if (abilityTarget->GetTeam() != ownerAbilityTarget->GetTeam() && abilityTarget->GetTeam() != ETeam::NEUTRAL)
-		{
-			allEnemyTargets.Add(abilityTarget);
-		}
+		return false;
 	}
-	UDRGameplayStatics::SortComponentListByDistance(mOwner, allEnemyTargets);
-	if (IsValidTarget(allEnemyTargets[0]))
-	{
-		mTarget = allEnemyTargets[0];
-	}
-	return mTarget != nullptr;
+	UDRGameplayStatics::SortComponentListByDistance(mOwner, targetsInRange);
+	mTarget = targetsInRange[0];
+	return true;
 }
 
 void UDRAbility_SingleTarget::ClearSelection()

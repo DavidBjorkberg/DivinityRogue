@@ -52,6 +52,29 @@ bool UDRAbility::IsValidTarget(UDRAbilityTargetComponent* target)
 	return target != nullptr;
 }
 
+TArray<UDRAbilityTargetComponent*> UDRAbility::GetAllValidTargetsInRadius(FVector location, float radius,bool ignoreSelf)
+{
+	TArray<UDRAbilityTargetComponent*> targetsInRange = UDRGameplayStatics::GetAllAbilityTargetsInRadius(
+		GetWorld(), location, radius);
+	if (ignoreSelf)
+	{
+		targetsInRange.Remove(mOwner->GetAbilityTargetComponent());
+	}
+	for (int i = targetsInRange.Num() - 1; i >= 0; i--)
+	{
+		if (GetAbilityInfo().mTargetType == TargetType::ANY)
+		{
+			break;
+		}
+		if(!IsTargetCorrectTeam(targetsInRange[i]))
+		{
+			targetsInRange.RemoveAt(i);
+		}
+	}
+
+	return targetsInRange;
+}
+
 void UDRAbility::DeselectAbility()
 {
 	mGameMode->TrySelectAbility(nullptr);
