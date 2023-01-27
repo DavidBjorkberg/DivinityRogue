@@ -10,13 +10,12 @@
 void UDRAbility_CripplingBlow::Use()
 {
 	Super::Use();
-	TArray<UDRAbilityTargetComponent*> targetsAroundTarget = UDRGameplayStatics::GetAllAbilityTargetsInRadius(
-		GetWorld(), mTarget->GetOwner()->GetActorLocation(), mRadius);
-	for (int i = targetsAroundTarget.Num() - 1; i >= 0; i--)
+	mTarget->TakeDamage(mDamage, mOwner);
+	for (int i = mNearbyTargets.Num() - 1; i >= 0; i--)
 	{
-		if (IsTargetCorrectTeam(targetsAroundTarget[i]))
+		if (IsTargetCorrectTeam(mNearbyTargets[i]))
 		{
-			targetsAroundTarget[i]->TakeDamage(mDamage, mOwner);
+			mNearbyTargets[i]->TakeDamage(mDamage, mOwner);
 			//TODO: Apply cripple
 		}
 	}

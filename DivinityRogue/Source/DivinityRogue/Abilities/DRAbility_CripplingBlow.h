@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DRAbility_SingleTarget.h"
+#include "DRAbility_SingleTarget_AOE.h"
 #include "DRAbility_CripplingBlow.generated.h"
 
 UCLASS(Abstract)
-class DIVINITYROGUE_API UDRAbility_CripplingBlow : public UDRAbility_SingleTarget
+class DIVINITYROGUE_API UDRAbility_CripplingBlow : public UDRAbility_SingleTarget_AOE
 {
 	GENERATED_BODY()
 public:
@@ -17,7 +17,5 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	int mDamage;
-	UPROPERTY(EditDefaultsOnly)
-	float mRadius;
 
 };
