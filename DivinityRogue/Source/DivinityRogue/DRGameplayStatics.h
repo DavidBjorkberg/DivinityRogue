@@ -32,12 +32,14 @@ public:
 		UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 		return World->GetFirstPlayerController()->GetHUD<ADRHUD>();
 	}
+
 	UFUNCTION(BlueprintPure, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
 	static ADRGameMode* GetDRGameMode(const UObject* WorldContextObject)
 	{
 		UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 		return World->GetAuthGameMode<ADRGameMode>();
 	}
+
 	UFUNCTION(BlueprintPure, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
 	static UDRRoundSystem* GetRoundSystem(const UObject* WorldContextObject)
 	{
@@ -54,7 +56,15 @@ public:
 			return A.GetDistanceTo(thisActor) < B.GetDistanceTo(thisActor);
 		});
 	}
-
+	template <class T>
+	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
+	static void SortActorListByDistance(FVector location, TArray<T*>& actorList)
+	{
+		actorList.Sort([location](const AActor& A, const AActor& B)
+		{
+			return FVector::Dist2D(A.GetActorLocation(),location) < FVector::Dist2D(B.GetActorLocation(),location);
+		});
+	}
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
 	static void SortComponentListByDistance(AActor* thisActor, TArray<T*>& componentList)
@@ -65,6 +75,38 @@ public:
 		});
 	}
 
+	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
+	static UDRAbilityTargetComponent* GetClosestEnemyTarget(const UObject* WorldContextObject, ADRCharacter* thisActor)
+	{
+		TArray<ADRCharacter*> allCharacters;
+		GetAllAliveCharacters(WorldContextObject, allCharacters);
+		for (int i = allCharacters.Num() - 1; i >= 0; i--)
+		{
+			if (allCharacters[i]->GetAbilityTargetComponent()->GetTeam() == thisActor->GetAbilityTargetComponent()->GetTeam() ||
+				allCharacters[i]->GetAbilityTargetComponent()->GetTeam() == ETeam::NEUTRAL)
+			{
+				allCharacters.RemoveAt(i);
+			}
+		}
+		SortActorListByDistance(thisActor, allCharacters);
+		return allCharacters[0]->GetAbilityTargetComponent();
+	}
+	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
+	static UDRAbilityTargetComponent* GetClosestEnemyTargetFromLocation(const UObject* WorldContextObject, ADRCharacter* thisActor, FVector location)
+	{
+		TArray<ADRCharacter*> allCharacters;
+		GetAllAliveCharacters(WorldContextObject, allCharacters);
+		for (int i = allCharacters.Num() - 1; i >= 0; i--)
+		{
+			if (allCharacters[i]->GetAbilityTargetComponent()->GetTeam() == thisActor->GetAbilityTargetComponent()->GetTeam() ||
+				allCharacters[i]->GetAbilityTargetComponent()->GetTeam() == ETeam::NEUTRAL)
+			{
+				allCharacters.RemoveAt(i);
+			}
+		}
+		SortActorListByDistance(location, allCharacters);
+		return allCharacters[0]->GetAbilityTargetComponent();
+	}
 	template <class T>
 	UFUNCTION(BlueprintCallable, Category = "DivinityRTS")
 	static bool GetClosestDRCharacterInList(AActor* thisActor, TArray<T*> actorList, T*& outClosestPawn,
@@ -143,15 +185,15 @@ public:
 		}
 		return abilityTargetsInRadius;
 	}
+
 	UFUNCTION(BlueprintPure, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
 	static void GetAllAlivePlayerCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& playerList);
 	UFUNCTION(BlueprintPure, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
-	static void GetAllAliveEnemyCharacters(const UObject* WorldContextObject,TArray<ADRCharacter*>& enemyList);
+	static void GetAllAliveEnemyCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& enemyList);
 	UFUNCTION(BlueprintPure, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
-	static void GetAllAliveCharacters(const UObject* WorldContextObject,TArray<ADRCharacter*>& characterList);
+	static void GetAllAliveCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& characterList);
 	UFUNCTION(BlueprintPure, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
 	static void GetAllPlayerCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& playerList);
 	UFUNCTION(BlueprintPure, Category = "DivinityRTS", meta = (WorldContext = "WorldContextObject"))
-	static void GetAllEnemyCharacters(const UObject* WorldContextObject,TArray<ADRCharacter*>& enemyList);
-
+	static void GetAllEnemyCharacters(const UObject* WorldContextObject, TArray<ADRCharacter*>& enemyList);
 };

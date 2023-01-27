@@ -16,5 +16,13 @@ class DIVINITYROGUE_API UDRAbility_Leap : public UDRAbility_GroundTarget_Exclusi
 public:
 	virtual void Use() override;
 	virtual bool AIShouldUse() override;
+	virtual bool TrySetRandomTargets() override;
 
+protected:
+	UPROPERTY(EditDefaultsOnly, Category="AI")
+	int mFindLocationAttempts;
+	UPROPERTY(EditDefaultsOnly, Category="AI")
+	float mMinimumDistanceToClosestEnemy;
+	UPROPERTY(EditDefaultsOnly, Category="AI")
+	float mUseAbilityDistanceThreshold;
 };
