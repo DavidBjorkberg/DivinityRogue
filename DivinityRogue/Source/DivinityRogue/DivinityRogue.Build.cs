@@ -19,7 +19,7 @@ public class DivinityRogue : ModuleRules
 
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "NavigationSystem", "AIModule","UMG","SlateCore","Json","JsonUtilities"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "NavigationSystem", "AIModule","UMG","SlateCore","Json","JsonUtilities","Paper2D","Paper2DEditor"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

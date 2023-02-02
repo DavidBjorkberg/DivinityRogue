@@ -62,6 +62,10 @@
 		{
 			"Name": "UdpMessaging",
 			"Enabled": false
+		},
+		{
+			"Name": "Paper2D",
+			"Enabled": true
 		}
 	]
 }

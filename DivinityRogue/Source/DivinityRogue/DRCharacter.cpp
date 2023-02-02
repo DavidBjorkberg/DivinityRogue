@@ -12,7 +12,10 @@
 #include "Engine/StaticMeshActor.h"
 
 ADRCharacter::ADRCharacter(const FObjectInitializer& ObjectInitializer) :
-	Super(ObjectInitializer.SetDefaultSubobjectClass<UDRMovementComponent>(ACharacter::CharacterMovementComponentName))
+	Super(ObjectInitializer.
+		SetDefaultSubobjectClass<UDRMovementComponent>(CharacterMovementComponentName).
+		DoNotCreateDefaultSubobject(MeshComponentName).
+		DoNotCreateDefaultSubobject(CapsuleComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
 	mAnimationComponent = CreateDefaultSubobject<UDRCharacterAnimationComponent>("DRAnimationComponent");
@@ -22,8 +25,6 @@ ADRCharacter::ADRCharacter(const FObjectInitializer& ObjectInitializer) :
 	mAbilityTargetComponent->SetupAttachment(GetCapsuleComponent());
 	mHealthComponent = CreateDefaultSubobject<UDRHealthComponent>("DRHealthComponent");
 	mHealthComponent->mOnDied.AddDynamic(this, &ADRCharacter::Died);
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetMesh()->SetReceivesDecals(false);
 }
 
 void ADRCharacter::BeginPlay()

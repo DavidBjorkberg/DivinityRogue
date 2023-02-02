@@ -59,7 +59,7 @@ void UDRMovementComponent::OnMovementUpdated(float DeltaSeconds, const FVector& 
 {
 	if (OldVelocity.Size2D() > 0)
 	{
-		SetDesiredRotation(OldVelocity.GetSafeNormal2D().Rotation());
+		//SetDesiredRotation(OldVelocity.GetSafeNormal2D().Rotation());
 		float distance = FVector::Dist2D(GetOwner()->GetActorLocation(),OldLocation);
 		mDistanceLeftUntilEnergyCost -= distance;
 		distanceTravelled += distance;
@@ -70,13 +70,13 @@ void UDRMovementComponent::OnMovementUpdated(float DeltaSeconds, const FVector& 
 			mDistanceLeftUntilEnergyCost = mOwner->GetStatsComponent()->GetStats().mMovement;
 		}
 		
-		if (!GetOwner()->GetActorRotation().Equals(mDesiredRotation, 10.0f))
-		{
-			FRotator deltaRotation = mDesiredRotation - GetOwner()->GetActorRotation();
-			deltaRotation.Roll = 0;
-			deltaRotation.Pitch = 0;
-			GetOwner()->AddActorWorldRotation(deltaRotation.GetNormalized() * mRotationRate * DeltaSeconds);
-		}
+		// if (!GetOwner()->GetActorRotation().Equals(mDesiredRotation, 10.0f))
+		// {
+		// 	FRotator deltaRotation = mDesiredRotation - GetOwner()->GetActorRotation();
+		// 	deltaRotation.Roll = 0;
+		// 	deltaRotation.Pitch = 0;
+		// 	GetOwner()->AddActorWorldRotation(deltaRotation.GetNormalized() * mRotationRate * DeltaSeconds);
+		// }
 	}
 }
 

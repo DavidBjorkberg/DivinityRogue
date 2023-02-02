@@ -51,4 +51,5 @@ void UDRAbilityTargetComponent::SetHighlightMesh(UPrimitiveComponent* mesh)
 {
 	mHighlightMesh = mesh;
 	mHighlightMesh->CustomDepthStencilValue = 1;
+	UPaperSpriteComponent* test;
 }
